@@ -377,7 +377,11 @@
                         </div>
                     </div>
                     <div class="bg-white dark:bg-dark-card rounded-xl p-3 md:p-5 card-shadow transition-colors duration-300">
-                        <h3 class="font-semibold text-xs md:text-sm text-slate-700 dark:text-slate-200 mb-2" id="mix-chart-title">Product Mix</h3>
+                        <!-- PERUBAHAN: Menggunakan justify-between agar judul di kiri dan tanggal di kanan -->
+                        <div class="flex justify-between items-center mb-2 min-h-[24px]">
+                            <h3 class="font-semibold text-xs md:text-sm text-slate-700 dark:text-slate-200" id="mix-chart-title">Product Distribution</h3>
+                            <span id="date-mix" class="text-[10px] font-medium text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-900/30 px-2 py-0.5 rounded-full"></span>
+                        </div>
                         <div class="relative h-40 md:h-56 w-full flex justify-center">
                             <canvas id="compositionChart"></canvas>
                         </div>
@@ -386,8 +390,8 @@
                 </div>
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-3 md:gap-6">
                     <div class="bg-white dark:bg-dark-card rounded-xl p-3 md:p-5 card-shadow transition-colors duration-300">
+                        <!-- Perubahan: Menambahkan span date-co-branch di sini -->
                         <div id="co-branch-header" class="flex justify-between items-center mb-2 min-h-[24px]">
-                            <h3 class="font-semibold text-xs md:text-sm text-slate-700 dark:text-slate-200" id="co-branch-title">Top 5 CO-Branches</h3>
                             <div id="npf-toggle-co" class="hidden inline-flex rounded-md shadow-sm bg-slate-100 dark:bg-slate-700 p-0.5 items-center gap-2">
                                 <span class="text-[10px] font-semibold text-slate-600 dark:text-slate-300">Co-Branch</span>
                                 <button onclick="setNpfMode('co', 'worst')" id="btn-npf-worst-co" class="px-2 py-0.5 text-[10px] font-medium text-white bg-indigo-600 rounded transition-all">Worst 5</button>
@@ -398,14 +402,18 @@
                                 <button onclick="setGeneralMode('co', 'top')" id="btn-general-top-co" class="px-2 py-0.5 text-[10px] font-medium text-white bg-indigo-600 rounded transition-all">Top 5</button>
                                 <button onclick="setGeneralMode('co', 'bottom')" id="btn-general-bottom-co" class="px-2 py-0.5 text-[10px] font-medium text-slate-700 dark:text-slate-300 rounded hover:bg-white dark:hover:bg-slate-600 transition-all">Bottom 5</button>
                             </div>
+                            <div class="flex items-center gap-2">
+                                <h3 class="font-semibold text-xs md:text-sm text-slate-700 dark:text-slate-200" id="co-branch-title">Top 5 CO-Branches</h3>
+                                <span id="date-co-branch" class="text-[10px] font-medium text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-900/30 px-2 py-0.5 rounded-full"></span>
+                            </div>
                         </div>
                         <div class="relative h-48 md:h-56 w-full">
                             <canvas id="coBranchChart"></canvas>
                         </div>
                     </div>
                     <div class="bg-white dark:bg-dark-card rounded-xl p-3 md:p-5 card-shadow transition-colors duration-300">
+                        <!-- Perubahan: Menambahkan span date-branch di sini -->
                         <div id="branch-header" class="flex justify-between items-center mb-2 min-h-[24px]">
-                            <h3 class="font-semibold text-xs md:text-sm text-slate-700 dark:text-slate-200" id="branch-title">Top 5 Branches</h3>
                             <div id="npf-toggle-branch" class="hidden inline-flex rounded-md shadow-sm bg-slate-100 dark:bg-slate-700 p-0.5 items-center gap-2">
                                 <span class="text-[10px] font-semibold text-slate-600 dark:text-slate-300">Branch</span>
                                 <button onclick="setNpfMode('branch', 'worst')" id="btn-npf-worst-branch" class="px-2 py-0.5 text-[10px] font-medium text-white bg-indigo-600 rounded transition-all">Worst 5</button>
@@ -415,6 +423,10 @@
                                 <span class="text-[10px] font-semibold text-slate-600 dark:text-slate-300">Branch</span>
                                 <button onclick="setGeneralMode('branch', 'top')" id="btn-general-top-branch" class="px-2 py-0.5 text-[10px] font-medium text-white bg-indigo-600 rounded transition-all">Top 5</button>
                                 <button onclick="setGeneralMode('branch', 'bottom')" id="btn-general-bottom-branch" class="px-2 py-0.5 text-[10px] font-medium text-slate-700 dark:text-slate-300 rounded hover:bg-white dark:hover:bg-slate-600 transition-all">Bottom 5</button>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <h3 class="font-semibold text-xs md:text-sm text-slate-700 dark:text-slate-200" id="branch-title">Top 5 Branches</h3>
+                                <span id="date-branch" class="text-[10px] font-medium text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-900/30 px-2 py-0.5 rounded-full"></span>
                             </div>
                         </div>
                         <div class="relative h-48 md:h-56 w-full">
@@ -460,7 +472,7 @@
 
         // --- KONFIGURASI TANGGAL MANUAL ---
         // Ubah tanggal di sini sesuai kebutuhan untuk bulan terakhir
-        const MANUAL_DATE_LATEST_MONTH = '24 Juli 2026'; 
+        const MANUAL_DATE_LATEST_MONTH = '16 Juli 2026'; 
 
         const DASHBOARD_PASSWORD = 'rbpm'; 
         function initTheme() {
@@ -1471,7 +1483,7 @@
                 for(const[prod,total]of Object.entries(productTotals)){if(total>maxVal){maxVal=total;topProduct=prod;}}
                 kpiFourthValue.innerText = toProperCase(topProduct);
                 renderMoM('mom-fourth', maxVal, productTotalsPrev[topProduct]||0, isBillionFormat, isNPF);
-                document.getElementById('mix-chart-title').innerText="Product Mix";
+                document.getElementById('mix-chart-title').innerText="Product Distribution";
             }
 
             groupLabels.forEach((grp,idx)=>{
@@ -1565,6 +1577,16 @@
             const ctx=document.getElementById('compositionChart').getContext('2d');
             const currentFileName=csvFilesConfig[currentActiveFileIndex].file;
             const isDark = document.body.classList.contains('dark');
+            
+            // --- TAMBAHAN: Ambil tanggal/bulan yang sedang terpilih untuk ditampilkan di judul ---
+            const isLastMonth = (lastMonth === monthColumns[monthColumns.length - 1]);
+            const displayDate = isLastMonth ? MANUAL_DATE_LATEST_MONTH : lastMonth;
+            
+            // Update Badge Tanggal di Header Product Mix/Distribution
+            const dateMixEl = document.getElementById('date-mix');
+            if(dateMixEl) dateMixEl.innerText = displayDate;
+            // ----------------------------------------------------------------------------------
+
             const staticPercentPlugin = {
                 id: 'staticPercentPlugin',
                 afterDatasetsDraw(chart, args, options) {
@@ -1613,7 +1635,8 @@
             };
             if(currentFileName === "mdin.csv"){
                 document.getElementById('dynamic-group-pct-labels').style.display = 'none';
-                document.getElementById('mix-chart-title').innerText = "Monthly Acquisition";
+                // Menambahkan tanggal terpilih pada judul
+                document.getElementById('mix-chart-title').innerText = `Monthly Acquisition`;
                 const currentIndex = monthColumns.indexOf(lastMonth);
                 const last5Months = [];
                 for(let i=0; i<5; i++) { if(currentIndex - i >= 0) last5Months.push(monthColumns[currentIndex - i]); }
@@ -1632,7 +1655,8 @@
                 });
             } else if(currentFileName === "qris.csv"){
                 document.getElementById('dynamic-group-pct-labels').style.display = 'none';
-                document.getElementById('mix-chart-title').innerText = "Product Acquisition";
+                // Menambahkan tanggal terpilih pada judul
+                document.getElementById('mix-chart-title').innerText = `Product Acquisition`;
                 const dataValues = distinctProducts.map(prod => {
                     let sum = 0;
                     filteredData.forEach(row => { if(row.PRODUCT === prod) sum += (row[lastMonth] || 0); });
@@ -1647,7 +1671,8 @@
                 });
             } else {
                 document.getElementById('dynamic-group-pct-labels').style.display = 'grid';
-                document.getElementById('mix-chart-title').innerText = "Product Distribution";
+                // --- PERUBAHAN UTAMA: Menghapus tanggal dari dalam string judul agar rapi dengan badge ---
+                document.getElementById('mix-chart-title').innerText = `Product Distribution`;
                 const dataValues = distinctProducts.map(prod => {
                     let sum = 0;
                     filteredData.forEach(row => { if(row.PRODUCT === prod) sum += (row[lastMonth] || 0); });
@@ -1672,6 +1697,14 @@
             const titleEl = document.getElementById('co-branch-title');
             const npfToggle = document.getElementById('npf-toggle-co');
             const genToggle = document.getElementById('general-toggle-co');
+            
+            // --- PERUBAHAN: Update Tanggal di Header Co-Branch ---
+            const isLastMonth = (lastMonth === monthColumns[monthColumns.length - 1]);
+            const displayDate = isLastMonth ? MANUAL_DATE_LATEST_MONTH : lastMonth;
+            const dateEl = document.getElementById('date-co-branch');
+            if(dateEl) dateEl.innerText = displayDate;
+            // ----------------------------------------------------
+
             if (isNpfTab) {
                 if(titleEl) titleEl.style.display = 'none';
                 if(npfToggle) npfToggle.classList.remove('hidden');
@@ -1779,6 +1812,14 @@
             const titleEl = document.getElementById('branch-title');
             const npfToggle = document.getElementById('npf-toggle-branch');
             const genToggle = document.getElementById('general-toggle-branch');
+
+            // --- PERUBAHAN: Update Tanggal di Header Branch ---
+            const isLastMonth = (lastMonth === monthColumns[monthColumns.length - 1]);
+            const displayDate = isLastMonth ? MANUAL_DATE_LATEST_MONTH : lastMonth;
+            const dateEl = document.getElementById('date-branch');
+            if(dateEl) dateEl.innerText = displayDate;
+            // ----------------------------------------------------
+
             if (isNpfTab) {
                 if(titleEl) titleEl.style.display = 'none';
                 if(npfToggle) npfToggle.classList.remove('hidden');
