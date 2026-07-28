@@ -379,7 +379,7 @@
                     <div class="bg-white dark:bg-dark-card rounded-xl p-3 md:p-5 card-shadow transition-colors duration-300">
                         <!-- PERUBAHAN: Menggunakan justify-between agar judul di kiri dan tanggal di kanan -->
                         <div class="flex justify-between items-center mb-2 min-h-[24px]">
-                            <h3 class="font-semibold text-xs md:text-sm text-slate-700 dark:text-slate-200" id="mix-chart-title">Product Distribution</h3>
+                            <h3 class="font-semibold text-xs md:text-sm text-slate-700 dark:text-slate-200" id="mix-chart-title">Product Mix</h3>
                             <span id="date-mix" class="text-[10px] font-medium text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-900/30 px-2 py-0.5 rounded-full"></span>
                         </div>
                         <div class="relative h-40 md:h-56 w-full flex justify-center">
@@ -392,6 +392,10 @@
                     <div class="bg-white dark:bg-dark-card rounded-xl p-3 md:p-5 card-shadow transition-colors duration-300">
                         <!-- Perubahan: Menambahkan span date-co-branch di sini -->
                         <div id="co-branch-header" class="flex justify-between items-center mb-2 min-h-[24px]">
+                            <div class="flex items-center gap-2">
+                                <h3 class="font-semibold text-xs md:text-sm text-slate-700 dark:text-slate-200" id="co-branch-title">Top 5 CO-Branches</h3>
+                                <span id="date-co-branch" class="text-[10px] font-medium text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-900/30 px-2 py-0.5 rounded-full"></span>
+                            </div>
                             <div id="npf-toggle-co" class="hidden inline-flex rounded-md shadow-sm bg-slate-100 dark:bg-slate-700 p-0.5 items-center gap-2">
                                 <span class="text-[10px] font-semibold text-slate-600 dark:text-slate-300">Co-Branch</span>
                                 <button onclick="setNpfMode('co', 'worst')" id="btn-npf-worst-co" class="px-2 py-0.5 text-[10px] font-medium text-white bg-indigo-600 rounded transition-all">Worst 5</button>
@@ -402,10 +406,6 @@
                                 <button onclick="setGeneralMode('co', 'top')" id="btn-general-top-co" class="px-2 py-0.5 text-[10px] font-medium text-white bg-indigo-600 rounded transition-all">Top 5</button>
                                 <button onclick="setGeneralMode('co', 'bottom')" id="btn-general-bottom-co" class="px-2 py-0.5 text-[10px] font-medium text-slate-700 dark:text-slate-300 rounded hover:bg-white dark:hover:bg-slate-600 transition-all">Bottom 5</button>
                             </div>
-                            <div class="flex items-center gap-2">
-                                <h3 class="font-semibold text-xs md:text-sm text-slate-700 dark:text-slate-200" id="co-branch-title">Top 5 CO-Branches</h3>
-                                <span id="date-co-branch" class="text-[10px] font-medium text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-900/30 px-2 py-0.5 rounded-full"></span>
-                            </div>
                         </div>
                         <div class="relative h-48 md:h-56 w-full">
                             <canvas id="coBranchChart"></canvas>
@@ -414,6 +414,10 @@
                     <div class="bg-white dark:bg-dark-card rounded-xl p-3 md:p-5 card-shadow transition-colors duration-300">
                         <!-- Perubahan: Menambahkan span date-branch di sini -->
                         <div id="branch-header" class="flex justify-between items-center mb-2 min-h-[24px]">
+                            <div class="flex items-center gap-2">
+                                <h3 class="font-semibold text-xs md:text-sm text-slate-700 dark:text-slate-200" id="branch-title">Top 5 Branches</h3>
+                                <span id="date-branch" class="text-[10px] font-medium text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-900/30 px-2 py-0.5 rounded-full"></span>
+                            </div>
                             <div id="npf-toggle-branch" class="hidden inline-flex rounded-md shadow-sm bg-slate-100 dark:bg-slate-700 p-0.5 items-center gap-2">
                                 <span class="text-[10px] font-semibold text-slate-600 dark:text-slate-300">Branch</span>
                                 <button onclick="setNpfMode('branch', 'worst')" id="btn-npf-worst-branch" class="px-2 py-0.5 text-[10px] font-medium text-white bg-indigo-600 rounded transition-all">Worst 5</button>
@@ -424,10 +428,6 @@
                                 <button onclick="setGeneralMode('branch', 'top')" id="btn-general-top-branch" class="px-2 py-0.5 text-[10px] font-medium text-white bg-indigo-600 rounded transition-all">Top 5</button>
                                 <button onclick="setGeneralMode('branch', 'bottom')" id="btn-general-bottom-branch" class="px-2 py-0.5 text-[10px] font-medium text-slate-700 dark:text-slate-300 rounded hover:bg-white dark:hover:bg-slate-600 transition-all">Bottom 5</button>
                             </div>
-                            <div class="flex items-center gap-2">
-                                <h3 class="font-semibold text-xs md:text-sm text-slate-700 dark:text-slate-200" id="branch-title">Top 5 Branches</h3>
-                                <span id="date-branch" class="text-[10px] font-medium text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-900/30 px-2 py-0.5 rounded-full"></span>
-                            </div>
                         </div>
                         <div class="relative h-48 md:h-56 w-full">
                             <canvas id="branchChart"></canvas>
@@ -435,7 +435,8 @@
                     </div>
                 </div>
             </div>
-            <div class="bg-white dark:bg-dark-card rounded-xl p-3 md:p-5 card-shadow mt-4 md:mt-6 transition-colors duration-300" id="table-card-container">
+            <!-- PERUBAHAN: Menambahkan class 'hidden md:block' agar tabel hanya muncul di Desktop -->
+            <div class="bg-white dark:bg-dark-card rounded-xl p-3 md:p-5 card-shadow mt-4 md:mt-6 transition-colors duration-300 hidden md:block" id="table-card-container">
                 <h3 class="font-semibold text-xs md:text-sm text-slate-700 dark:text-slate-200 mb-2">Detailed Breakdown</h3>
                 <div class="overflow-x-auto w-full border border-slate-100 dark:border-slate-700 rounded-lg" id="table-scroll-container">
                     <table class="w-full text-[10px] md:text-sm text-left text-slate-600 dark:text-slate-400 min-w-[500px] border-collapse table-fixed">
@@ -1483,7 +1484,7 @@
                 for(const[prod,total]of Object.entries(productTotals)){if(total>maxVal){maxVal=total;topProduct=prod;}}
                 kpiFourthValue.innerText = toProperCase(topProduct);
                 renderMoM('mom-fourth', maxVal, productTotalsPrev[topProduct]||0, isBillionFormat, isNPF);
-                document.getElementById('mix-chart-title').innerText="Product Distribution";
+                document.getElementById('mix-chart-title').innerText="Product Mix";
             }
 
             groupLabels.forEach((grp,idx)=>{
