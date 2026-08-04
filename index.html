@@ -113,7 +113,6 @@
             transition: all 0.3s ease;
         }
         
-        /* Warna MTD */
         .bg-mom-positive { background-color: #dcfce7; color: #166534; }
         .dark .bg-mom-positive { background-color: #14532d; color: #bbf7d0; }
         
@@ -123,11 +122,9 @@
         .bg-mom-neutral { background-color: #f1f5f9; color: #475569; }
         .dark .bg-mom-neutral { background-color: #334155; color: #cbd5e1; }
 
-        /* Warna YTD Khusus (Merah jika Negatif) */
         .bg-ytd-negative { background-color: #fee2e2; color: #991b1b; }
         .dark .bg-ytd-negative { background-color: #7f1d1d; color: #fecaca; }
         
-        /* Warna Default YTD (Indigo/Biru) */
         .bg-ytd-default { background-color: #e0e7ff; color: #3730a3; }
         .dark .bg-ytd-default { background-color: #312e81; color: #c7d2fe; }
 
@@ -193,11 +190,7 @@
         </button>
 
         <div class="p-4 flex items-center gap-3 border-b border-slate-700 nav-header">
-<!--            <div class="w-8 h-8 bg-indigo-500 rounded-lg flex items-center justify-center shrink-0">
--->
             <div style="padding: 0px; text-align: center;">
-<!--                <img src="img/BMI.png" alt="Bank Muamalat Logo" class="logo" width="40" height="30">
--->
                 <img src="img/BMI.png" alt="Bank Muamalat Logo" style="filter: invert(1) hue-rotate(180deg); mix-blend-mode: screen;" width="40" height="30">
             </div>
             <h1 class="font-bold text-sm tracking-wide logo-text leading-tight">Performance<br><span class="text-indigo-400">Region Sumatera</span></h1>
@@ -232,7 +225,6 @@
                 <div class="flex items-center gap-2">
                     <div class="text-right hidden sm:block">
                         <p class="text-[9px] text-slate-500 dark:text-slate-400">As of</p>
-                        <!-- ID header-as-of digunakan untuk menampilkan tanggal -->
                         <p class="text-xs font-medium text-indigo-600 dark:text-indigo-400" id="header-as-of">-</p>
                     </div>
                     <button onclick="toggleTheme()" class="w-8 h-8 flex items-center justify-center text-slate-600 dark:text-yellow-400 bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 rounded-full transition-colors focus:outline-none" title="Toggle Theme">
@@ -338,7 +330,6 @@
                             <h3 class="text-sm md:text-lg font-bold text-slate-800 dark:text-white mt-0.5 truncate" id="kpi-fourth-value">-</h3>
                             <div class="flex items-center gap-1.5 min-h-[22px]">
                                 <div id="mom-fourth" class="flex items-center"></div>
-                                <!-- Tambahan Container YTD untuk Card 4 -->
                                 <div id="ytd-fourth" class="hidden flex items-center">
                                     <span class="mom-badge bg-ytd-default font-bold flex items-center gap-1">
                                         <span>YTD</span>
@@ -377,11 +368,7 @@
                         </div>
                     </div>
                     <div class="bg-white dark:bg-dark-card rounded-xl p-3 md:p-5 card-shadow transition-colors duration-300">
-                        <!-- PERUBAHAN: Menggunakan justify-between agar judul di kiri dan tanggal di kanan -->
-                        <div class="flex justify-between items-center mb-2 min-h-[24px]">
-                            <h3 class="font-semibold text-xs md:text-sm text-slate-700 dark:text-slate-200" id="mix-chart-title">Product Mix</h3>
-                            <span id="date-mix" class="text-[10px] font-medium text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-900/30 px-2 py-0.5 rounded-full"></span>
-                        </div>
+                        <h3 class="font-semibold text-xs md:text-sm text-slate-700 dark:text-slate-200 mb-2" id="mix-chart-title">Product Mix</h3>
                         <div class="relative h-40 md:h-56 w-full flex justify-center">
                             <canvas id="compositionChart"></canvas>
                         </div>
@@ -390,8 +377,8 @@
                 </div>
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-3 md:gap-6">
                     <div class="bg-white dark:bg-dark-card rounded-xl p-3 md:p-5 card-shadow transition-colors duration-300">
-                        <!-- Perubahan: Menambahkan span date-co-branch di sini -->
                         <div id="co-branch-header" class="flex justify-between items-center mb-2 min-h-[24px]">
+                            <h3 class="font-semibold text-xs md:text-sm text-slate-700 dark:text-slate-200" id="co-branch-title">Top 5 CO-Branches</h3>
                             <div id="npf-toggle-co" class="hidden inline-flex rounded-md shadow-sm bg-slate-100 dark:bg-slate-700 p-0.5 items-center gap-2">
                                 <span class="text-[10px] font-semibold text-slate-600 dark:text-slate-300">Co-Branch</span>
                                 <button onclick="setNpfMode('co', 'worst')" id="btn-npf-worst-co" class="px-2 py-0.5 text-[10px] font-medium text-white bg-indigo-600 rounded transition-all">Worst 5</button>
@@ -402,18 +389,14 @@
                                 <button onclick="setGeneralMode('co', 'top')" id="btn-general-top-co" class="px-2 py-0.5 text-[10px] font-medium text-white bg-indigo-600 rounded transition-all">Top 5</button>
                                 <button onclick="setGeneralMode('co', 'bottom')" id="btn-general-bottom-co" class="px-2 py-0.5 text-[10px] font-medium text-slate-700 dark:text-slate-300 rounded hover:bg-white dark:hover:bg-slate-600 transition-all">Bottom 5</button>
                             </div>
-                            <div class="flex items-center gap-2">
-                                <h3 class="font-semibold text-xs md:text-sm text-slate-700 dark:text-slate-200" id="co-branch-title">Top 5 CO-Branches</h3>
-                                <span id="date-co-branch" class="text-[10px] font-medium text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-900/30 px-2 py-0.5 rounded-full"></span>
-                            </div>
                         </div>
                         <div class="relative h-48 md:h-56 w-full">
                             <canvas id="coBranchChart"></canvas>
                         </div>
                     </div>
                     <div class="bg-white dark:bg-dark-card rounded-xl p-3 md:p-5 card-shadow transition-colors duration-300">
-                        <!-- Perubahan: Menambahkan span date-branch di sini -->
                         <div id="branch-header" class="flex justify-between items-center mb-2 min-h-[24px]">
+                            <h3 class="font-semibold text-xs md:text-sm text-slate-700 dark:text-slate-200" id="branch-title">Top 5 Branches</h3>
                             <div id="npf-toggle-branch" class="hidden inline-flex rounded-md shadow-sm bg-slate-100 dark:bg-slate-700 p-0.5 items-center gap-2">
                                 <span class="text-[10px] font-semibold text-slate-600 dark:text-slate-300">Branch</span>
                                 <button onclick="setNpfMode('branch', 'worst')" id="btn-npf-worst-branch" class="px-2 py-0.5 text-[10px] font-medium text-white bg-indigo-600 rounded transition-all">Worst 5</button>
@@ -424,10 +407,6 @@
                                 <button onclick="setGeneralMode('branch', 'top')" id="btn-general-top-branch" class="px-2 py-0.5 text-[10px] font-medium text-white bg-indigo-600 rounded transition-all">Top 5</button>
                                 <button onclick="setGeneralMode('branch', 'bottom')" id="btn-general-bottom-branch" class="px-2 py-0.5 text-[10px] font-medium text-slate-700 dark:text-slate-300 rounded hover:bg-white dark:hover:bg-slate-600 transition-all">Bottom 5</button>
                             </div>
-                            <div class="flex items-center gap-2">
-                                <h3 class="font-semibold text-xs md:text-sm text-slate-700 dark:text-slate-200" id="branch-title">Top 5 Branches</h3>
-                                <span id="date-branch" class="text-[10px] font-medium text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-900/30 px-2 py-0.5 rounded-full"></span>
-                            </div>
                         </div>
                         <div class="relative h-48 md:h-56 w-full">
                             <canvas id="branchChart"></canvas>
@@ -435,8 +414,7 @@
                     </div>
                 </div>
             </div>
-            <!-- PERUBAHAN: Menambahkan class 'hidden md:block' agar tabel hanya muncul di Desktop -->
-            <div class="bg-white dark:bg-dark-card rounded-xl p-3 md:p-5 card-shadow mt-4 md:mt-6 transition-colors duration-300 hidden md:block" id="table-card-container">
+            <div class="bg-white dark:bg-dark-card rounded-xl p-3 md:p-5 card-shadow mt-4 md:mt-6 transition-colors duration-300" id="table-card-container">
                 <h3 class="font-semibold text-xs md:text-sm text-slate-700 dark:text-slate-200 mb-2">Detailed Breakdown</h3>
                 <div class="overflow-x-auto w-full border border-slate-100 dark:border-slate-700 rounded-lg" id="table-scroll-container">
                     <table class="w-full text-[10px] md:text-sm text-left text-slate-600 dark:text-slate-400 min-w-[500px] border-collapse table-fixed">
@@ -471,11 +449,9 @@
             if (e.target.tagName === 'IMG') e.preventDefault();
         });
 
-        // --- KONFIGURASI TANGGAL MANUAL ---
-        // Ubah tanggal di sini sesuai kebutuhan untuk bulan terakhir
-        const MANUAL_DATE_LATEST_MONTH = '31 Juli 2026'; 
-
+        const MANUAL_DATE_LATEST_MONTH = '16 Juli 2026'; 
         const DASHBOARD_PASSWORD = 'rbpm'; 
+
         function initTheme() {
             const savedTheme = localStorage.getItem('theme');
             const systemDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
@@ -565,8 +541,6 @@
             if (!window.customLegendStates[chartId]) window.customLegendStates[chartId] = {};
             const state = window.customLegendStates[chartId];
             const legendTextColor = isDark ? '#f1f5f9' : '#1e293b'; 
-            
-            // Tentukan ukuran font kecil khusus untuk legend agar icon mengecil
             const legendFontSize = 10; 
 
             return {
@@ -574,22 +548,14 @@
                 labels: {
                     usePointStyle: true,
                     pointStyle: 'circle',
-                    padding: 20, // Jarak antar item legend
-                    boxWidth: 10, // Ini tetap diabaikan jika usePointStyle: true, tapi biarkan ada
-                    
-                    // KUNCI PERUBAHAN: Kecilkan font size di sini
-                    font: { 
-                        size: legendFontSize, 
-                        weight: '500' 
-                    },
-                    
+                    padding: 20,
+                    boxWidth: 10,
+                    font: { size: legendFontSize, weight: '500' },
                     color: legendTextColor, 
                     generateLabels: function(chart) {
                         const data = chart.data;
                         if (!data.datasets.length) return [];
                         const chartType = chart.config.type;
-                        
-                        // Logika generateLabels tetap sama...
                         if (chartType === 'doughnut' || chartType === 'pie') {
                             const dataset = data.datasets[0];
                             return data.labels.map((label, i) => {
@@ -600,7 +566,7 @@
                                     text: label, index: i, pointStyle: 'circle',
                                     fillStyle: isHidden ? 'rgba(148, 163, 184, 0.1)' : getOutlineColor(baseColor, 0.2),
                                     strokeStyle: isHidden ? (isDark ? '#475569' : '#cbd5e1') : baseColor,
-                                    lineWidth: 1, // Bisa dikurangi dari 3 menjadi 2 agar garis lingkaran lebih tipis
+                                    lineWidth: 1,
                                     hidden: false, datasetIndex: 0, fontColor: legendTextColor 
                                 };
                             });
@@ -616,7 +582,7 @@
                                     text: labelText, index: i, pointStyle: 'circle',
                                     fillStyle: isHidden ? 'rgba(148, 163, 184, 0.1)' : getOutlineColor(baseColor, 0.2),
                                     strokeStyle: isHidden ? (isDark ? '#475569' : '#cbd5e1') : baseColor,
-                                    lineWidth: 1, // Dikurangi menjadi 2
+                                    lineWidth: 1,
                                     hidden: false, datasetIndex: i, fontColor: legendTextColor
                                 };
                             });
@@ -724,7 +690,8 @@
         }
         function loadSelectedCSV(index, preservedFilters = {}, preservedMonth = null) {
             const targetFile = csvFilesConfig[index];
-            document.getElementById('dashboard-main-title').innerText = `${targetFile.name.split(' / ')[0]} Dashboard`;
+            document.getElementById('dashboard-main-title').innerText = `${targetFile.name.split(' / ')[0]} - Region Sumatera`;
+            
             Papa.parse(targetFile.file, {
                 download: true, header: true, skipEmptyLines: true, delimiter: "", 
                 complete: function(results) {
@@ -740,7 +707,7 @@
                                 const selector = document.getElementById('month-selector');
                                 selector.value = preservedMonth;
                                 syncMonthVariablesFromSelector();
-                                updateHeaderDateDisplay(); // Gunakan fungsi baru
+                                updateHeaderDateDisplay();
                             }
                         }
                         processData();
@@ -775,7 +742,7 @@
             }
             if (monthColumns.length > 0) selector.value = monthColumns[monthColumns.length - 1];
             syncMonthVariablesFromSelector();
-            updateHeaderDateDisplay(); // Gunakan fungsi baru
+            updateHeaderDateDisplay();
         }
         function syncMonthVariablesFromSelector() {
             const selector = document.getElementById('month-selector');
@@ -792,18 +759,12 @@
             }
         }
         
-        // FUNGSI BARU UNTUK MENAMPILKAN TANGGAL DI HEADER
         function updateHeaderDateDisplay() {
             const dateEl = document.getElementById('current-date');
             const latestLbl = document.getElementById('kpi-latest-lbl');
             const headerAsOf = document.getElementById('header-as-of');
-            
-            // Cek apakah bulan yang aktif adalah bulan terakhir dari dataset
             const isLastMonth = (lastMonth === monthColumns[monthColumns.length - 1]);
-            
-            // Tentukan teks yang akan ditampilkan
             const displayText = isLastMonth ? MANUAL_DATE_LATEST_MONTH : lastMonth;
-
             if(dateEl) dateEl.innerText = displayText;
             if(latestLbl) latestLbl.innerText = displayText;
             if(headerAsOf) headerAsOf.innerText = displayText;
@@ -811,7 +772,7 @@
 
         window.handleMonthChange = function() {
             syncMonthVariablesFromSelector();
-            updateHeaderDateDisplay(); // Gunakan fungsi baru
+            updateHeaderDateDisplay();
             updateDashboard();
         }
         function buildDynamicTableHeader() {
@@ -904,25 +865,42 @@
                 select.addEventListener('change', () => { handleFilterChange(); if(window.innerWidth < 768) { document.getElementById('sidebar').classList.add('-translate-x-full'); document.getElementById('sidebar-backdrop').classList.add('hidden'); document.body.style.overflow = ''; }});
                 wrapper.appendChild(label); wrapper.appendChild(select); container.appendChild(wrapper);
             });
+
+            // ✅ PERBAIKAN: Populate dengan hierarki yang benar
+            // Co-Branch selalu dari rawData
             populateFilterOptions('CO-BRANCH', rawData);
-            populateFilterOptions('OFFICE', rawData);
-            populateFilterOptions('PRODUCT', rawData);
-            populateFilterOptions('GROUP', rawData);
+            
+            // Jika ada preserved filter Co-Branch, set dulu nilainya
+            if (preservedFilters['CO-BRANCH'] && preservedFilters['CO-BRANCH'] !== "ALL") {
+                const coSelect = document.getElementById('filter-CO-BRANCH');
+                coSelect.value = preservedFilters['CO-BRANCH'];
+            }
+            
+            // Branch dropdown harus berdasarkan Co-Branch yang sedang terpilih
+            const currentCoBranch = document.getElementById('filter-CO-BRANCH').value;
+            let dataForOffice = rawData;
+            if (currentCoBranch !== "ALL") {
+                dataForOffice = rawData.filter(row => row['CO-BRANCH-CLEAN'] === currentCoBranch);
+            }
+            populateFilterOptions('OFFICE', dataForOffice);
+            
+            // Jika ada preserved filter Branch, set nilainya
+            if (preservedFilters['OFFICE'] && preservedFilters['OFFICE'] !== "ALL") {
+                const officeSelect = document.getElementById('filter-OFFICE');
+                officeSelect.value = preservedFilters['OFFICE'];
+            }
+            
+            // Product & Group berdasarkan Co-Branch + Branch yang terpilih
+            const currentOffice = document.getElementById('filter-OFFICE').value;
+            let dataForProduct = dataForOffice;
+            if (currentOffice !== "ALL") {
+                dataForProduct = dataForOffice.filter(row => row['OFFICE-CLEAN'] === currentOffice);
+            }
+            populateFilterOptions('PRODUCT', dataForProduct);
+            populateFilterOptions('GROUP', dataForProduct);
+
+            // Terapkan preserved filters untuk filtering data
             if (Object.keys(preservedFilters).length > 0) {
-                const colsToApply = ['CO-BRANCH', 'OFFICE', 'PRODUCT', 'GROUP'];
-                let tempData = rawData;
-                colsToApply.forEach(col => {
-                    const savedVal = preservedFilters[col];
-                    if (savedVal && savedVal !== "ALL") {
-                        const select = document.getElementById(`filter-${col}`);
-                        const options = Array.from(select.options).map(opt => opt.value);
-                        if (options.includes(savedVal)) {
-                            select.value = savedVal;
-                            const displayColumn = col === 'CO-BRANCH' ? 'CO-BRANCH-CLEAN' : col === 'OFFICE' ? 'OFFICE-CLEAN' : col;
-                            tempData = tempData.filter(row => row[displayColumn] === savedVal);
-                        }
-                    }
-                });
                 applyFilters();
             }
         }
@@ -958,8 +936,38 @@
                 if (activeFilters['GROUP']) match = match && row['GROUP'] === activeFilters['GROUP'];
                 return match;
             });
+            
+            // UPDATE JUDUL HEADER BERDASARKAN FILTER
+            updateDashboardTitle();
+            
             updateDashboard();
         }
+        
+        // --- FUNGSI UPDATE JUDUL DINAMIS (PRIORITAS BRANCH DULU) ---
+        function updateDashboardTitle() {
+            const productName = csvFilesConfig[currentActiveFileIndex].name.split(' / ')[0];
+            const coBranchVal = document.getElementById('filter-CO-BRANCH').value;
+            const branchVal = document.getElementById('filter-OFFICE').value;
+            
+            const titleElement = document.getElementById('dashboard-main-title');
+            
+            // 1. CEK BRANCH DULU (Prioritas Utama)
+            if (branchVal !== "ALL") {
+                // Format Branch: "Financing Dashboard Medan Balaikota"
+                titleElement.innerText = `${productName} - ${branchVal}`;
+            } 
+            // 2. BARU CEK CO-BRANCH (Jika Branch = ALL)
+            else if (coBranchVal !== "ALL") {
+                // Format Co-Branch: "Financing Dashboard Co-Branch Medan Balaikota"
+                titleElement.innerText = `${productName} - Co-Branch ${coBranchVal}`;
+            } 
+            // 3. DEFAULT (Jika keduanya ALL)
+            else {
+                // Format Default: "Financing Dashboard"
+                titleElement.innerText = `${productName} - Region Sumatera`;
+            }
+        }
+
         window.changeTimeline = function(months) {
             activeTimelineMonths = months;
             const ids = {0:'btn-time-all',3:'btn-time-3',6:'btn-time-6',12:'btn-time-12'};
@@ -979,8 +987,12 @@
             if(selector && monthColumns.length > 0) {
                 selector.value = monthColumns[monthColumns.length - 1];
                 syncMonthVariablesFromSelector();
-                updateHeaderDateDisplay(); // Gunakan fungsi baru
+                updateHeaderDateDisplay();
             }
+            
+            // UPDATE JUDUL HEADER SAAT RESET
+            updateDashboardTitle();
+            
             updateDashboard();
         }
         function updateDashboard() { if(!lastMonth) return; updateKPIs(); updateCharts(); updateTable(); }
@@ -1033,7 +1045,6 @@
         }
         function toProperCase(str) { if(!str) return "-"; if(str.toLowerCase()==="sme") return "SME"; return str.toLowerCase().replace(/_/g,' ').replace(/\b\w/g,c=>c.toUpperCase()); }
 
-        // Helper function to update YTD badge color based on value
         function updateYtdBadge(containerId, valId, value, isBillion) {
             const container = document.getElementById(containerId);
             const valEl = document.getElementById(valId);
@@ -1044,9 +1055,7 @@
             
             const badgeSpan = container.querySelector('.mom-badge');
             if (badgeSpan) {
-                // Remove existing color classes
                 badgeSpan.classList.remove('bg-ytd-default', 'bg-ytd-negative');
-                // Add appropriate class
                 if (value < 0) {
                     badgeSpan.classList.add('bg-ytd-negative');
                 } else {
@@ -1122,7 +1131,6 @@
                     if(m4!=='-')totalM4+=(row[m4]||0);
                 });
 
-                // --- FUNGSI LOKAL HITUNG YTD UNTUK TIAP BULAN (M1 - M4) ---
                 const calculateYTDForMonth = (targetMonthName) => {
                     if (targetMonthName === '-') return 0;
                     const parts = targetMonthName.split(/[-\s]+/);
@@ -1147,34 +1155,27 @@
                     return ytdSum;
                 };
 
-                // Jalankan perhitungan YTD akumulatif sesuai target bulan masing-masing kartu
                 let ytdM1 = calculateYTDForMonth(m1);
                 let ytdM2 = calculateYTDForMonth(m2);
                 let ytdM3 = calculateYTDForMonth(m3);
                 let ytdM4 = calculateYTDForMonth(m4);
 
-                // --- RENDERING KPI CARDS ---
-                // Card 1
                 document.getElementById('kpi-total-label').innerText=`Akusisi (${m1})`; animateNumber(document.getElementById('kpi-total'),totalM1);
                 if (m1 !== '-') updateYtdBadge('ytd-total', 'ytd-total-val', ytdM1, false); else document.getElementById('ytd-total').classList.add('hidden');
 
-                // Card 2
                 document.getElementById('kpi-segment1-label').innerText=`Akusisi (${m2})`; animateNumber(document.getElementById('kpi-segment1'),totalM2);
                 document.getElementById('kpi-segment1-pct').innerHTML=`<span class="text-slate-400 dark:text-slate-500 font-normal text-[8px]">Posisi 2 Bulan</span>`;
                 if (m2 !== '-') updateYtdBadge('ytd-seg1', 'ytd-seg1-val', ytdM2, false); else document.getElementById('ytd-seg1').classList.add('hidden');
 
-                // Card 3
                 document.getElementById('kpi-segment2-label').innerText=`Akusisi (${m3})`; animateNumber(document.getElementById('kpi-segment2'),totalM3);
                 document.getElementById('kpi-segment2-pct').innerHTML=`<span class="text-slate-400 dark:text-slate-500 font-normal text-[8px]">Posisi 3 Bulan</span>`;
                 if (m3 !== '-') updateYtdBadge('ytd-seg2', 'ytd-seg2-val', ytdM3, false); else document.getElementById('ytd-seg2').classList.add('hidden');
 
-                // Card 4
                 kpiFourthLabel.innerText=`Akusisi (${m4})`; kpiFourthValue.innerText=formatNumber(totalM4);
                 kpiFourthSublabel.className="text-slate-400 dark:text-slate-500 not-italic truncate"; kpiFourthSublabel.innerText="Posisi 4 bulan";
                 kpiFourthIcon.className="fa-solid fa-calendar-check";
                 if (m4 !== '-') updateYtdBadge('ytd-fourth', 'ytd-fourth-val', ytdM4, false); else document.getElementById('ytd-fourth').classList.add('hidden');
 
-                // Hapus sisa teks MoM/MTD bawaan lama agar tidak tumpang tindih
                 ['mom-total','mom-seg1','mom-seg2','mom-fourth'].forEach(id => document.getElementById(id).innerHTML='');
             }
 
@@ -1224,7 +1225,6 @@
                     }
                 }
                 
-                // Use helper to set color based on value
                 updateYtdBadge('ytd-total', 'ytd-total-val', ytdTotal, isBillionFormat);
                 updateYtdBadge('ytd-seg1', 'ytd-seg1-val', ytdSeg1, isBillionFormat);
                 updateYtdBadge('ytd-seg2', 'ytd-seg2-val', ytdSeg2, isBillionFormat);
@@ -1253,14 +1253,12 @@
                 document.getElementById('ytd-fourth').classList.add('hidden');
 
             } else if (currentFileName === "funding.csv") {
-                // --- FUNDING LOGIC START ---
                 document.getElementById('kpi-total-label').innerText = "Total Funding";
                 if(isBillionFormat){document.getElementById('kpi-total').innerText=formatToBillion(grandTotal);}else{animateNumber(document.getElementById('kpi-total'),grandTotal);}
                 renderMoM('mom-total', grandTotal, grandTotalPrev, isBillionFormat, isNPF);
                 
                 let fourthSublabelText = `${(tdTotal/grandTotal*100).toFixed(1)}% dari total`;
 
-                // YTD Logic Khusus Funding 2026
                 const ytdContainer = document.getElementById('ytd-total');
                 const ytdValEl = document.getElementById('ytd-total-val');
                 const parts = lastMonth.split(/[-\s]+/);
@@ -1273,7 +1271,6 @@
                 }
                 if (!selectedYear) selectedYear = new Date().getFullYear().toString().slice(-2);
 
-                // Variabel penampung YTD per segmen
                 let ytdTotal = 0, ytdCA = 0, ytdSA = 0, ytdTD = 0;
                 let dec2025Col = null;
 
@@ -1310,7 +1307,6 @@
                             if (isTD) ytdTD += diff;
                         });
                         
-                        // Update YTD Badges with Color Logic
                         updateYtdBadge('ytd-total', 'ytd-total-val', ytdTotal, isBillionFormat);
                         updateYtdBadge('ytd-seg1', 'ytd-seg1-val', ytdCA, isBillionFormat);
                         updateYtdBadge('ytd-seg2', 'ytd-seg2-val', ytdSA, isBillionFormat);
@@ -1329,42 +1325,34 @@
                     document.getElementById('ytd-fourth').classList.add('hidden');
                 }
 
-                // Render Segment 1 (CA)
                 document.getElementById('kpi-segment1-label').innerText = "CA (Giro)";
                 if(isBillionFormat){document.getElementById('kpi-segment1').innerText=formatToBillion(caTotal);}else{animateNumber(document.getElementById('kpi-segment1'),caTotal);}
                 renderMoM('mom-seg1', caTotal, caTotalPrev, isBillionFormat, isNPF);
                 document.getElementById('kpi-segment1-pct').innerHTML=`<span id="anim-ca-pct">0%</span> <span class="text-[8px] text-slate-400 dark:text-slate-500 font-normal">dari total</span>`;
                 animateNumber(document.getElementById('anim-ca-pct'),caTotal/grandTotal*100,true);
 
-                // Render Segment 2 (SA)
                 document.getElementById('kpi-segment2-label').innerText = "SA (Tabungan)";
                 if(isBillionFormat){document.getElementById('kpi-segment2').innerText=formatToBillion(saTotal);}else{animateNumber(document.getElementById('kpi-segment2'),saTotal);}
                 renderMoM('mom-seg2', saTotal, saTotalPrev, isBillionFormat, isNPF);
                 document.getElementById('kpi-segment2-pct').innerHTML=`<span id="anim-sa-pct">0%</span> <span class="text-[8px] text-slate-400 dark:text-slate-500 font-normal">dari total</span>`;
                 animateNumber(document.getElementById('anim-sa-pct'),saTotal/grandTotal*100,true);
 
-                // Render Card 4 (Total TD)
                 kpiFourthLabel.innerText = "Total TD";
                 kpiFourthSublabel.className = "text-slate-400 dark:text-slate-500 not-italic truncate";
                 if(isBillionFormat){ kpiFourthValue.innerText = formatToBillion(tdTotal); } else { animateNumber(kpiFourthValue, tdTotal); }
                 renderMoM('mom-fourth', tdTotal, tdTotalPrev, isBillionFormat, isNPF);
                 
-                // Update sublabel text
                 if (dec2025Col) {
-                    const tdYtdText = isBillionFormat ? formatToBillion(ytdTD) : formatNumber(ytdTD);
                     fourthSublabelText = `${(tdTotal/grandTotal*100).toFixed(1)}% dari total`;
                 }
                 
-                // SET SUBLABEL TERAKHIR
                 kpiFourthSublabel.innerText = fourthSublabelText;
-                // --- FUNDING LOGIC END ---
 
             } else if (currentFileName === "haji.csv") {
                 document.getElementById('kpi-total-label').innerText = "Total Porsi";
                 animateNumber(document.getElementById('kpi-total'), grandTotal);
                 renderMoM('mom-total', grandTotal, grandTotalPrev, false, isNPF);
 
-                // --- LOGIKA HITUNG YTD HAJJ ---
                 const parts = lastMonth.split(/[-\s]+/);
                 let selectedYear = null;
                 for (let part of parts) {
@@ -1404,13 +1392,11 @@
                     }
                 }
                 
-                // Tampilkan badge YTD dan isi nilainya
                 updateYtdBadge('ytd-total', 'ytd-total-val', ytdTotal, false);
                 updateYtdBadge('ytd-seg1', 'ytd-seg1-val', ytdSeg1, false);
                 updateYtdBadge('ytd-seg2', 'ytd-seg2-val', ytdSeg2, false);
-                document.getElementById('ytd-fourth').classList.add('hidden'); // Sembunyikan YTD Card 4 karena bertipe "Last Month"
+                document.getElementById('ytd-fourth').classList.add('hidden');
 
-                // --- RENDERING KPI CARDS ---
                 document.getElementById('kpi-segment1-label').innerText = g1 ? `${g1}` : 'Segment 1';
                 animateNumber(document.getElementById('kpi-segment1'), g1 ? groupTotals[g1] : 0);
                 renderMoM('mom-seg1', g1 ? groupTotals[g1] : 0, g1 ? groupTotalsPrev[g1] : 0, false, isNPF);
@@ -1578,16 +1564,6 @@
             const ctx=document.getElementById('compositionChart').getContext('2d');
             const currentFileName=csvFilesConfig[currentActiveFileIndex].file;
             const isDark = document.body.classList.contains('dark');
-            
-            // --- TAMBAHAN: Ambil tanggal/bulan yang sedang terpilih untuk ditampilkan di judul ---
-            const isLastMonth = (lastMonth === monthColumns[monthColumns.length - 1]);
-            const displayDate = isLastMonth ? MANUAL_DATE_LATEST_MONTH : lastMonth;
-            
-            // Update Badge Tanggal di Header Product Mix/Distribution
-            const dateMixEl = document.getElementById('date-mix');
-            if(dateMixEl) dateMixEl.innerText = displayDate;
-            // ----------------------------------------------------------------------------------
-
             const staticPercentPlugin = {
                 id: 'staticPercentPlugin',
                 afterDatasetsDraw(chart, args, options) {
@@ -1636,8 +1612,7 @@
             };
             if(currentFileName === "mdin.csv"){
                 document.getElementById('dynamic-group-pct-labels').style.display = 'none';
-                // Menambahkan tanggal terpilih pada judul
-                document.getElementById('mix-chart-title').innerText = `Monthly Acquisition`;
+                document.getElementById('mix-chart-title').innerText = "Monthly Acquisition";
                 const currentIndex = monthColumns.indexOf(lastMonth);
                 const last5Months = [];
                 for(let i=0; i<5; i++) { if(currentIndex - i >= 0) last5Months.push(monthColumns[currentIndex - i]); }
@@ -1656,8 +1631,7 @@
                 });
             } else if(currentFileName === "qris.csv"){
                 document.getElementById('dynamic-group-pct-labels').style.display = 'none';
-                // Menambahkan tanggal terpilih pada judul
-                document.getElementById('mix-chart-title').innerText = `Product Acquisition`;
+                document.getElementById('mix-chart-title').innerText = "Product Acquisition";
                 const dataValues = distinctProducts.map(prod => {
                     let sum = 0;
                     filteredData.forEach(row => { if(row.PRODUCT === prod) sum += (row[lastMonth] || 0); });
@@ -1672,8 +1646,7 @@
                 });
             } else {
                 document.getElementById('dynamic-group-pct-labels').style.display = 'grid';
-                // --- PERUBAHAN UTAMA: Menghapus tanggal dari dalam string judul agar rapi dengan badge ---
-                document.getElementById('mix-chart-title').innerText = `Product Distribution`;
+                document.getElementById('mix-chart-title').innerText = "Product Distribution";
                 const dataValues = distinctProducts.map(prod => {
                     let sum = 0;
                     filteredData.forEach(row => { if(row.PRODUCT === prod) sum += (row[lastMonth] || 0); });
@@ -1698,14 +1671,6 @@
             const titleEl = document.getElementById('co-branch-title');
             const npfToggle = document.getElementById('npf-toggle-co');
             const genToggle = document.getElementById('general-toggle-co');
-            
-            // --- PERUBAHAN: Update Tanggal di Header Co-Branch ---
-            const isLastMonth = (lastMonth === monthColumns[monthColumns.length - 1]);
-            const displayDate = isLastMonth ? MANUAL_DATE_LATEST_MONTH : lastMonth;
-            const dateEl = document.getElementById('date-co-branch');
-            if(dateEl) dateEl.innerText = displayDate;
-            // ----------------------------------------------------
-
             if (isNpfTab) {
                 if(titleEl) titleEl.style.display = 'none';
                 if(npfToggle) npfToggle.classList.remove('hidden');
@@ -1798,7 +1763,7 @@
                                 }
                             });
                         }
-                        ctx.restore(); // Shadow otomatis hilang saat restore
+                        ctx.restore();
                     }
                 }]
             });
@@ -1813,14 +1778,6 @@
             const titleEl = document.getElementById('branch-title');
             const npfToggle = document.getElementById('npf-toggle-branch');
             const genToggle = document.getElementById('general-toggle-branch');
-
-            // --- PERUBAHAN: Update Tanggal di Header Branch ---
-            const isLastMonth = (lastMonth === monthColumns[monthColumns.length - 1]);
-            const displayDate = isLastMonth ? MANUAL_DATE_LATEST_MONTH : lastMonth;
-            const dateEl = document.getElementById('date-branch');
-            if(dateEl) dateEl.innerText = displayDate;
-            // ----------------------------------------------------
-
             if (isNpfTab) {
                 if(titleEl) titleEl.style.display = 'none';
                 if(npfToggle) npfToggle.classList.remove('hidden');
