@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard KPI Kinerja Cabang - Top/Bottom Toggle</title>
+    <title>Dashboard KPI Kinerja Cabang - Fixed Data</title>
     
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -292,7 +292,7 @@
 
     <!-- JavaScript Logic -->
     <script>
-        // --- DATA SOURCE ---
+        // --- DATA SOURCE (FIXED & CLEANED FROM EXCEL) ---
         const rawData = [
             {name:"BANDA ACEH", pbt:-1385, tgtPbt:40, asset:77987, tgtAsset:177243, gapAsset:-99256, casaPct:57, actCasa:44656, gapCasa:-2137, cof:2.20, fdrPct:19.0, actFunding:77987, actFinancing:14651, gapFinancing:-8745, fbi:302, tgtFbi:575, gapFbi:-273, ppap:100.0},
             {name:"MEDAN BARU", pbt:-1223, tgtPbt:1505, asset:123902, tgtAsset:190618, gapAsset:-66716, casaPct:51, actCasa:63719, gapCasa:-10622, cof:2.86, fdrPct:28.0, actFunding:123902, actFinancing:35297, gapFinancing:-1874, fbi:385, tgtFbi:770, gapFbi:-385, ppap:0.2},
@@ -338,7 +338,6 @@
 
         let charts = {};
         let currentMode = 'ALL';
-        // Store current sort preference per chart type
         let chartSortPrefs = { pbt: 'top', asset: 'top', casa: 'top', fdr: 'top', fbi: 'top' };
 
         document.addEventListener('DOMContentLoaded', () => {
@@ -358,19 +357,14 @@
             select.addEventListener('change', (e) => updateDashboard(e.target.value));
         }
 
-        // Handle Toggle Click
         window.updateChart = function(type, sort) {
             chartSortPrefs[type] = sort;
-            
-            // Update button styles
             const container = document.getElementById(`toggle${type.toUpperCase()}`);
             const buttons = container.querySelectorAll('button');
             buttons.forEach(btn => {
                 if(btn.innerText.toLowerCase().includes(sort)) btn.classList.add('active');
                 else btn.classList.remove('active');
             });
-
-            // Re-render specific chart with new sort
             renderCharts(rawData, currentMode, type);
         };
 
@@ -378,29 +372,24 @@
             currentMode = filterValue;
             const isAggregate = filterValue === 'ALL';
             
-            // Show/Hide toggles based on mode
             ['PBT','ASSET','CASA','FDR','FBI'].forEach(k => {
                 const el = document.getElementById(`toggle${k}`);
                 if(isAggregate) el.classList.remove('hidden');
                 else el.classList.add('hidden');
             });
 
-            // Reset sort prefs to top when switching modes
-            if(!isAggregate) {
-                Object.keys(chartSortPrefs).forEach(k => chartSortPrefs[k] = 'top');
-            }
+            if(!isAggregate) Object.keys(chartSortPrefs).forEach(k => chartSortPrefs[k] = 'top');
 
-            updateCards(isAggregate ? rawData : rawData.filter(d => d.name === filterValue));
-            updateTable(isAggregate ? rawData : rawData.filter(d => d.name === filterValue));
+            const dataForCards = isAggregate ? rawData : rawData.filter(d => d.name === filterValue);
+            updateCards(dataForCards);
+            updateTable(dataForCards);
             renderCharts(rawData, filterValue);
         }
 
         function getChartDataForType(data, type, mode) {
             if (mode !== 'ALL') return data.filter(d => d.name === mode);
-
             let sorted = [...data];
             const pref = chartSortPrefs[type];
-            
             switch(type) {
                 case 'pbt': sorted.sort((a,b) => pref === 'top' ? b.pbt - a.pbt : a.pbt - b.pbt); break;
                 case 'asset': sorted.sort((a,b) => pref === 'top' ? b.asset - a.asset : a.asset - b.asset); break;
@@ -433,7 +422,6 @@
             const totalTgtFBI = data.reduce((a,b) => a + b.tgtFbi, 0);
             const totalGapFBI = data.reduce((a,b) => a + b.gapFbi, 0);
 
-            // DOM Updates (Same as previous version)
             document.getElementById('sumPBT').innerText = fmt(totalPBT);
             document.getElementById('targetPBT').innerText = fmt(totalTgtPBT);
             const gapPBTEl = document.getElementById('gapPBT'); gapPBTEl.innerText = fmt(totalGapPBT); gapPBTEl.className = `font-bold ${totalGapPBT < 0 ? 'text-red-500' : 'text-green-600'}`;
@@ -454,25 +442,20 @@
             document.getElementById('targetFBI').innerText = fmt(totalTgtFBI);
             const gapFBIEl = document.getElementById('gapFBI'); gapFBIEl.innerText = fmt(totalGapFBI); gapFBIEl.className = `font-bold ${totalGapFBI < 0 ? 'text-red-500' : 'text-green-600'}`;
 
-            // Icons & Counts
             const toggleCounts = (ids) => ids.forEach(id => { const el = document.getElementById(id); if(isAggregate) el.classList.remove('hidden'); else el.classList.add('hidden'); });
             toggleCounts(['countPBT', 'countAsset', 'countCASA', 'countFDR', 'countFBI', 'countPPAP']);
 
             const setIcon = (id, condition) => { document.getElementById(id).innerHTML = condition ? '<i class="fa-solid fa-circle-check text-green-500"></i>' : '<i class="fa-solid fa-circle-exclamation text-red-400"></i>'; };
             setIcon('iconPBT', totalPBT >= totalTgtPBT);
             setIcon('iconAsset', totalAsset >= totalTgtAsset);
-            
             const iconCASA = document.getElementById('iconCASA'); const casaInd = document.getElementById('casaIndicator');
             if(parseFloat(avgCASA) >= 60) { iconCASA.innerHTML = '<i class="fa-solid fa-circle-check text-green-500"></i>'; casaInd.innerHTML = '<i class="fa-solid fa-circle-check text-green-500"></i>'; }
             else { iconCASA.innerHTML = '<i class="fa-solid fa-circle-exclamation text-orange-400"></i>'; casaInd.innerHTML = '<i class="fa-solid fa-circle-exclamation text-orange-400"></i>'; }
-            
             const iconFDR = document.getElementById('iconFDR');
             if(parseFloat(calcFDR) >= 30) iconFDR.innerHTML = '<i class="fa-solid fa-circle-check text-green-500"></i>';
             else iconFDR.innerHTML = '<i class="fa-solid fa-circle-exclamation text-orange-500"></i>';
-            
             setIcon('iconFBI', totalFBI >= totalTgtFBI);
 
-            // PPAP Logic
             const statusEl = document.getElementById('statusPPAP'); const iconPPAP = document.getElementById('iconPPAP');
             if (data.length === 1) {
                 const ppap = data[0].ppap; document.getElementById('valPPAP').innerText = ppap + '%';
@@ -561,7 +544,6 @@
             types.forEach(type => {
                 const chartData = getChartDataForType(allData, type, mode);
                 const labels = chartData.map(d => d.name);
-
                 if(charts[type]) charts[type].destroy();
 
                 let config = {};
