@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard KPI Kinerja Cabang - Fixed FDR Logic</title>
+    <title>Dashboard KPI Kinerja Cabang - FDR Logic Update</title>
     
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -119,7 +119,7 @@
                 </div>
             </div>
 
-            <!-- 4. FDR Card (FIXED LOGIC) -->
+            <!-- 4. FDR Card (UPDATED LOGIC) -->
             <div class="card bg-white p-4 rounded-xl shadow-sm border-t-4 border-violet-500 relative overflow-hidden">
                 <div class="absolute top-3 right-3 text-xl" id="iconFDR"></div>
                 <div class="flex justify-between items-start pr-8">
@@ -363,7 +363,7 @@
             renderCharts(dataToShow, filterValue);
         }
 
-        // --- CARDS LOGIC WITH ICONS ---
+        // --- CARDS LOGIC WITH UPDATED FDR ICON ---
         function updateCards(data) {
             const fmt = (n) => new Intl.NumberFormat('id-ID').format(n);
             
@@ -395,13 +395,9 @@
             const gapPBTEl = document.getElementById('gapPBT');
             gapPBTEl.innerText = fmt(totalGapPBT);
             gapPBTEl.className = `font-bold ${totalGapPBT < 0 ? 'text-red-500' : 'text-green-600'}`;
-            
             const iconPBT = document.getElementById('iconPBT');
-            if(totalPBT >= totalTgtPBT) {
-                iconPBT.innerHTML = '<i class="fa-solid fa-circle-check text-green-500"></i>';
-            } else {
-                iconPBT.innerHTML = '<i class="fa-solid fa-circle-exclamation text-red-400"></i>';
-            }
+            if(totalPBT >= totalTgtPBT) iconPBT.innerHTML = '<i class="fa-solid fa-circle-check text-green-500"></i>';
+            else iconPBT.innerHTML = '<i class="fa-solid fa-circle-exclamation text-red-400"></i>';
 
             // Update DOM - Asset
             document.getElementById('sumAsset').innerText = fmt(totalAsset);
@@ -409,13 +405,9 @@
             const gapAssetEl = document.getElementById('gapAsset');
             gapAssetEl.innerText = fmt(totalGapAsset);
             gapAssetEl.className = `font-bold ${totalGapAsset < 0 ? 'text-red-500' : 'text-green-600'}`;
-            
             const iconAsset = document.getElementById('iconAsset');
-            if(totalAsset >= totalTgtAsset) {
-                iconAsset.innerHTML = '<i class="fa-solid fa-circle-check text-green-500"></i>';
-            } else {
-                iconAsset.innerHTML = '<i class="fa-solid fa-circle-exclamation text-red-400"></i>';
-            }
+            if(totalAsset >= totalTgtAsset) iconAsset.innerHTML = '<i class="fa-solid fa-circle-check text-green-500"></i>';
+            else iconAsset.innerHTML = '<i class="fa-solid fa-circle-exclamation text-red-400"></i>';
 
             // Update DOM - CASA
             document.getElementById('avgCASA').innerText = avgCASA + '%';
@@ -423,29 +415,22 @@
             const gapCasaEl = document.getElementById('gapCasaAmt');
             gapCasaEl.innerText = fmt(totalGapCasa);
             gapCasaEl.className = `font-bold ${totalGapCasa < 0 ? 'text-red-500' : 'text-green-600'}`;
-            
             const iconCASA = document.getElementById('iconCASA');
-            if(parseFloat(avgCASA) >= 60) {
-                iconCASA.innerHTML = '<i class="fa-solid fa-circle-check text-green-500"></i>';
-            } else {
-                iconCASA.innerHTML = '<i class="fa-solid fa-circle-exclamation text-orange-400"></i>';
-            }
+            if(parseFloat(avgCASA) >= 60) iconCASA.innerHTML = '<i class="fa-solid fa-circle-check text-green-500"></i>';
+            else iconCASA.innerHTML = '<i class="fa-solid fa-circle-exclamation text-orange-400"></i>';
 
-            // Update DOM - FDR (FIXED LOGIC HERE)
+            // Update DOM - FDR (UPDATED LOGIC: >= 30% is Good)
             document.getElementById('avgFDR').innerText = calcFDR + '%';
             document.getElementById('actFinancing').innerText = fmt(totalActFinancing);
             const gapFinEl = document.getElementById('gapFinancing');
             gapFinEl.innerText = fmt(totalGapFinancing);
             gapFinEl.className = `font-bold ${totalGapFinancing < 0 ? 'text-red-500' : 'text-green-600'}`;
             
-            // NEW FDR LOGIC: Ideal Range 70% - 95%
-            const fdrVal = parseFloat(calcFDR);
             const iconFDR = document.getElementById('iconFDR');
-            if(fdrVal >= 70 && fdrVal <= 95) {
-                 // Optimal Range
+            // NEW LOGIC: Checkmark if >= 30%, Warning if < 30%
+            if(parseFloat(calcFDR) >= 30) {
                  iconFDR.innerHTML = '<i class="fa-solid fa-circle-check text-green-500"></i>';
             } else {
-                 // Too Low (<70%) or Too High (>95%)
                  iconFDR.innerHTML = '<i class="fa-solid fa-circle-exclamation text-orange-500"></i>';
             }
 
@@ -455,13 +440,9 @@
             const gapFBIEl = document.getElementById('gapFBI');
             gapFBIEl.innerText = fmt(totalGapFBI);
             gapFBIEl.className = `font-bold ${totalGapFBI < 0 ? 'text-red-500' : 'text-green-600'}`;
-            
             const iconFBI = document.getElementById('iconFBI');
-            if(totalFBI >= totalTgtFBI) {
-                iconFBI.innerHTML = '<i class="fa-solid fa-circle-check text-green-500"></i>';
-            } else {
-                iconFBI.innerHTML = '<i class="fa-solid fa-circle-exclamation text-red-400"></i>';
-            }
+            if(totalFBI >= totalTgtFBI) iconFBI.innerHTML = '<i class="fa-solid fa-circle-check text-green-500"></i>';
+            else iconFBI.innerHTML = '<i class="fa-solid fa-circle-exclamation text-red-400"></i>';
 
             // Update DOM - PPAP
             if (data.length === 1) {
@@ -469,7 +450,6 @@
                 document.getElementById('valPPAP').innerText = ppap + '%';
                 const statusEl = document.getElementById('statusPPAP');
                 const iconPPAP = document.getElementById('iconPPAP');
-                
                 if(ppap > 1) {
                     statusEl.innerText = "WASPADA (>1%)";
                     statusEl.className = "text-xs font-bold px-2 py-1 rounded bg-red-100 text-red-700 block text-center";
@@ -484,15 +464,10 @@
                 document.getElementById('valPPAP').innerText = highRiskCount + " Cabang";
                 const statusEl = document.getElementById('statusPPAP');
                 const iconPPAP = document.getElementById('iconPPAP');
-                
                 statusEl.innerText = `dari ${data.length} cabang bermasalah`;
                 statusEl.className = "text-xs font-bold px-2 py-1 rounded bg-gray-100 text-gray-600 block text-center";
-                
-                if(highRiskCount === 0) {
-                     iconPPAP.innerHTML = '<i class="fa-solid fa-circle-check text-green-500"></i>';
-                } else {
-                     iconPPAP.innerHTML = '<i class="fa-solid fa-circle-exclamation text-red-400"></i>';
-                }
+                if(highRiskCount === 0) iconPPAP.innerHTML = '<i class="fa-solid fa-circle-check text-green-500"></i>';
+                else iconPPAP.innerHTML = '<i class="fa-solid fa-circle-exclamation text-red-400"></i>';
             }
         }
 
@@ -534,7 +509,6 @@
         }
 
         // --- CHART RENDERING WITH SMART DATA LABELS ---
-        
         const smartLabelsPlugin = {
             id: 'smartLabels',
             afterDatasetsDraw(chart, args, options) {
@@ -564,7 +538,6 @@
                                     } else {
                                         label = new Intl.NumberFormat('id-ID').format(value);
                                     }
-                                    
                                     if (dataset.label && dataset.label.includes('%')) {
                                         label = value + '%';
                                     }
