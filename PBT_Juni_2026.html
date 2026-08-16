@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard KPI Kinerja Cabang - Full Suite</title>
+    <title>Dashboard KPI Kinerja Cabang - With Indicators</title>
     
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -43,7 +43,6 @@
                 <label class="text-xs font-semibold text-slate-400 px-3 uppercase">Filter Cabang:</label>
                 <select id="branchFilter" class="bg-slate-900 text-white text-sm rounded-md border-none focus:ring-2 focus:ring-blue-500 py-2 px-3 outline-none cursor-pointer min-w-[200px]">
                     <option value="ALL">📊 SEMUA CABANG (AGGREGATE)</option>
-                    <!-- Options populated by JS -->
                 </select>
             </div>
         </div>
@@ -55,8 +54,9 @@
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4 mb-8">
             
             <!-- 1. PBT Card -->
-            <div class="card bg-white p-4 rounded-xl shadow-sm border-t-4 border-indigo-500">
-                <div class="flex justify-between items-start">
+            <div class="card bg-white p-4 rounded-xl shadow-sm border-t-4 border-indigo-500 relative overflow-hidden">
+                <div class="absolute top-3 right-3 text-xl" id="iconPBT"></div>
+                <div class="flex justify-between items-start pr-8">
                     <div>
                         <p class="text-xs font-bold text-gray-400 uppercase tracking-wider">PBT After HOCA</p>
                         <h3 class="text-xl font-extrabold mt-1 text-slate-800" id="sumPBT">-</h3>
@@ -76,8 +76,9 @@
             </div>
 
             <!-- 2. Asset Card -->
-            <div class="card bg-white p-4 rounded-xl shadow-sm border-t-4 border-blue-500">
-                <div class="flex justify-between items-start">
+            <div class="card bg-white p-4 rounded-xl shadow-sm border-t-4 border-blue-500 relative overflow-hidden">
+                <div class="absolute top-3 right-3 text-xl" id="iconAsset"></div>
+                <div class="flex justify-between items-start pr-8">
                     <div>
                         <p class="text-xs font-bold text-gray-400 uppercase tracking-wider">Total Asset</p>
                         <h3 class="text-xl font-extrabold mt-1 text-slate-800" id="sumAsset">-</h3>
@@ -97,8 +98,9 @@
             </div>
 
             <!-- 3. CASA Card -->
-            <div class="card bg-white p-4 rounded-xl shadow-sm border-t-4 border-emerald-500">
-                <div class="flex justify-between items-start">
+            <div class="card bg-white p-4 rounded-xl shadow-sm border-t-4 border-emerald-500 relative overflow-hidden">
+                <div class="absolute top-3 right-3 text-xl" id="iconCASA"></div>
+                <div class="flex justify-between items-start pr-8">
                     <div>
                         <p class="text-xs font-bold text-gray-400 uppercase tracking-wider">CASA Ratio</p>
                         <h3 class="text-xl font-extrabold mt-1 text-slate-800" id="avgCASA">-</h3>
@@ -118,8 +120,9 @@
             </div>
 
             <!-- 4. FDR Card -->
-            <div class="card bg-white p-4 rounded-xl shadow-sm border-t-4 border-violet-500">
-                <div class="flex justify-between items-start">
+            <div class="card bg-white p-4 rounded-xl shadow-sm border-t-4 border-violet-500 relative overflow-hidden">
+                <div class="absolute top-3 right-3 text-xl" id="iconFDR"></div>
+                <div class="flex justify-between items-start pr-8">
                     <div>
                         <p class="text-xs font-bold text-gray-400 uppercase tracking-wider">FDR Position</p>
                         <h3 class="text-xl font-extrabold mt-1 text-slate-800" id="avgFDR">-</h3>
@@ -139,8 +142,9 @@
             </div>
 
             <!-- 5. FBI Card -->
-            <div class="card bg-white p-4 rounded-xl shadow-sm border-t-4 border-amber-500">
-                <div class="flex justify-between items-start">
+            <div class="card bg-white p-4 rounded-xl shadow-sm border-t-4 border-amber-500 relative overflow-hidden">
+                <div class="absolute top-3 right-3 text-xl" id="iconFBI"></div>
+                <div class="flex justify-between items-start pr-8">
                     <div>
                         <p class="text-xs font-bold text-gray-400 uppercase tracking-wider">Fee Based Inc</p>
                         <h3 class="text-xl font-extrabold mt-1 text-slate-800" id="sumFBI">-</h3>
@@ -160,8 +164,9 @@
             </div>
 
             <!-- 6. PPAP Card -->
-            <div class="card bg-white p-4 rounded-xl shadow-sm border-t-4 border-rose-500">
-                <div class="flex justify-between items-start">
+            <div class="card bg-white p-4 rounded-xl shadow-sm border-t-4 border-rose-500 relative overflow-hidden">
+                <div class="absolute top-3 right-3 text-xl" id="iconPPAP"></div>
+                <div class="flex justify-between items-start pr-8">
                     <div>
                         <p class="text-xs font-bold text-gray-400 uppercase tracking-wider">PPAP / YTD > 1%</p>
                         <h3 class="text-xl font-extrabold mt-1 text-slate-800" id="valPPAP">-</h3>
@@ -356,7 +361,7 @@
             renderCharts(dataToShow, filterValue);
         }
 
-        // --- CARDS LOGIC ---
+        // --- CARDS LOGIC WITH ICONS ---
         function updateCards(data) {
             const fmt = (n) => new Intl.NumberFormat('id-ID').format(n);
             
@@ -388,11 +393,14 @@
             const gapPBTEl = document.getElementById('gapPBT');
             gapPBTEl.innerText = fmt(totalGapPBT);
             gapPBTEl.className = `font-bold ${totalGapPBT < 0 ? 'text-red-500' : 'text-green-600'}`;
-            // Change border color based on profit/loss
-            const pbtCard = document.getElementById('sumPBT').closest('.card');
-            pbtCard.classList.remove('border-indigo-500', 'border-green-500', 'border-red-500');
-            if(totalPBT >= 0) pbtCard.classList.add('border-green-500');
-            else pbtCard.classList.add('border-red-500');
+            
+            // Icon Logic PBT
+            const iconPBT = document.getElementById('iconPBT');
+            if(totalPBT >= totalTgtPBT) {
+                iconPBT.innerHTML = '<i class="fa-solid fa-circle-check text-green-500"></i>';
+            } else {
+                iconPBT.innerHTML = '<i class="fa-solid fa-circle-exclamation text-red-400"></i>';
+            }
 
             // Update DOM - Asset
             document.getElementById('sumAsset').innerText = fmt(totalAsset);
@@ -400,6 +408,14 @@
             const gapAssetEl = document.getElementById('gapAsset');
             gapAssetEl.innerText = fmt(totalGapAsset);
             gapAssetEl.className = `font-bold ${totalGapAsset < 0 ? 'text-red-500' : 'text-green-600'}`;
+            
+            // Icon Logic Asset
+            const iconAsset = document.getElementById('iconAsset');
+            if(totalAsset >= totalTgtAsset) {
+                iconAsset.innerHTML = '<i class="fa-solid fa-circle-check text-green-500"></i>';
+            } else {
+                iconAsset.innerHTML = '<i class="fa-solid fa-circle-exclamation text-red-400"></i>';
+            }
 
             // Update DOM - CASA
             document.getElementById('avgCASA').innerText = avgCASA + '%';
@@ -407,6 +423,14 @@
             const gapCasaEl = document.getElementById('gapCasaAmt');
             gapCasaEl.innerText = fmt(totalGapCasa);
             gapCasaEl.className = `font-bold ${totalGapCasa < 0 ? 'text-red-500' : 'text-green-600'}`;
+            
+            // Icon Logic CASA (Assuming higher is better for ratio)
+            const iconCASA = document.getElementById('iconCASA');
+            if(parseFloat(avgCASA) >= 60) {
+                iconCASA.innerHTML = '<i class="fa-solid fa-circle-check text-green-500"></i>';
+            } else {
+                iconCASA.innerHTML = '<i class="fa-solid fa-circle-exclamation text-orange-400"></i>';
+            }
 
             // Update DOM - FDR
             document.getElementById('avgFDR').innerText = calcFDR + '%';
@@ -414,6 +438,14 @@
             const gapFinEl = document.getElementById('gapFinancing');
             gapFinEl.innerText = fmt(totalGapFinancing);
             gapFinEl.className = `font-bold ${totalGapFinancing < 0 ? 'text-red-500' : 'text-green-600'}`;
+            
+            // Icon Logic FDR (Lower is usually better/safer, but depends on target. Assuming < 100% is safe)
+            const iconFDR = document.getElementById('iconFDR');
+            if(parseFloat(calcFDR) <= 100) {
+                 iconFDR.innerHTML = '<i class="fa-solid fa-circle-check text-green-500"></i>';
+            } else {
+                 iconFDR.innerHTML = '<i class="fa-solid fa-circle-exclamation text-red-400"></i>';
+            }
 
             // Update DOM - FBI
             document.getElementById('sumFBI').innerText = fmt(totalFBI);
@@ -421,25 +453,45 @@
             const gapFBIEl = document.getElementById('gapFBI');
             gapFBIEl.innerText = fmt(totalGapFBI);
             gapFBIEl.className = `font-bold ${totalGapFBI < 0 ? 'text-red-500' : 'text-green-600'}`;
+            
+            // Icon Logic FBI
+            const iconFBI = document.getElementById('iconFBI');
+            if(totalFBI >= totalTgtFBI) {
+                iconFBI.innerHTML = '<i class="fa-solid fa-circle-check text-green-500"></i>';
+            } else {
+                iconFBI.innerHTML = '<i class="fa-solid fa-circle-exclamation text-red-400"></i>';
+            }
 
             // Update DOM - PPAP
             if (data.length === 1) {
                 const ppap = data[0].ppap;
                 document.getElementById('valPPAP').innerText = ppap + '%';
                 const statusEl = document.getElementById('statusPPAP');
+                const iconPPAP = document.getElementById('iconPPAP');
+                
                 if(ppap > 1) {
                     statusEl.innerText = "WASPADA (>1%)";
                     statusEl.className = "text-xs font-bold px-2 py-1 rounded bg-red-100 text-red-700 block text-center";
+                    iconPPAP.innerHTML = '<i class="fa-solid fa-circle-exclamation text-red-500"></i>';
                 } else {
                     statusEl.innerText = "AMAN (<1%)";
                     statusEl.className = "text-xs font-bold px-2 py-1 rounded bg-green-100 text-green-700 block text-center";
+                    iconPPAP.innerHTML = '<i class="fa-solid fa-circle-check text-green-500"></i>';
                 }
             } else {
                 const highRiskCount = data.filter(d => d.ppap > 1).length;
                 document.getElementById('valPPAP').innerText = highRiskCount + " Cabang";
                 const statusEl = document.getElementById('statusPPAP');
+                const iconPPAP = document.getElementById('iconPPAP');
+                
                 statusEl.innerText = `dari ${data.length} cabang bermasalah`;
                 statusEl.className = "text-xs font-bold px-2 py-1 rounded bg-gray-100 text-gray-600 block text-center";
+                
+                if(highRiskCount === 0) {
+                     iconPPAP.innerHTML = '<i class="fa-solid fa-circle-check text-green-500"></i>';
+                } else {
+                     iconPPAP.innerHTML = '<i class="fa-solid fa-circle-exclamation text-red-400"></i>';
+                }
             }
         }
 
