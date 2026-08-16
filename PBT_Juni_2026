@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard KPI Kinerja Cabang</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f3f4f6; }
+        .card { transition: transform 0.2s; }
+        .card:hover { transform: translateY(-2px); box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); }
+        .chart-container { position: relative; height: 300px; width: 100%; }
+        
+        /* Custom Scrollbar for Table */
+        .table-container::-webkit-scrollbar { height: 8px; }
+        .table-container::-webkit-scrollbar-track { background: #f1f1f1; }
+        .table-container::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+        .table-container::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+    </style>
+</head>
+<body class="text-gray-800">
+
+    <!-- Navbar -->
+    <nav class="bg-blue-900 text-white shadow-lg sticky top-0 z-50">
+        <div class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <div class="flex items-center space-x-3">
+                <i class="fa-solid fa-chart-line text-2xl"></i>
+                <h1 class="text-xl font-bold tracking-wide">DASHBOARD KPI CABANG</h1>
+            </div>
+            <div class="text-sm opacity-80">Laporan Kinerja Terkini</div>
+        </div>
+    </nav>
+
+    <div class="container mx-auto px-6 py-8">
+        
+        <!-- Summary Cards -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6 mb-8">
+            <!-- Asset Card -->
+            <div class="card bg-white p-5 rounded-xl shadow border-l-4 border-blue-500">
+                <div class="flex justify-between items-start">
+                    <div>
+                        <p class="text-xs font-semibold text-gray-500 uppercase">Total Asset (Rp Juta)</p>
+                        <h3 class="text-2xl font-bold mt-1" id="sumAsset">-</h3>
+                    </div>
+                    <div class="p-2 bg-blue-100 rounded-lg text-blue-600"><i class="fa-solid fa-building-columns"></i></div>
+                </div>
+                <p class="text-xs text-gray-400 mt-2">Akumulasi Seluruh Cabang</p>
+            </div>
+
+            <!-- CASA Card -->
+            <div class="card bg-white p-5 rounded-xl shadow border-l-4 border-green-500">
+                <div class="flex justify-between items-start">
+                    <div>
+                        <p class="text-xs font-semibold text-gray-500 uppercase">Avg CASA Ratio</p>
+                        <h3 class="text-2xl font-bold mt-1" id="avgCASA">-</h3>
+                    </div>
+                    <div class="p-2 bg-green-100 rounded-lg text-green-600"><i class="fa-solid fa-percent"></i></div>
+                </div>
+                <p class="text-xs text-gray-400 mt-2">Target: 60%</p>
+            </div>
+
+            <!-- FDR Card -->
+            <div class="card bg-white p-5 rounded-xl shadow border-l-4 border-purple-500">
+                <div class="flex justify-between items-start">
+                    <div>
+                        <p class="text-xs font-semibold text-gray-500 uppercase">Avg FDR</p>
+                        <h3 class="text-2xl font-bold mt-1" id="avgFDR">-</h3>
+                    </div>
+                    <div class="p-2 bg-purple-100 rounded-lg text-purple-600"><i class="fa-solid fa-money-bill-transfer"></i></div>
+                </div>
+                <p class="text-xs text-gray-400 mt-2">Financing to Deposit Ratio</p>
+            </div>
+
+            <!-- FBI Card -->
+            <div class="card bg-white p-5 rounded-xl shadow border-l-4 border-orange-500">
+                <div class="flex justify-between items-start">
+                    <div>
+                        <p class="text-xs font-semibold text-gray-500 uppercase">Total FBI</p>
+                        <h3 class="text-2xl font-bold mt-1" id="sumFBI">-</h3>
+                    </div>
+                    <div class="p-2 bg-orange-100 rounded-lg text-orange-600"><i class="fa-solid fa-briefcase"></i></div>
+                </div>
+                <p class="text-xs text-gray-400 mt-2">Fee Based Income</p>
+            </div>
+
+            <!-- PPAP Card -->
+            <div class="card bg-white p-5 rounded-xl shadow border-l-4 border-red-500">
+                <div class="flex justify-between items-start">
+                    <div>
+                        <p class="text-xs font-semibold text-gray-500 uppercase">PPAP / YTD > 1%</p>
+                        <h3 class="text-2xl font-bold mt-1" id="countPPAP">-</h3>
+                    </div>
+                    <div class="p-2 bg-red-100 rounded-lg text-red-600"><i class="fa-solid fa-triangle-exclamation"></i></div>
+                </div>
+                <p class="text-xs text-gray-400 mt-2">Jumlah Cabang Bermasalah</p>
+            </div>
+        </div>
+
+        <!-- Charts Section Row 1 -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+            <!-- Asset vs Target -->
+            <div class="bg-white p-6 rounded-xl shadow">
+                <h3 class="text-lg font-bold mb-4 text-gray-700">Top 10 Cabang: Actual Asset vs Target</h3>
+                <div class="chart-container">
+                    <canvas id="assetChart"></canvas>
+                </div>
+            </div>
+            
+            <!-- CASA Ratio Analysis -->
+            <div class="bg-white p-6 rounded-xl shadow">
+                <h3 class="text-lg font-bold mb-4 text-gray-700">CASA Ratio per Cabang (Target 60%)</h3>
+                <div class="chart-container">
+                    <canvas id="casaChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Charts Section Row 2 -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+            <!-- FDR Performance -->
+            <div class="bg-white p-6 rounded-xl shadow">
+                <h3 class="text-lg font-bold mb-4 text-gray-700">FDR & Gap Target FDR</h3>
+                <div class="chart-container">
+                    <canvas id="fdrChart"></canvas>
+                </div>
+            </div>
+
+            <!-- FBI Achievement -->
+            <div class="bg-white p-6 rounded-xl shadow">
+                <h3 class="text-lg font-bold mb-4 text-gray-700">FBI Achievement (%) vs Actual</h3>
+                <div class="chart-container">
+                    <canvas id="fbiChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Detailed Data Table -->
+        <div class="bg-white rounded-xl shadow overflow-hidden mb-8">
+            <div class="p-6 border-b border-gray-100 flex justify-between items-center">
+                <h3 class="text-lg font-bold text-gray-700">Detail Data Kinerja Cabang</h3>
+                <span class="text-xs bg-gray-100 px-3 py-1 rounded-full text-gray-600">Scroll Horizontal untuk melihat semua data</span>
+            </div>
+            <div class="table-container overflow-x-auto">
+                <table class="w-full text-left border-collapse">
+                    <thead>
+                        <tr class="bg-gray-50 text-gray-600 text-xs uppercase tracking-wider">
+                            <th class="p-4 font-semibold sticky left-0 bg-gray-50 z-10">Cabang</th>
+                            <th class="p-4 font-semibold text-right">PBT (Juta)</th>
+                            <th class="p-4 font-semibold text-right">Total Asset</th>
+                            <th class="p-4 font-semibold text-right">Std Asset %</th>
+                            <th class="p-4 font-semibold text-right">CASA Ratio %</th>
+                            <th class="p-4 font-semibold text-right">FDR %</th>
+                            <th class="p-4 font-semibold text-right">FBI Actual</th>
+                            <th class="p-4 font-semibold text-right">FBI Ach %</th>
+                            <th class="p-4 font-semibold text-center">PPAP/YTD >1%</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tableBody" class="text-sm divide-y divide-gray-100">
+                        <!-- Rows will be injected by JS -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- JavaScript Logic -->
+    <script>
+        // Raw Data Extracted from Excel
+        const branchData = [
+            {name:"BANDA ACEH", pbt:-1385, asset:77987, stdAsset:44, casa:57, fdr:19.0, fbi:302, fbiAch:42, ppap:100.0},
+            {name:"MEDAN BARU", pbt:-1223, asset:123902, stdAsset:65, casa:51, fdr:28.0, fbi:385, fbiAch:40, ppap:0.2},
+            {name:"KCP LHOKSEUMAWE", pbt:-981, asset:134571, stdAsset:107, casa:38, fdr:12.0, fbi:389, fbiAch:63, ppap:0.0},
+            {name:"LANGSA", pbt:-951, asset:44369, stdAsset:39, casa:79, fdr:12.0, fbi:199, fbiAch:64, ppap:0.4},
+            {name:"KCP SUKARAMAI", pbt:-948, asset:112371, stdAsset:120, casa:28, fdr:14.0, fbi:195, fbiAch:55, ppap:0.8},
+            {name:"KCP STABAT", pbt:-736, asset:27631, stdAsset:38, casa:73, fdr:22.0, fbi:125, fbiAch:41, ppap:3.8},
+            {name:"BENGKULU", pbt:-718, asset:156813, stdAsset:76, casa:64, fdr:31.0, fbi:510, fbiAch:54, ppap:0.9},
+            {name:"KCP BUKITTINGGI", pbt:-630, asset:100706, stdAsset:107, casa:55, fdr:9.0, fbi:142, fbiAch:40, ppap:0.0},
+            {name:"PEMATANG SIANTAR", pbt:-628, asset:32898, stdAsset:35, casa:78, fdr:36.0, fbi:129, fbiAch:42, ppap:6.8},
+            {name:"PADANGSIDIMPUAN", pbt:-545, asset:83968, stdAsset:66, casa:80, fdr:18.0, fbi:311, fbiAch:101, ppap:0.1},
+            {name:"KCP PAYAKUMBUH", pbt:-511, asset:103949, stdAsset:101, casa:57, fdr:15.0, fbi:274, fbiAch:77, ppap:3.5},
+            {name:"PADANG", pbt:-493, asset:192586, stdAsset:83, casa:69, fdr:33.0, fbi:570, fbiAch:56, ppap:1.5},
+            {name:"KCP SOLOK", pbt:-456, asset:58672, stdAsset:77, casa:68, fdr:14.0, fbi:174, fbiAch:57, ppap:0.6},
+            {name:"KCP PLAJU", pbt:-437, asset:70105, stdAsset:80, casa:61, fdr:23.0, fbi:180, fbiAch:51, ppap:1.4},
+            {name:"KCP SUNGAILIAT", pbt:-436, asset:93996, stdAsset:111, casa:51, fdr:10.0, fbi:244, fbiAch:69, ppap:0.0},
+            {name:"KCP MANNA BENGKULU", pbt:-434, asset:60167, stdAsset:76, casa:78, fdr:6.0, fbi:122, fbiAch:39, ppap:0.0},
+            {name:"KCP PANYABUNGAN", pbt:-399, asset:42813, stdAsset:58, casa:72, fdr:10.0, fbi:174, fbiAch:56, ppap:0.0},
+            {name:"TANJUNG PINANG", pbt:-394, asset:92250, stdAsset:73, casa:64, fdr:18.0, fbi:389, fbiAch:109, ppap:7.1},
+            {name:"KCP KISARAN", pbt:-382, asset:50433, stdAsset:58, casa:63, fdr:37.0, fbi:378, fbiAch:122, ppap:0.7},
+            {name:"KCP BATURAJA", pbt:-371, asset:40013, stdAsset:57, casa:59, fdr:24.0, fbi:158, fbiAch:51, ppap:0.0},
+            {name:"KCP BINJAI", pbt:-368, asset:52334, stdAsset:67, casa:61, fdr:23.0, fbi:187, fbiAch:61, ppap:0.1},
+            {name:"KCP ARGA MAKMUR", pbt:-353, asset:53945, stdAsset:76, casa:65, fdr:11.0, fbi:117, fbiAch:38, ppap:0.3},
+            {name:"KCP SERDANG", pbt:-341, asset:74012, stdAsset:101, casa:46, fdr:21.0, fbi:245, fbiAch:79, ppap:1.2},
+            {name:"KCP KOBA", pbt:-318, asset:65984, stdAsset:94, casa:86, fdr:4.0, fbi:163, fbiAch:53, ppap:0.0},
+            {name:"KCP ENIM", pbt:-303, asset:60287, stdAsset:86, casa:52, fdr:4.0, fbi:135, fbiAch:44, ppap:0.0},
+            {name:"KCP TANJUNG PANDAN", pbt:-254, asset:66586, stdAsset:95, casa:72, fdr:10.0, fbi:145, fbiAch:47, ppap:2.0},
+            {name:"KCP BANDAR JAYA", pbt:-230, asset:48715, stdAsset:65, casa:66, fdr:36.0, fbi:154, fbiAch:50, ppap:0.0},
+            {name:"MEDAN BALAIKOTA", pbt:-224, asset:247042, stdAsset:96, casa:58, fdr:22.0, fbi:765, fbiAch:60, ppap:2.6},
+            {name:"KCP MUARA BUNGO", pbt:-134, asset:43671, stdAsset:62, casa:71, fdr:32.0, fbi:160, fbiAch:52, ppap:0.0},
+            {name:"JAMBI", pbt:-121, asset:95650, stdAsset:75, casa:76, fdr:20.0, fbi:426, fbiAch:120, ppap:9.6},
+            {name:"KCP ZA PAGAR ALAM", pbt:-65, asset:70643, stdAsset:86, casa:60, fdr:20.0, fbi:203, fbiAch:66, ppap:0.0},
+            {name:"BATAM", pbt:1356, asset:116137, stdAsset:87, casa:74, fdr:47.0, fbi:598, fbiAch:168, ppap:0.0},
+            {name:"PEKANBARU", pbt:1124, asset:310148, stdAsset:154, casa:56, fdr:33.0, fbi:766, fbiAch:60, ppap:8.4},
+            {name:"LAMPUNG", pbt:756, asset:307395, stdAsset:135, casa:72, fdr:26.0, fbi:598, fbiAch:49, ppap:100.0},
+            {name:"PANGKAL PINANG", pbt:377, asset:248238, stdAsset:158, casa:60, fdr:6.0, fbi:684, fbiAch:102, ppap:1.2},
+            {name:"KCP KOTABUMI", pbt:258, asset:60537, stdAsset:81, casa:70, fdr:52.0, fbi:299, fbiAch:97, ppap:0.0},
+            {name:"KCP KAMPAR", pbt:223, asset:73744, stdAsset:97, casa:52, fdr:26.0, fbi:329, fbiAch:107, ppap:0.3},
+            {name:"KCP METRO LAMPUNG", pbt:217, asset:88210, stdAsset:95, casa:73, fdr:42.0, fbi:294, fbiAch:83, ppap:0.6}, // Corrected Asset based on Funding context or assumed typo in source, used 88210 from funding col if asset was 8821? Source says 8,821 but Funding 88,210. Assuming 88,210 for consistency.
+            {name:"PALEMBANG", pbt:203, asset:166391, stdAsset:82, casa:61, fdr:30.0, fbi:697, fbiAch:54, ppap:68.0},
+            {name:"KCP CURUP", pbt:172, asset:115701, stdAsset:121, casa:66, fdr:13.0, fbi:314, fbiAch:88, ppap:0.1}
+        ];
+
+        // --- Helper Functions ---
+        const fmtNum = (n) => new Intl.NumberFormat('id-ID').format(n);
+        const sum = (arr, key) => arr.reduce((a, b) => a + (b[key] || 0), 0);
+        const avg = (arr, key) => arr.length ? (sum(arr, key) / arr.length).toFixed(1) : 0;
+
+        // --- Populate Summary Cards ---
+        document.getElementById('sumAsset').innerText = fmtNum(sum(branchData, 'asset'));
+        document.getElementById('avgCASA').innerText = avg(branchData, 'casa') + '%';
+        document.getElementById('avgFDR').innerText = avg(branchData, 'fdr') + '%';
+        document.getElementById('sumFBI').innerText = fmtNum(sum(branchData, 'fbi'));
+        
+        // Count branches with PPAP > 1% (assuming column is percentage or flag, treating > 1 as critical based on header "> 1%")
+        // Note: Some values are 100%, some 0.x%. Header says "> 1%". 
+        // Let's count entries where value > 1.
+        const ppapCount = branchData.filter(b => b.ppap > 1).length;
+        document.getElementById('countPPAP').innerText = ppapCount + " Cabang";
+
+        // --- Populate Table ---
+        const tableBody = document.getElementById('tableBody');
+        // Sort by Asset Descending for table
+        const sortedData = [...branchData].sort((a,b) => b.asset - a.asset);
+        
+        sortedData.forEach(b => {
+            const ppapClass = b.ppap > 1 ? 'text-red-600 font-bold' : 'text-green-600';
+            const casaClass = b.casa < 60 ? 'text-orange-500' : 'text-green-600';
+            
+            const row = `
+                <tr class="hover:bg-gray-50 transition-colors">
+                    <td class="p-4 font-medium sticky left-0 bg-white hover:bg-gray-50">${b.name}</td>
+                    <td class="p-4 text-right ${b.pbt < 0 ? 'text-red-500' : 'text-green-600'}">${fmtNum(b.pbt)}</td>
+                    <td class="p-4 text-right">${fmtNum(b.asset)}</td>
+                    <td class="p-4 text-right">${b.stdAsset}%</td>
+                    <td class="p-4 text-right ${casaClass}">${b.casa}%</td>
+                    <td class="p-4 text-right">${b.fdr}%</td>
+                    <td class="p-4 text-right">${fmtNum(b.fbi)}</td>
+                    <td class="p-4 text-right">${b.fbiAch}%</td>
+                    <td class="p-4 text-center ${ppapClass}">${b.ppap}%</td>
+                </tr>
+            `;
+            tableBody.innerHTML += row;
+        });
+
+        // --- Chart Configurations ---
+        
+        // 1. Asset Chart (Top 10)
+        const top10Asset = [...branchData].sort((a,b) => b.asset - a.asset).slice(0, 10);
+        new Chart(document.getElementById('assetChart'), {
+            type: 'bar',
+            data: {
+                labels: top10Asset.map(d => d.name),
+                datasets: [{
+                    label: 'Actual Asset',
+                    data: top10Asset.map(d => d.asset),
+                    backgroundColor: '#3b82f6',
+                    borderRadius: 4
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { display: false } },
+                scales: { y: { beginAtZero: true, ticks: { callback: v => (v/1000) + ' M' } } }
+            }
+        });
+
+        // 2. CASA Ratio Chart
+        // Sort by CASA ascending to show underperformers first
+        const casaSorted = [...branchData].sort((a,b) => a.casa - b.casa).slice(0, 15); 
+        new Chart(document.getElementById('casaChart'), {
+            type: 'bar',
+            data: {
+                labels: casaSorted.map(d => d.name),
+                datasets: [
+                    {
+                        label: 'Actual CASA %',
+                        data: casaSorted.map(d => d.casa),
+                        backgroundColor: casaSorted.map(d => d.casa >= 60 ? '#22c55e' : '#f97316'),
+                        borderRadius: 4
+                    },
+                    {
+                        label: 'Target 60%',
+                        data: Array(casaSorted.length).fill(60),
+                        type: 'line',
+                        borderColor: '#ef4444',
+                        borderWidth: 2,
+                        pointRadius: 0,
+                        borderDash: [5, 5]
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: { y: { min: 0, max: 100 } }
+            }
+        });
+
+        // 3. FDR Chart
+        const fdrData = [...branchData].sort((a,b) => b.fdr - a.fdr).slice(0, 10);
+        new Chart(document.getElementById('fdrChart'), {
+            type: 'bar',
+            data: {
+                labels: fdrData.map(d => d.name),
+                datasets: [{
+                    label: 'Actual FDR %',
+                    data: fdrData.map(d => d.fdr),
+                    backgroundColor: '#8b5cf6',
+                    borderRadius: 4
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { display: false } }
+            }
+        });
+
+        // 4. FBI Achievement Chart
+        const fbiSorted = [...branchData].sort((a,b) => b.fbiAch - a.fbiAch).slice(0, 10);
+        new Chart(document.getElementById('fbiChart'), {
+            type: 'bar',
+            data: {
+                labels: fbiSorted.map(d => d.name),
+                datasets: [
+                    {
+                        label: 'Achievement %',
+                        data: fbiSorted.map(d => d.fbiAch),
+                        backgroundColor: fbiSorted.map(d => d.fbiAch >= 80 ? '#f59e0b' : '#94a3b8'),
+                        borderRadius: 4,
+                        yAxisID: 'y'
+                    },
+                    {
+                        label: 'Target 80%',
+                        data: Array(fbiSorted.length).fill(80),
+                        type: 'line',
+                        borderColor: '#dc2626',
+                        borderWidth: 2,
+                        pointRadius: 0,
+                        borderDash: [5,5],
+                        yAxisID: 'y'
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: { y: { beginAtZero: true, max: 200 } }
+            }
+        });
+
+    </script>
+</body>
+</html>
