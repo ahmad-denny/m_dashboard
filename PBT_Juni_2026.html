@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard KPI Kinerja Cabang - CASA with COF</title>
+    <title>Dashboard KPI Kinerja Cabang - With Branch Counts</title>
     
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -72,6 +72,11 @@
                         <span class="text-gray-500">Gap:</span>
                         <span id="gapPBT" class="font-bold">-</span>
                     </div>
+                    <!-- Branch Count Info -->
+                    <div id="countPBT" class="mt-2 pt-2 border-t border-dashed border-gray-200 text-[10px] text-gray-500 hidden">
+                        <div class="flex justify-between"><span class="text-green-600">✅ Tercapai</span> <span id="cntPbtOk" class="font-bold">0</span></div>
+                        <div class="flex justify-between"><span class="text-red-500">⚠️ Belum</span> <span id="cntPbtNo" class="font-bold">0</span></div>
+                    </div>
                 </div>
             </div>
 
@@ -94,10 +99,15 @@
                         <span class="text-gray-500">Gap:</span>
                         <span id="gapAsset" class="font-bold">-</span>
                     </div>
+                    <!-- Branch Count Info -->
+                    <div id="countAsset" class="mt-2 pt-2 border-t border-dashed border-gray-200 text-[10px] text-gray-500 hidden">
+                        <div class="flex justify-between"><span class="text-green-600">✅ Tercapai</span> <span id="cntAssetOk" class="font-bold">0</span></div>
+                        <div class="flex justify-between"><span class="text-red-500">⚠️ Belum</span> <span id="cntAssetNo" class="font-bold">0</span></div>
+                    </div>
                 </div>
             </div>
 
-            <!-- 3. CASA Card (UPDATED WITH COF) -->
+            <!-- 3. CASA Card -->
             <div class="card bg-white p-4 rounded-xl shadow-sm border-t-4 border-emerald-500 relative overflow-hidden">
                 <div class="absolute top-3 right-3 text-xl" id="iconCASA"></div>
                 <div class="flex justify-between items-start pr-8">
@@ -108,7 +118,7 @@
                         </div>
                         <h3 class="text-xl font-extrabold mt-1 text-slate-800" id="avgCASA">-</h3>
                         
-                        <!-- NEW COF SECTION -->
+                        <!-- COF SECTION -->
                         <div class="mt-2 pt-2 border-t border-dashed border-gray-200 flex justify-between items-center">
                             <div>
                                 <p class="text-[10px] font-bold text-gray-400 uppercase tracking-wider">COF (Target ≤2.3%)</p>
@@ -129,6 +139,13 @@
                     <div class="flex justify-between">
                         <span class="text-gray-500">Gap Amt:</span>
                         <span id="gapCasaAmt" class="font-bold">-</span>
+                    </div>
+                    <!-- Branch Count Info -->
+                    <div id="countCASA" class="mt-2 pt-2 border-t border-dashed border-gray-200 text-[10px] text-gray-500 hidden">
+                        <div class="flex justify-between"><span class="text-green-600">✅ CASA ≥60%</span> <span id="cntCasaOk" class="font-bold">0</span></div>
+                        <div class="flex justify-between"><span class="text-red-500">⚠️ CASA <60%</span> <span id="cntCasaNo" class="font-bold">0</span></div>
+                        <div class="flex justify-between mt-1"><span class="text-green-600">✅ COF ≤2.3%</span> <span id="cntCofOk" class="font-bold">0</span></div>
+                        <div class="flex justify-between"><span class="text-orange-500">⚠️ COF >2.3%</span> <span id="cntCofNo" class="font-bold">0</span></div>
                     </div>
                 </div>
             </div>
@@ -152,6 +169,11 @@
                         <span class="text-gray-500">Gap Fin:</span>
                         <span id="gapFinancing" class="font-bold">-</span>
                     </div>
+                    <!-- Branch Count Info -->
+                    <div id="countFDR" class="mt-2 pt-2 border-t border-dashed border-gray-200 text-[10px] text-gray-500 hidden">
+                        <div class="flex justify-between"><span class="text-green-600">✅ FDR ≥30%</span> <span id="cntFdrOk" class="font-bold">0</span></div>
+                        <div class="flex justify-between"><span class="text-orange-500">⚠️ FDR <30%</span> <span id="cntFdrNo" class="font-bold">0</span></div>
+                    </div>
                 </div>
             </div>
 
@@ -174,6 +196,11 @@
                         <span class="text-gray-500">Gap:</span>
                         <span id="gapFBI" class="font-bold">-</span>
                     </div>
+                    <!-- Branch Count Info -->
+                    <div id="countFBI" class="mt-2 pt-2 border-t border-dashed border-gray-200 text-[10px] text-gray-500 hidden">
+                        <div class="flex justify-between"><span class="text-green-600">✅ Tercapai</span> <span id="cntFbiOk" class="font-bold">0</span></div>
+                        <div class="flex justify-between"><span class="text-red-500">⚠️ Belum</span> <span id="cntFbiNo" class="font-bold">0</span></div>
+                    </div>
                 </div>
             </div>
 
@@ -189,6 +216,11 @@
                 </div>
                 <div class="mt-2 pt-2 border-t border-gray-100">
                      <span id="statusPPAP" class="text-xs font-bold px-2 py-1 rounded bg-gray-100 text-gray-500 block text-center">-</span>
+                     <!-- Branch Count Info -->
+                    <div id="countPPAP" class="mt-2 pt-2 border-t border-dashed border-gray-200 text-[10px] text-gray-500 hidden">
+                        <div class="flex justify-between"><span class="text-green-600">✅ Aman (<1%)</span> <span id="cntPpapOk" class="font-bold">0</span></div>
+                        <div class="flex justify-between"><span class="text-red-500">⚠️ Waspad (>1%)</span> <span id="cntPpapNo" class="font-bold">0</span></div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -291,7 +323,7 @@
 
     <!-- JavaScript Logic -->
     <script>
-        // --- DATA SOURCE (Updated with COF from Excel) ---
+        // --- DATA SOURCE (Updated from Laporan_Kinerja_Cabang.xlsx) ---
         const rawData = [
             {name:"BANDA ACEH", pbt:-1385, tgtPbt:40, asset:77987, tgtAsset:177243, gapAsset:-99256, casaPct:57, actCasa:44656, gapCasa:-2137, cof:2.20, fdrPct:19.0, actFunding:77987, actFinancing:14651, gapFinancing:-8745, fbi:302, tgtFbi:575, gapFbi:-273, ppap:100.0},
             {name:"MEDAN BARU", pbt:-1223, tgtPbt:1505, asset:123902, tgtAsset:190618, gapAsset:-66716, casaPct:51, actCasa:63719, gapCasa:-10622, cof:2.86, fdrPct:28.0, actFunding:123902, actFinancing:35297, gapFinancing:-1874, fbi:385, tgtFbi:770, gapFbi:-385, ppap:0.2},
@@ -378,9 +410,10 @@
             renderCharts(dataToShow, filterValue);
         }
 
-        // --- CARDS LOGIC WITH UPDATED CASA/COF ---
+        // --- CARDS LOGIC WITH BRANCH COUNTS ---
         function updateCards(data) {
             const fmt = (n) => new Intl.NumberFormat('id-ID').format(n);
+            const isAggregate = currentMode === 'ALL';
             
             // Aggregations
             const totalPBT = data.reduce((a,b) => a + b.pbt, 0);
@@ -391,7 +424,6 @@
             const totalTgtAsset = data.reduce((a,b) => a + b.tgtAsset, 0);
             const totalGapAsset = data.reduce((a,b) => a + b.gapAsset, 0);
             
-            // Weighted Average for Ratios would be ideal, but using simple average for dashboard consistency as per previous logic
             const avgCASA = (data.reduce((a,b) => a + b.casaPct, 0) / data.length).toFixed(1);
             const avgCOF = (data.reduce((a,b) => a + b.cof, 0) / data.length).toFixed(2);
             
@@ -407,48 +439,27 @@
             const totalTgtFBI = data.reduce((a,b) => a + b.tgtFbi, 0);
             const totalGapFBI = data.reduce((a,b) => a + b.gapFbi, 0);
 
-            // Update DOM - PBT
+            // --- UPDATE DOM VALUES ---
             document.getElementById('sumPBT').innerText = fmt(totalPBT);
             document.getElementById('targetPBT').innerText = fmt(totalTgtPBT);
             const gapPBTEl = document.getElementById('gapPBT');
             gapPBTEl.innerText = fmt(totalGapPBT);
             gapPBTEl.className = `font-bold ${totalGapPBT < 0 ? 'text-red-500' : 'text-green-600'}`;
-            const iconPBT = document.getElementById('iconPBT');
-            if(totalPBT >= totalTgtPBT) iconPBT.innerHTML = '<i class="fa-solid fa-circle-check text-green-500"></i>';
-            else iconPBT.innerHTML = '<i class="fa-solid fa-circle-exclamation text-red-400"></i>';
-
-            // Update DOM - Asset
+            
             document.getElementById('sumAsset').innerText = fmt(totalAsset);
             document.getElementById('targetAsset').innerText = fmt(totalTgtAsset);
             const gapAssetEl = document.getElementById('gapAsset');
             gapAssetEl.innerText = fmt(totalGapAsset);
             gapAssetEl.className = `font-bold ${totalGapAsset < 0 ? 'text-red-500' : 'text-green-600'}`;
-            const iconAsset = document.getElementById('iconAsset');
-            if(totalAsset >= totalTgtAsset) iconAsset.innerHTML = '<i class="fa-solid fa-circle-check text-green-500"></i>';
-            else iconAsset.innerHTML = '<i class="fa-solid fa-circle-exclamation text-red-400"></i>';
 
-            // Update DOM - CASA & COF (UPDATED)
             document.getElementById('avgCASA').innerText = avgCASA + '%';
             document.getElementById('actCasaAmt').innerText = fmt(totalActCasa);
             const gapCasaEl = document.getElementById('gapCasaAmt');
             gapCasaEl.innerText = fmt(totalGapCasa);
             gapCasaEl.className = `font-bold ${totalGapCasa < 0 ? 'text-red-500' : 'text-green-600'}`;
             
-            // CASA Indicator
-            const iconCASA = document.getElementById('iconCASA');
-            const casaInd = document.getElementById('casaIndicator');
-            if(parseFloat(avgCASA) >= 60) {
-                iconCASA.innerHTML = '<i class="fa-solid fa-circle-check text-green-500"></i>';
-                casaInd.innerHTML = '<i class="fa-solid fa-circle-check text-green-500"></i>';
-            } else {
-                iconCASA.innerHTML = '<i class="fa-solid fa-circle-exclamation text-orange-400"></i>';
-                casaInd.innerHTML = '<i class="fa-solid fa-circle-exclamation text-orange-400"></i>';
-            }
-
-            // COF Display & Indicator
             document.getElementById('avgCOF').innerText = avgCOF + '%';
             const cofInd = document.getElementById('cofIndicator');
-            // Logic: <= 2.30% is Good (Green), > 2.30% is Bad (Orange)
             if(parseFloat(avgCOF) <= 2.30) {
                 cofInd.innerHTML = '<i class="fa-solid fa-circle-check text-green-500"></i>';
                 document.getElementById('avgCOF').classList.add('text-green-700');
@@ -459,12 +470,74 @@
                 document.getElementById('avgCOF').classList.remove('text-green-700');
             }
 
-            // Update DOM - FDR
             document.getElementById('avgFDR').innerText = calcFDR + '%';
             document.getElementById('actFinancing').innerText = fmt(totalActFinancing);
             const gapFinEl = document.getElementById('gapFinancing');
             gapFinEl.innerText = fmt(totalGapFinancing);
             gapFinEl.className = `font-bold ${totalGapFinancing < 0 ? 'text-red-500' : 'text-green-600'}`;
+
+            document.getElementById('sumFBI').innerText = fmt(totalFBI);
+            document.getElementById('targetFBI').innerText = fmt(totalTgtFBI);
+            const gapFBIEl = document.getElementById('gapFBI');
+            gapFBIEl.innerText = fmt(totalGapFBI);
+            gapFBIEl.className = `font-bold ${totalGapFBI < 0 ? 'text-red-500' : 'text-green-600'}`;
+
+            // --- ICONS & BRANCH COUNTS LOGIC ---
+            
+            // Helper to toggle count visibility
+            const toggleCounts = (ids) => {
+                ids.forEach(id => {
+                    const el = document.getElementById(id);
+                    if(isAggregate) el.classList.remove('hidden');
+                    else el.classList.add('hidden');
+                });
+            };
+            toggleCounts(['countPBT', 'countAsset', 'countCASA', 'countFDR', 'countFBI', 'countPPAP']);
+
+            // 1. PBT
+            const iconPBT = document.getElementById('iconPBT');
+            if(totalPBT >= totalTgtPBT) iconPBT.innerHTML = '<i class="fa-solid fa-circle-check text-green-500"></i>';
+            else iconPBT.innerHTML = '<i class="fa-solid fa-circle-exclamation text-red-400"></i>';
+            
+            if(isAggregate) {
+                const ok = data.filter(d => d.pbt >= d.tgtPbt).length;
+                document.getElementById('cntPbtOk').innerText = ok;
+                document.getElementById('cntPbtNo').innerText = data.length - ok;
+            }
+
+            // 2. Asset
+            const iconAsset = document.getElementById('iconAsset');
+            if(totalAsset >= totalTgtAsset) iconAsset.innerHTML = '<i class="fa-solid fa-circle-check text-green-500"></i>';
+            else iconAsset.innerHTML = '<i class="fa-solid fa-circle-exclamation text-red-400"></i>';
+
+            if(isAggregate) {
+                const ok = data.filter(d => d.asset >= d.tgtAsset).length;
+                document.getElementById('cntAssetOk').innerText = ok;
+                document.getElementById('cntAssetNo').innerText = data.length - ok;
+            }
+
+            // 3. CASA & COF
+            const iconCASA = document.getElementById('iconCASA');
+            const casaInd = document.getElementById('casaIndicator');
+            if(parseFloat(avgCASA) >= 60) {
+                iconCASA.innerHTML = '<i class="fa-solid fa-circle-check text-green-500"></i>';
+                casaInd.innerHTML = '<i class="fa-solid fa-circle-check text-green-500"></i>';
+            } else {
+                iconCASA.innerHTML = '<i class="fa-solid fa-circle-exclamation text-orange-400"></i>';
+                casaInd.innerHTML = '<i class="fa-solid fa-circle-exclamation text-orange-400"></i>';
+            }
+
+            if(isAggregate) {
+                const casaOk = data.filter(d => d.casaPct >= 60).length;
+                document.getElementById('cntCasaOk').innerText = casaOk;
+                document.getElementById('cntCasaNo').innerText = data.length - casaOk;
+                
+                const cofOk = data.filter(d => d.cof <= 2.30).length;
+                document.getElementById('cntCofOk').innerText = cofOk;
+                document.getElementById('cntCofNo').innerText = data.length - cofOk;
+            }
+
+            // 4. FDR
             const iconFDR = document.getElementById('iconFDR');
             if(parseFloat(calcFDR) >= 30) {
                  iconFDR.innerHTML = '<i class="fa-solid fa-circle-check text-green-500"></i>';
@@ -472,22 +545,30 @@
                  iconFDR.innerHTML = '<i class="fa-solid fa-circle-exclamation text-orange-500"></i>';
             }
 
-            // Update DOM - FBI
-            document.getElementById('sumFBI').innerText = fmt(totalFBI);
-            document.getElementById('targetFBI').innerText = fmt(totalTgtFBI);
-            const gapFBIEl = document.getElementById('gapFBI');
-            gapFBIEl.innerText = fmt(totalGapFBI);
-            gapFBIEl.className = `font-bold ${totalGapFBI < 0 ? 'text-red-500' : 'text-green-600'}`;
+            if(isAggregate) {
+                const fdrOk = data.filter(d => d.fdrPct >= 30).length;
+                document.getElementById('cntFdrOk').innerText = fdrOk;
+                document.getElementById('cntFdrNo').innerText = data.length - fdrOk;
+            }
+
+            // 5. FBI
             const iconFBI = document.getElementById('iconFBI');
             if(totalFBI >= totalTgtFBI) iconFBI.innerHTML = '<i class="fa-solid fa-circle-check text-green-500"></i>';
             else iconFBI.innerHTML = '<i class="fa-solid fa-circle-exclamation text-red-400"></i>';
 
-            // Update DOM - PPAP
+            if(isAggregate) {
+                const fbiOk = data.filter(d => d.fbi >= d.tgtFbi).length;
+                document.getElementById('cntFbiOk').innerText = fbiOk;
+                document.getElementById('cntFbiNo').innerText = data.length - fbiOk;
+            }
+
+            // 6. PPAP
+            const statusEl = document.getElementById('statusPPAP');
+            const iconPPAP = document.getElementById('iconPPAP');
+            
             if (data.length === 1) {
                 const ppap = data[0].ppap;
                 document.getElementById('valPPAP').innerText = ppap + '%';
-                const statusEl = document.getElementById('statusPPAP');
-                const iconPPAP = document.getElementById('iconPPAP');
                 if(ppap > 1) {
                     statusEl.innerText = "WASPADA (>1%)";
                     statusEl.className = "text-xs font-bold px-2 py-1 rounded bg-red-100 text-red-700 block text-center";
@@ -500,16 +581,20 @@
             } else {
                 const highRiskCount = data.filter(d => d.ppap > 1).length;
                 document.getElementById('valPPAP').innerText = highRiskCount + " Cabang";
-                const statusEl = document.getElementById('statusPPAP');
-                const iconPPAP = document.getElementById('iconPPAP');
                 statusEl.innerText = `dari ${data.length} cabang bermasalah`;
                 statusEl.className = "text-xs font-bold px-2 py-1 rounded bg-gray-100 text-gray-600 block text-center";
                 if(highRiskCount === 0) iconPPAP.innerHTML = '<i class="fa-solid fa-circle-check text-green-500"></i>';
                 else iconPPAP.innerHTML = '<i class="fa-solid fa-circle-exclamation text-red-400"></i>';
             }
+
+            if(isAggregate) {
+                const ppapOk = data.filter(d => d.ppap <= 1).length;
+                document.getElementById('cntPpapOk').innerText = ppapOk;
+                document.getElementById('cntPpapNo').innerText = data.length - ppapOk;
+            }
         }
 
-        // --- TABLE LOGIC (Added COF Column) ---
+        // --- TABLE LOGIC ---
         function updateTable(data) {
             const tbody = document.getElementById('tableBody');
             tbody.innerHTML = '';
