@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard KPI Kinerja Cabang - With Data Labels</title>
+    <title>Dashboard KPI Kinerja Cabang - Smart Labels</title>
     
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -322,6 +322,7 @@
 
         // --- CHART INSTANCES STORAGE ---
         let charts = {};
+        let currentMode = 'ALL'; // Track current mode for label formatting
 
         // --- INITIALIZATION ---
         document.addEventListener('DOMContentLoaded', () => {
@@ -348,6 +349,7 @@
         // --- CORE UPDATE LOGIC ---
         function updateDashboard(filterValue) {
             let dataToShow = [];
+            currentMode = filterValue; // Update mode
             
             if (filterValue === 'ALL') {
                 dataToShow = [...rawData].sort((a,b) => b.asset - a.asset).slice(0, 10);
@@ -532,11 +534,11 @@
             });
         }
 
-        // --- CHART RENDERING WITH DATA LABELS ---
+        // --- CHART RENDERING WITH SMART DATA LABELS ---
         
-        // Plugin to draw text on bars/lines
-        const dataLabelsPlugin = {
-            id: 'dataLabels',
+        // Plugin to draw text on bars/lines with DYNAMIC FORMATTING
+        const smartLabelsPlugin = {
+            id: 'smartLabels',
             afterDatasetsDraw(chart, args, options) {
                 const { ctx } = chart;
                 ctx.save();
@@ -549,34 +551,36 @@
                     if (!meta.hidden) {
                         meta.data.forEach((element, index) => {
                             const value = dataset.data[index];
-                            // Only draw if value is not null/undefined
                             if (value !== null && value !== undefined) {
                                 const x = element.x;
                                 const y = element.y;
                                 
-                                // Format number
+                                // SMART FORMATTING LOGIC
                                 let label = value;
                                 if (typeof value === 'number') {
-                                    // If it's a large number, maybe shorten it, but for now full number
-                                    // For percentages, keep as is
+                                    if (currentMode === 'ALL') {
+                                        // AGGREGATE MODE: Compact (K/M)
+                                        label = new Intl.NumberFormat('id-ID', { 
+                                            notation: "compact", 
+                                            compactDisplay: "short",
+                                            maximumFractionDigits: 1
+                                        }).format(value);
+                                    } else {
+                                        // SINGLE BRANCH MODE: Full Number
+                                        label = new Intl.NumberFormat('id-ID').format(value);
+                                    }
+                                    
+                                    // Append % if it's a percentage dataset
                                     if (dataset.label && dataset.label.includes('%')) {
                                         label = value + '%';
-                                    } else {
-                                        // For millions, we could do K/M but user asked for numbers
-                                        // Let's just use the raw number formatted
-                                        label = new Intl.NumberFormat('id-ID', { notation: "compact", compactDisplay: "short" }).format(value);
                                     }
                                 }
 
                                 ctx.fillStyle = dataset.backgroundColor instanceof Array ? dataset.backgroundColor[index] : dataset.backgroundColor;
-                                // If color is dark, make text white, else black
-                                // Simple heuristic: if it's a line chart, use border color
                                 if (dataset.type === 'line') {
                                      ctx.fillStyle = dataset.borderColor;
                                      ctx.fillText(label, x, y - 5);
                                 } else {
-                                     // For bars, put text above the bar
-                                     // Check if negative to put text below
                                      if (value < 0) {
                                          ctx.textBaseline = 'top';
                                          ctx.fillText(label, x, y + 5);
@@ -603,7 +607,7 @@
                 plugins: {
                     legend: { position: 'top', labels: { usePointStyle: true, boxWidth: 8 } },
                     tooltip: { backgroundColor: 'rgba(15, 23, 42, 0.9)', padding: 12 },
-                    datalabels: { display: false } // Disable default if any
+                    datalabels: { display: false }
                 },
                 scales: {
                     x: { grid: { display: false }, ticks: { maxRotation: 45, minRotation: 45, font: {size: 10} } },
@@ -624,7 +628,7 @@
                     ]
                 },
                 options: commonOptions,
-                plugins: [dataLabelsPlugin]
+                plugins: [smartLabelsPlugin]
             });
 
             // 2. ASSET CHART
@@ -640,7 +644,7 @@
                     ]
                 },
                 options: { ...commonOptions, scales: { ...commonOptions.scales, y: { ...commonOptions.scales.y, ticks: { callback: v => (v/1000) + ' M' } } } },
-                plugins: [dataLabelsPlugin]
+                plugins: [smartLabelsPlugin]
             });
 
             // 3. CASA CHART
@@ -663,7 +667,7 @@
                         y1: { type: 'linear', display: true, position: 'right', min: 0, max: 100, grid: { drawOnChartArea: false }, title: { display: true, text: 'Ratio (%)' } }
                     }
                 },
-                plugins: [dataLabelsPlugin]
+                plugins: [smartLabelsPlugin]
             });
 
             // 4. FDR CHART
@@ -679,7 +683,7 @@
                     ]
                 },
                 options: { ...commonOptions, scales: { ...commonOptions.scales, y: { ...commonOptions.scales.y, ticks: { callback: v => (v/1000) + ' M' } } } },
-                plugins: [dataLabelsPlugin]
+                plugins: [smartLabelsPlugin]
             });
 
             // 5. FBI CHART
@@ -695,7 +699,7 @@
                     ]
                 },
                 options: commonOptions,
-                plugins: [dataLabelsPlugin]
+                plugins: [smartLabelsPlugin]
             });
         }
     </script>
