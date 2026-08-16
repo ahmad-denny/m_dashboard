@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard KPI Kinerja Cabang - Fixed Data</title>
+    <title>Dashboard KPI Kinerja Cabang - FINAL FIX</title>
     
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -65,7 +65,7 @@
                 <div class="flex justify-between items-start pr-8">
                     <div>
                         <p class="text-xs font-bold text-gray-400 uppercase tracking-wider">PBT After HOCA</p>
-                        <h3 class="text-xl font-extrabold mt-1 text-slate-800" id="sumPBT">-</h3>
+                        <h3 class="text-xl font-extrabold mt-1 text-slate-800" id="sumPBT">Loading...</h3>
                     </div>
                     <div class="p-2 bg-indigo-50 rounded-full text-indigo-600"><i class="fa-solid fa-coins text-lg"></i></div>
                 </div>
@@ -85,7 +85,7 @@
                 <div class="flex justify-between items-start pr-8">
                     <div>
                         <p class="text-xs font-bold text-gray-400 uppercase tracking-wider">Total Asset</p>
-                        <h3 class="text-xl font-extrabold mt-1 text-slate-800" id="sumAsset">-</h3>
+                        <h3 class="text-xl font-extrabold mt-1 text-slate-800" id="sumAsset">Loading...</h3>
                     </div>
                     <div class="p-2 bg-blue-50 rounded-full text-blue-600"><i class="fa-solid fa-building-columns text-lg"></i></div>
                 </div>
@@ -108,7 +108,7 @@
                             <p class="text-xs font-bold text-gray-400 uppercase tracking-wider">CASA Ratio</p>
                             <span id="casaIndicator" class="text-sm"></span>
                         </div>
-                        <h3 class="text-xl font-extrabold mt-1 text-slate-800" id="avgCASA">-</h3>
+                        <h3 class="text-xl font-extrabold mt-1 text-slate-800" id="avgCASA">Loading...</h3>
                         <div class="mt-2 pt-2 border-t border-dashed border-gray-200 flex justify-between items-center">
                             <div>
                                 <p class="text-[10px] font-bold text-gray-400 uppercase tracking-wider">COF (Target ≤2.3%)</p>
@@ -138,7 +138,7 @@
                 <div class="flex justify-between items-start pr-8">
                     <div>
                         <p class="text-xs font-bold text-gray-400 uppercase tracking-wider">FDR Position</p>
-                        <h3 class="text-xl font-extrabold mt-1 text-slate-800" id="avgFDR">-</h3>
+                        <h3 class="text-xl font-extrabold mt-1 text-slate-800" id="avgFDR">Loading...</h3>
                     </div>
                     <div class="p-2 bg-violet-50 rounded-full text-violet-600"><i class="fa-solid fa-money-bill-transfer text-lg"></i></div>
                 </div>
@@ -158,7 +158,7 @@
                 <div class="flex justify-between items-start pr-8">
                     <div>
                         <p class="text-xs font-bold text-gray-400 uppercase tracking-wider">Fee Based Inc</p>
-                        <h3 class="text-xl font-extrabold mt-1 text-slate-800" id="sumFBI">-</h3>
+                        <h3 class="text-xl font-extrabold mt-1 text-slate-800" id="sumFBI">Loading...</h3>
                     </div>
                     <div class="p-2 bg-amber-50 rounded-full text-amber-600"><i class="fa-solid fa-briefcase text-lg"></i></div>
                 </div>
@@ -178,7 +178,7 @@
                 <div class="flex justify-between items-start pr-8">
                     <div>
                         <p class="text-xs font-bold text-gray-400 uppercase tracking-wider">PPAP / YTD > 1%</p>
-                        <h3 class="text-xl font-extrabold mt-1 text-slate-800" id="valPPAP">-</h3>
+                        <h3 class="text-xl font-extrabold mt-1 text-slate-800" id="valPPAP">Loading...</h3>
                     </div>
                     <div class="p-2 bg-rose-50 rounded-full text-rose-600"><i class="fa-solid fa-triangle-exclamation text-lg"></i></div>
                 </div>
@@ -292,7 +292,7 @@
 
     <!-- JavaScript Logic -->
     <script>
-        // --- DATA SOURCE (FIXED & CLEANED FROM EXCEL) ---
+        // --- DATA SOURCE (CLEANED NUMERIC VALUES ONLY) ---
         const rawData = [
             {name:"BANDA ACEH", pbt:-1385, tgtPbt:40, asset:77987, tgtAsset:177243, gapAsset:-99256, casaPct:57, actCasa:44656, gapCasa:-2137, cof:2.20, fdrPct:19.0, actFunding:77987, actFinancing:14651, gapFinancing:-8745, fbi:302, tgtFbi:575, gapFbi:-273, ppap:100.0},
             {name:"MEDAN BARU", pbt:-1223, tgtPbt:1505, asset:123902, tgtAsset:190618, gapAsset:-66716, casaPct:51, actCasa:63719, gapCasa:-10622, cof:2.86, fdrPct:28.0, actFunding:123902, actFinancing:35297, gapFinancing:-1874, fbi:385, tgtFbi:770, gapFbi:-385, ppap:0.2},
@@ -331,7 +331,7 @@
             {name:"PANGKAL PINANG", pbt:377, tgtPbt:1624, asset:248238, tgtAsset:157113, gapAsset:91125, casaPct:60, actCasa:149019, gapCasa:76, cof:2.37, fdrPct:6.0, actFunding:248238, actFinancing:15867, gapFinancing:-58605, fbi:684, tgtFbi:671, gapFbi:13, ppap:1.2},
             {name:"KCP KOTABUMI LAMPUNG", pbt:258, tgtPbt:807, asset:60537, tgtAsset:74737, gapAsset:-14200, casaPct:70, actCasa:42209, gapCasa:5887, cof:2.12, fdrPct:52.0, actFunding:60537, actFinancing:31471, gapFinancing:13310, fbi:299, tgtFbi:247, gapFbi:52, ppap:0.0},
             {name:"KCP KAMPAR", pbt:223, tgtPbt:326, asset:73744, tgtAsset:76025, gapAsset:-2281, casaPct:52, actCasa:38288, gapCasa:-5958, cof:1.85, fdrPct:26.0, actFunding:73744, actFinancing:19163, gapFinancing:-2960, fbi:329, tgtFbi:307, gapFbi:22, ppap:0.3},
-            {name:"KCP METRO LAMPUNG", pbt:217, tgtPbt:906, asset:8821, tgtAsset:9285, gapAsset:-464, casaPct:73, actCasa:64006, gapCasa:11080, cof:1.92, fdrPct:42.0, actFunding:88210, actFinancing:37227, gapFinancing:10764, fbi:294, tgtFbi:283, gapFbi:11, ppap:0.6}, 
+            {name:"KCP METRO LAMPUNG", pbt:217, tgtPbt:906, asset:88210, tgtAsset:92850, gapAsset:-4640, casaPct:73, actCasa:64006, gapCasa:11080, cof:1.92, fdrPct:42.0, actFunding:88210, actFinancing:37227, gapFinancing:10764, fbi:294, tgtFbi:283, gapFbi:11, ppap:0.6}, 
             {name:"PALEMBANG", pbt:203, tgtPbt:1657, asset:166391, tgtAsset:202916, gapAsset:-36525, casaPct:61, actCasa:102323, gapCasa:2489, cof:2.29, fdrPct:30.0, actFunding:166391, actFinancing:50211, gapFinancing:293, fbi:697, tgtFbi:1033, gapFbi:-336, ppap:68.0},
             {name:"KCP CURUP", pbt:172, tgtPbt:711, asset:115701, tgtAsset:95621, gapAsset:20080, casaPct:66, actCasa:76889, gapCasa:7468, cof:2.13, fdrPct:13.0, actFunding:115701, actFinancing:15044, gapFinancing:-19667, fbi:314, tgtFbi:285, gapFbi:29, ppap:0.1}
         ];
@@ -341,8 +341,13 @@
         let chartSortPrefs = { pbt: 'top', asset: 'top', casa: 'top', fdr: 'top', fbi: 'top' };
 
         document.addEventListener('DOMContentLoaded', () => {
-            initFilter();
-            updateDashboard('ALL');
+            try {
+                initFilter();
+                updateDashboard('ALL');
+            } catch (e) {
+                console.error("Dashboard Error:", e);
+                alert("Terjadi kesalahan saat memuat data. Silakan cek console browser.");
+            }
         });
 
         function initFilter() {
@@ -404,23 +409,23 @@
             const fmt = (n) => new Intl.NumberFormat('id-ID').format(n);
             const isAggregate = currentMode === 'ALL';
             
-            const totalPBT = data.reduce((a,b) => a + b.pbt, 0);
-            const totalTgtPBT = data.reduce((a,b) => a + b.tgtPbt, 0);
+            const totalPBT = data.reduce((a,b) => a + (b.pbt || 0), 0);
+            const totalTgtPBT = data.reduce((a,b) => a + (b.tgtPbt || 0), 0);
             const totalGapPBT = totalPBT - totalTgtPBT;
-            const totalAsset = data.reduce((a,b) => a + b.asset, 0);
-            const totalTgtAsset = data.reduce((a,b) => a + b.tgtAsset, 0);
-            const totalGapAsset = data.reduce((a,b) => a + b.gapAsset, 0);
-            const avgCASA = (data.reduce((a,b) => a + b.casaPct, 0) / data.length).toFixed(1);
-            const avgCOF = (data.reduce((a,b) => a + b.cof, 0) / data.length).toFixed(2);
-            const totalActCasa = data.reduce((a,b) => a + b.actCasa, 0);
-            const totalGapCasa = data.reduce((a,b) => a + b.gapCasa, 0);
-            const totalActFunding = data.reduce((a,b) => a + b.actFunding, 0);
-            const totalActFinancing = data.reduce((a,b) => a + b.actFinancing, 0);
-            const totalGapFinancing = data.reduce((a,b) => a + b.gapFinancing, 0);
+            const totalAsset = data.reduce((a,b) => a + (b.asset || 0), 0);
+            const totalTgtAsset = data.reduce((a,b) => a + (b.tgtAsset || 0), 0);
+            const totalGapAsset = data.reduce((a,b) => a + (b.gapAsset || 0), 0);
+            const avgCASA = data.length ? (data.reduce((a,b) => a + (b.casaPct || 0), 0) / data.length).toFixed(1) : 0;
+            const avgCOF = data.length ? (data.reduce((a,b) => a + (b.cof || 0), 0) / data.length).toFixed(2) : 0;
+            const totalActCasa = data.reduce((a,b) => a + (b.actCasa || 0), 0);
+            const totalGapCasa = data.reduce((a,b) => a + (b.gapCasa || 0), 0);
+            const totalActFunding = data.reduce((a,b) => a + (b.actFunding || 0), 0);
+            const totalActFinancing = data.reduce((a,b) => a + (b.actFinancing || 0), 0);
+            const totalGapFinancing = data.reduce((a,b) => a + (b.gapFinancing || 0), 0);
             const calcFDR = totalActFunding > 0 ? ((totalActFinancing / totalActFunding) * 100).toFixed(1) : "0.0";
-            const totalFBI = data.reduce((a,b) => a + b.fbi, 0);
-            const totalTgtFBI = data.reduce((a,b) => a + b.tgtFbi, 0);
-            const totalGapFBI = data.reduce((a,b) => a + b.gapFbi, 0);
+            const totalFBI = data.reduce((a,b) => a + (b.fbi || 0), 0);
+            const totalTgtFBI = data.reduce((a,b) => a + (b.tgtFbi || 0), 0);
+            const totalGapFBI = data.reduce((a,b) => a + (b.gapFbi || 0), 0);
 
             document.getElementById('sumPBT').innerText = fmt(totalPBT);
             document.getElementById('targetPBT').innerText = fmt(totalTgtPBT);
