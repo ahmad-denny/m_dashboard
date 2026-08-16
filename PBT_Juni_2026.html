@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard KPI Kinerja Cabang - Filterable</title>
+    <title>Dashboard KPI Kinerja Cabang v3 - Enhanced CASA</title>
     
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -43,7 +43,6 @@
                 <label class="text-xs font-semibold text-slate-400 px-3 uppercase">Filter Cabang:</label>
                 <select id="branchFilter" class="bg-slate-900 text-white text-sm rounded-md border-none focus:ring-2 focus:ring-blue-500 py-2 px-3 outline-none cursor-pointer min-w-[200px]">
                     <option value="ALL">📊 SEMUA CABANG (AGGREGATE)</option>
-                    <!-- Options populated by JS -->
                 </select>
             </div>
         </div>
@@ -51,7 +50,7 @@
 
     <div class="container mx-auto px-6 py-8">
         
-        <!-- Summary Cards -->
+        <!-- Summary Cards Row 1: Main KPIs -->
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6 mb-8">
             <!-- Asset Card -->
             <div class="card bg-white p-5 rounded-xl shadow-sm border-t-4 border-blue-500">
@@ -59,17 +58,13 @@
                     <div>
                         <p class="text-xs font-bold text-gray-400 uppercase tracking-wider">Total Asset</p>
                         <h3 class="text-2xl font-extrabold mt-1 text-slate-800" id="sumAsset">-</h3>
-                        <p class="text-xs mt-2"><span class="text-gray-500">Target:</span> <span id="targetAsset" class="font-semibold">-</span></p>
+                        <p class="text-xs mt-2"><span class="text-gray-500">Gap:</span> <span id="gapAsset" class="font-bold">-</span></p>
                     </div>
                     <div class="p-3 bg-blue-50 rounded-full text-blue-600"><i class="fa-solid fa-building-columns text-lg"></i></div>
                 </div>
-                <div class="mt-3 pt-3 border-t border-gray-100 flex justify-between text-xs">
-                    <span class="text-gray-500">Gap Asset</span>
-                    <span id="gapAsset" class="font-bold">-</span>
-                </div>
             </div>
 
-            <!-- CASA Card -->
+            <!-- CASA RATIO Card -->
             <div class="card bg-white p-5 rounded-xl shadow-sm border-t-4 border-emerald-500">
                 <div class="flex justify-between items-start">
                     <div>
@@ -79,9 +74,17 @@
                     </div>
                     <div class="p-3 bg-emerald-50 rounded-full text-emerald-600"><i class="fa-solid fa-percent text-lg"></i></div>
                 </div>
-                <div class="mt-3 pt-3 border-t border-gray-100 flex justify-between text-xs">
-                    <span class="text-gray-500">Gap CASA</span>
-                    <span id="gapCASA" class="font-bold">-</span>
+            </div>
+
+            <!-- NEW: CASA NOMINAL & GAP Card -->
+            <div class="card bg-white p-5 rounded-xl shadow-sm border-t-4 border-teal-500">
+                <div class="flex justify-between items-start">
+                    <div>
+                        <p class="text-xs font-bold text-gray-400 uppercase tracking-wider">Actual CASA (Nominal)</p>
+                        <h3 class="text-xl font-extrabold mt-1 text-slate-800" id="sumActualCASA">-</h3>
+                        <p class="text-xs mt-2"><span class="text-gray-500">GAP CASA:</span> <span id="gapCASA" class="font-bold">-</span></p>
+                    </div>
+                    <div class="p-3 bg-teal-50 rounded-full text-teal-600"><i class="fa-solid fa-coins text-lg"></i></div>
                 </div>
             </div>
 
@@ -91,13 +94,9 @@
                     <div>
                         <p class="text-xs font-bold text-gray-400 uppercase tracking-wider">FDR (Financing)</p>
                         <h3 class="text-2xl font-extrabold mt-1 text-slate-800" id="avgFDR">-</h3>
-                        <p class="text-xs mt-2"><span class="text-gray-500">Avg Target:</span> <span id="targetFDR" class="font-semibold">-</span></p>
+                        <p class="text-xs mt-2"><span class="text-gray-500">Gap FDR:</span> <span id="gapFDR" class="font-bold">-</span></p>
                     </div>
                     <div class="p-3 bg-violet-50 rounded-full text-violet-600"><i class="fa-solid fa-money-bill-transfer text-lg"></i></div>
-                </div>
-                <div class="mt-3 pt-3 border-t border-gray-100 flex justify-between text-xs">
-                    <span class="text-gray-500">Gap FDR</span>
-                    <span id="gapFDR" class="font-bold">-</span>
                 </div>
             </div>
 
@@ -107,28 +106,9 @@
                     <div>
                         <p class="text-xs font-bold text-gray-400 uppercase tracking-wider">Fee Based Income</p>
                         <h3 class="text-2xl font-extrabold mt-1 text-slate-800" id="sumFBI">-</h3>
-                        <p class="text-xs mt-2"><span class="text-gray-500">Target:</span> <span id="targetFBI" class="font-semibold">-</span></p>
+                        <p class="text-xs mt-2"><span class="text-gray-500">Ach%:</span> <span id="achFBI" class="font-bold">-</span></p>
                     </div>
                     <div class="p-3 bg-amber-50 rounded-full text-amber-600"><i class="fa-solid fa-briefcase text-lg"></i></div>
-                </div>
-                <div class="mt-3 pt-3 border-t border-gray-100 flex justify-between text-xs">
-                    <span class="text-gray-500">Gap FBI</span>
-                    <span id="gapFBI" class="font-bold">-</span>
-                </div>
-            </div>
-
-            <!-- PPAP Card -->
-            <div class="card bg-white p-5 rounded-xl shadow-sm border-t-4 border-rose-500">
-                <div class="flex justify-between items-start">
-                    <div>
-                        <p class="text-xs font-bold text-gray-400 uppercase tracking-wider">PPAP / YTD > 1%</p>
-                        <h3 class="text-2xl font-extrabold mt-1 text-slate-800" id="valPPAP">-</h3>
-                        <p class="text-xs mt-2 text-gray-500">Indikator Risiko Kredit</p>
-                    </div>
-                    <div class="p-3 bg-rose-50 rounded-full text-rose-600"><i class="fa-solid fa-triangle-exclamation text-lg"></i></div>
-                </div>
-                <div class="mt-3 pt-3 border-t border-gray-100">
-                     <span id="statusPPAP" class="text-xs font-bold px-2 py-1 rounded bg-gray-100 text-gray-500">-</span>
                 </div>
             </div>
         </div>
@@ -147,11 +127,11 @@
                 </div>
             </div>
             
-            <!-- CASA Ratio Analysis -->
+            <!-- ENHANCED CASA CHART -->
             <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
                 <div class="flex justify-between items-center mb-4">
-                    <h3 class="text-lg font-bold text-slate-700">CASA Ratio (%)</h3>
-                    <span class="text-xs bg-emerald-50 text-emerald-700 px-2 py-1 rounded">Target 60%</span>
+                    <h3 class="text-lg font-bold text-slate-700">Analisis CASA: Ratio & Nominal Gap</h3>
+                    <span class="text-xs bg-emerald-50 text-emerald-700 px-2 py-1 rounded">Dual Axis: % (Kiri) | Rp Juta (Kanan)</span>
                 </div>
                 <div class="chart-container">
                     <canvas id="casaChart"></canvas>
@@ -162,7 +142,7 @@
             <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
                 <div class="flex justify-between items-center mb-4">
                     <h3 class="text-lg font-bold text-slate-700">FDR Position (%)</h3>
-                    <span class="text-xs bg-violet-50 text-violet-700 px-2 py-1 rounded">Likuiditas & Penyaluran</span>
+                    <span class="text-xs bg-violet-50 text-violet-700 px-2 py-1 rounded">Actual vs Target vs Gap</span>
                 </div>
                 <div class="chart-container">
                     <canvas id="fdrChart"></canvas>
@@ -173,7 +153,7 @@
             <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
                 <div class="flex justify-between items-center mb-4">
                     <h3 class="text-lg font-bold text-slate-700">Fee Based Income (Rp Juta)</h3>
-                    <span class="text-xs bg-amber-50 text-amber-700 px-2 py-1 rounded">Revenue Non-Bunga</span>
+                    <span class="text-xs bg-amber-50 text-amber-700 px-2 py-1 rounded">Actual vs Target vs Gap</span>
                 </div>
                 <div class="chart-container">
                     <canvas id="fbiChart"></canvas>
@@ -193,19 +173,17 @@
                         <tr class="text-gray-500 text-xs uppercase tracking-wider border-b border-gray-200">
                             <th class="p-4 font-bold sticky left-0 bg-white z-20">Cabang</th>
                             <th class="p-4 font-bold text-right">Asset Act</th>
-                            <th class="p-4 font-bold text-right">Asset Tgt</th>
                             <th class="p-4 font-bold text-right text-red-500">Gap Asset</th>
                             <th class="p-4 font-bold text-right">CASA %</th>
+                            <th class="p-4 font-bold text-right text-teal-600">Act CASA (Jt)</th>
+                            <th class="p-4 font-bold text-right text-red-500">Gap CASA (Jt)</th>
                             <th class="p-4 font-bold text-right">FDR %</th>
                             <th class="p-4 font-bold text-right">FBI Act</th>
-                            <th class="p-4 font-bold text-right">FBI Tgt</th>
-                            <th class="p-4 font-bold text-right text-red-500">Gap FBI</th>
+                            <th class="p-4 font-bold text-right">FBI Ach%</th>
                             <th class="p-4 font-bold text-center">PPAP/YTD</th>
                         </tr>
                     </thead>
-                    <tbody id="tableBody" class="text-sm divide-y divide-gray-100">
-                        <!-- Rows injected by JS -->
-                    </tbody>
+                    <tbody id="tableBody" class="text-sm divide-y divide-gray-100"></tbody>
                 </table>
             </div>
         </div>
@@ -214,54 +192,52 @@
 
     <!-- JavaScript Logic -->
     <script>
-        // --- DATA SOURCE (Cleaned & Structured) ---
+        // --- DATA SOURCE (Validated against Laporan_Kinerja_Cabang.xlsx) ---
         const rawData = [
-            {name:"BANDA ACEH", asset:77987, tgtAsset:177243, gapAsset:-99256, casa:57, fdr:19.0, fbi:302, tgtFbi:575, gapFbi:-273, ppap:100.0},
-            {name:"MEDAN BARU", asset:123902, tgtAsset:190618, gapAsset:-66716, casa:51, fdr:28.0, fbi:385, tgtFbi:770, gapFbi:-385, ppap:0.2},
-            {name:"KCP LHOKSEUMAWE", asset:134571, tgtAsset:125767, gapAsset:8804, casa:38, fdr:12.0, fbi:389, tgtFbi:494, gapFbi:-105, ppap:0.0},
-            {name:"LANGSA", asset:44369, tgtAsset:113767, gapAsset:-69398, casa:79, fdr:12.0, fbi:199, tgtFbi:249, gapFbi:-50, ppap:0.4},
-            {name:"KCP SUKARAMAI", asset:112371, tgtAsset:93643, gapAsset:18729, casa:28, fdr:14.0, fbi:195, tgtFbi:284, gapFbi:-89, ppap:0.8},
-            {name:"KCP STABAT", asset:27631, tgtAsset:72713, gapAsset:-45082, casa:73, fdr:22.0, fbi:125, tgtFbi:244, gapFbi:-119, ppap:3.8},
-            {name:"BENGKULU", asset:156813, tgtAsset:206333, gapAsset:-49520, casa:64, fdr:31.0, fbi:510, tgtFbi:756, gapFbi:-246, ppap:0.9},
-            {name:"KCP BUKITTINGGI", asset:100706, tgtAsset:94118, gapAsset:6588, casa:55, fdr:9.0, fbi:142, tgtFbi:284, gapFbi:-142, ppap:0.0},
-            {name:"PEMATANG SIANTAR", asset:32898, tgtAsset:93994, gapAsset:-61096, casa:78, fdr:36.0, fbi:129, tgtFbi:246, gapFbi:-117, ppap:6.8},
-            {name:"PADANGSIDIMPUAN", asset:83968, tgtAsset:127224, gapAsset:-43256, casa:80, fdr:18.0, fbi:311, tgtFbi:308, gapFbi:3, ppap:0.1},
-            {name:"KCP PAYAKUMBUH", asset:103949, tgtAsset:102920, gapAsset:1029, casa:57, fdr:15.0, fbi:274, tgtFbi:285, gapFbi:-11, ppap:3.5},
-            {name:"PADANG", asset:192586, tgtAsset:232031, gapAsset:-39445, casa:69, fdr:33.0, fbi:570, tgtFbi:814, gapFbi:-244, ppap:1.5},
-            {name:"KCP SOLOK", asset:58672, tgtAsset:76197, gapAsset:-17525, casa:68, fdr:14.0, fbi:174, tgtFbi:244, gapFbi:-70, ppap:0.6},
-            {name:"KCP PLAJU", asset:70105, tgtAsset:87631, gapAsset:-17526, casa:61, fdr:23.0, fbi:180, tgtFbi:282, gapFbi:-102, ppap:1.4},
-            {name:"KCP SUNGAILIAT", asset:93996, tgtAsset:84681, gapAsset:9315, casa:51, fdr:10.0, fbi:244, tgtFbi:283, gapFbi:-39, ppap:0.0},
-            {name:"KCP MANNA BENGKULU", asset:60167, tgtAsset:79167, gapAsset:-19000, casa:78, fdr:6.0, fbi:122, tgtFbi:250, gapFbi:-128, ppap:0.0},
-            {name:"KCP PANYABUNGAN", asset:42813, tgtAsset:73816, gapAsset:-31003, casa:72, fdr:10.0, fbi:174, tgtFbi:249, gapFbi:-75, ppap:0.0},
-            {name:"TANJUNG PINANG", asset:92250, tgtAsset:126370, gapAsset:-34120, casa:64, fdr:18.0, fbi:389, tgtFbi:357, gapFbi:32, ppap:7.1},
-            {name:"KCP KISARAN", asset:50433, tgtAsset:86953, gapAsset:-36520, casa:63, fdr:37.0, fbi:378, tgtFbi:310, gapFbi:68, ppap:0.7},
-            {name:"KCP BATURAJA", asset:40013, tgtAsset:70198, gapAsset:-30185, casa:59, fdr:24.0, fbi:158, tgtFbi:248, gapFbi:-90, ppap:0.0},
-            {name:"KCP BINJAI", asset:52334, tgtAsset:78110, gapAsset:-25776, casa:61, fdr:23.0, fbi:187, tgtFbi:245, gapFbi:-58, ppap:0.1},
-            {name:"KCP ARGA MAKMUR", asset:53945, tgtAsset:70980, gapAsset:-17035, casa:65, fdr:11.0, fbi:117, tgtFbi:246, gapFbi:-129, ppap:0.3},
-            {name:"KCP SERDANG", asset:74012, tgtAsset:73279, gapAsset:733, casa:46, fdr:21.0, fbi:245, tgtFbi:248, gapFbi:-3, ppap:1.2},
-            {name:"KCP KOBA", asset:65984, tgtAsset:70196, gapAsset:-4212, casa:86, fdr:4.0, fbi:163, tgtFbi:246, gapFbi:-83, ppap:0.0},
-            {name:"KCP ENIM", asset:60287, tgtAsset:70101, gapAsset:-9814, casa:52, fdr:4.0, fbi:135, tgtFbi:245, gapFbi:-110, ppap:0.0},
-            {name:"KCP TANJUNG PANDAN", asset:66586, tgtAsset:70091, gapAsset:-3505, casa:72, fdr:10.0, fbi:145, tgtFbi:247, gapFbi:-102, ppap:2.0},
-            {name:"KCP BANDAR JAYA", asset:48715, tgtAsset:74946, gapAsset:-26231, casa:66, fdr:36.0, fbi:154, tgtFbi:246, gapFbi:-92, ppap:0.0},
-            {name:"MEDAN BALAIKOTA", asset:247042, tgtAsset:257335, gapAsset:-10293, casa:58, fdr:22.0, fbi:765, tgtFbi:1020, gapFbi:-255, ppap:2.6},
-            {name:"KCP MUARA BUNGO", asset:43671, tgtAsset:70437, gapAsset:-26766, casa:71, fdr:32.0, fbi:160, tgtFbi:246, gapFbi:-86, ppap:0.0},
-            {name:"JAMBI", asset:95650, tgtAsset:127533, gapAsset:-31883, casa:76, fdr:20.0, fbi:426, tgtFbi:355, gapFbi:71, ppap:9.6},
-            {name:"KCP ZA PAGAR ALAM", asset:70643, tgtAsset:82143, gapAsset:-11500, casa:60, fdr:20.0, fbi:203, tgtFbi:246, gapFbi:-43, ppap:0.0},
-            {name:"BATAM", asset:116137, tgtAsset:133491, gapAsset:-17354, casa:74, fdr:47.0, fbi:598, tgtFbi:356, gapFbi:242, ppap:0.0},
-            {name:"PEKANBARU", asset:310148, tgtAsset:201395, gapAsset:108753, casa:56, fdr:33.0, fbi:766, tgtFbi:1021, gapFbi:-255, ppap:8.4},
-            {name:"LAMPUNG", asset:307395, tgtAsset:227700, gapAsset:79695, casa:72, fdr:26.0, fbi:598, tgtFbi:976, gapFbi:-378, ppap:100.0},
-            {name:"PANGKAL PINANG", asset:248238, tgtAsset:157113, gapAsset:91125, casa:60, fdr:6.0, fbi:684, tgtFbi:671, gapFbi:13, ppap:1.2},
-            {name:"KCP KOTABUMI", asset:60537, tgtAsset:74737, gapAsset:-14200, casa:70, fdr:52.0, fbi:299, tgtFbi:247, gapFbi:52, ppap:0.0},
-            {name:"KCP KAMPAR", asset:73744, tgtAsset:76025, gapAsset:-2281, casa:52, fdr:26.0, fbi:329, tgtFbi:307, gapFbi:22, ppap:0.3},
-            {name:"KCP METRO LAMPUNG", asset:88210, tgtAsset:92850, gapAsset:-4640, casa:73, fdr:42.0, fbi:294, tgtFbi:283, gapFbi:11, ppap:0.6}, // Corrected asset to match funding context
-            {name:"PALEMBANG", asset:166391, tgtAsset:202916, gapAsset:-36525, casa:61, fdr:30.0, fbi:697, tgtFbi:1033, gapFbi:-336, ppap:68.0},
-            {name:"KCP CURUP", asset:115701, tgtAsset:95621, gapAsset:20080, casa:66, fdr:13.0, fbi:314, tgtFbi:285, gapFbi:29, ppap:0.1}
+            {name:"BANDA ACEH", asset:77987, tgtAsset:177243, gapAsset:-99256, casaPct:57, actCasa:44656, gapCasa:-2137, fdr:19.0, tgtFdr:23396, gapFdr:-8745, fbi:302, fbiAch:42, tgtFbi:575, gapFbi:-273, ppap:100.0},
+            {name:"MEDAN BARU", asset:123902, tgtAsset:190618, gapAsset:-66716, casaPct:51, actCasa:63719, gapCasa:-10622, fdr:28.0, tgtFdr:37171, gapFdr:-1874, fbi:385, fbiAch:40, tgtFbi:770, gapFbi:-385, ppap:0.2},
+            {name:"KCP LHOKSEUMAWE", asset:134571, tgtAsset:125767, gapAsset:8804, casaPct:38, actCasa:51498, gapCasa:-29245, fdr:12.0, tgtFdr:40371, gapFdr:-23920, fbi:389, fbiAch:63, tgtFbi:494, gapFbi:-105, ppap:0.0},
+            {name:"LANGSA", asset:44369, tgtAsset:113767, gapAsset:-69398, casaPct:79, actCasa:35051, gapCasa:8430, fdr:12.0, tgtFdr:13311, gapFdr:-8084, fbi:199, fbiAch:64, tgtFbi:249, gapFbi:-50, ppap:0.4},
+            {name:"KCP SUKARAMAI", asset:112371, tgtAsset:93643, gapAsset:18729, casaPct:28, actCasa:31470, gapCasa:-35952, fdr:14.0, tgtFdr:33711, gapFdr:-18191, fbi:195, fbiAch:55, tgtFbi:284, gapFbi:-89, ppap:0.8},
+            {name:"KCP STABAT", asset:27631, tgtAsset:72713, gapAsset:-45082, casaPct:73, actCasa:20063, gapCasa:3484, fdr:22.0, tgtFdr:8289, gapFdr:-2074, fbi:125, fbiAch:41, tgtFbi:244, gapFbi:-119, ppap:3.8},
+            {name:"BENGKULU", asset:156813, tgtAsset:206333, gapAsset:-49520, casaPct:64, actCasa:100145, gapCasa:6057, fdr:31.0, tgtFdr:47044, gapFdr:1527, fbi:510, fbiAch:54, tgtFbi:756, gapFbi:-246, ppap:0.9},
+            {name:"KCP BUKITTINGGI", asset:100706, tgtAsset:94118, gapAsset:6588, casaPct:55, actCasa:55712, gapCasa:-4712, fdr:9.0, tgtFdr:30212, gapFdr:-20777, fbi:142, fbiAch:40, tgtFbi:284, gapFbi:-142, ppap:0.0},
+            {name:"PEMATANG SIANTAR", asset:32898, tgtAsset:93994, gapAsset:-61096, casaPct:78, actCasa:25785, gapCasa:6046, fdr:36.0, tgtFdr:9870, gapFdr:2030, fbi:129, fbiAch:42, tgtFbi:246, gapFbi:-117, ppap:6.8},
+            {name:"PADANGSIDIMPUAN", asset:83968, tgtAsset:127224, gapAsset:-43256, casaPct:80, actCasa:66767, gapCasa:16386, fdr:18.0, tgtFdr:25190, gapFdr:-9831, fbi:311, fbiAch:101, tgtFbi:308, gapFbi:3, ppap:0.1},
+            {name:"KCP PAYAKUMBUH", asset:103949, tgtAsset:102920, gapAsset:1029, casaPct:57, actCasa:58782, gapCasa:-3587, fdr:15.0, tgtFdr:31185, gapFdr:-15300, fbi:274, fbiAch:77, tgtFbi:285, gapFbi:-11, ppap:3.5},
+            {name:"PADANG", asset:192586, tgtAsset:232031, gapAsset:-39445, casaPct:69, actCasa:133296, gapCasa:17745, fdr:33.0, tgtFdr:57776, gapFdr:5659, fbi:570, fbiAch:56, tgtFbi:814, gapFbi:-244, ppap:1.5},
+            {name:"KCP SOLOK", asset:58672, tgtAsset:76197, gapAsset:-17525, casaPct:68, actCasa:39973, gapCasa:4770, fdr:14.0, tgtFdr:17602, gapFdr:-9593, fbi:174, fbiAch:57, tgtFbi:244, gapFbi:-70, ppap:0.6},
+            {name:"KCP PLAJU", asset:70105, tgtAsset:87631, gapAsset:-17526, casaPct:61, actCasa:43072, gapCasa:1009, fdr:23.0, tgtFdr:21032, gapFdr:-4642, fbi:180, fbiAch:51, tgtFbi:282, gapFbi:-102, ppap:1.4},
+            {name:"KCP SUNGAILIAT", asset:93996, tgtAsset:84681, gapAsset:9315, casaPct:51, actCasa:47778, gapCasa:-8620, fdr:10.0, tgtFdr:28199, gapFdr:-18422, fbi:244, fbiAch:69, tgtFbi:283, gapFbi:-39, ppap:0.0},
+            {name:"KCP MANNA BENGKULU", asset:60167, tgtAsset:79167, gapAsset:-19000, casaPct:78, actCasa:47142, gapCasa:11042, fdr:6.0, tgtFdr:18050, gapFdr:-14467, fbi:122, fbiAch:39, tgtFbi:250, gapFbi:-128, ppap:0.0},
+            {name:"KCP PANYABUNGAN", asset:42813, tgtAsset:73816, gapAsset:-31003, casaPct:72, actCasa:30948, gapCasa:5260, fdr:10.0, tgtFdr:12844, gapFdr:-8515, fbi:174, fbiAch:56, tgtFbi:249, gapFbi:-75, ppap:0.0},
+            {name:"TANJUNG PINANG", asset:92250, tgtAsset:126370, gapAsset:-34120, casaPct:64, actCasa:58668, gapCasa:3318, fdr:18.0, tgtFdr:27675, gapFdr:-11014, fbi:389, fbiAch:109, tgtFbi:357, gapFbi:32, ppap:7.1},
+            {name:"KCP KISARAN", asset:50433, tgtAsset:86953, gapAsset:-36520, casaPct:63, actCasa:31852, gapCasa:1592, fdr:37.0, tgtFdr:15130, gapFdr:3367, fbi:378, fbiAch:122, tgtFbi:310, gapFbi:68, ppap:0.7},
+            {name:"KCP BATURAJA", asset:40013, tgtAsset:70198, gapAsset:-30185, casaPct:59, actCasa:23700, gapCasa:-308, fdr:24.0, tgtFdr:12004, gapFdr:-2379, fbi:158, fbiAch:51, tgtFbi:248, gapFbi:-90, ppap:0.0},
+            {name:"KCP BINJAI", asset:52334, tgtAsset:78110, gapAsset:-25776, casaPct:61, actCasa:32139, gapCasa:739, fdr:23.0, tgtFdr:15700, gapFdr:-3554, fbi:187, fbiAch:61, tgtFbi:245, gapFbi:-58, ppap:0.1},
+            {name:"KCP ARGA MAKMUR", asset:53945, tgtAsset:70980, gapAsset:-17035, casaPct:65, actCasa:35006, gapCasa:2639, fdr:11.0, tgtFdr:16183, gapFdr:-10031, fbi:117, fbiAch:38, tgtFbi:246, gapFbi:-129, ppap:0.3},
+            {name:"KCP SERDANG", asset:74012, tgtAsset:73279, gapAsset:733, casaPct:46, actCasa:34045, gapCasa:-10362, fdr:21.0, tgtFdr:22204, gapFdr:-6763, fbi:245, fbiAch:79, tgtFbi:248, gapFbi:-3, ppap:1.2},
+            {name:"KCP KOBA", asset:65984, tgtAsset:70196, gapAsset:-4212, casaPct:86, actCasa:56878, gapCasa:17287, fdr:4.0, tgtFdr:19795, gapFdr:-17231, fbi:163, fbiAch:53, tgtFbi:246, gapFbi:-83, ppap:0.0},
+            {name:"KCP ENIM", asset:60287, tgtAsset:70101, gapAsset:-9814, casaPct:52, actCasa:31213, gapCasa:-4960, fdr:4.0, tgtFdr:18086, gapFdr:-15719, fbi:135, fbiAch:44, tgtFbi:245, gapFbi:-110, ppap:0.0},
+            {name:"KCP TANJUNG PANDAN", asset:66586, tgtAsset:70091, gapAsset:-3505, casaPct:72, actCasa:47728, gapCasa:7776, fdr:10.0, tgtFdr:19976, gapFdr:-13058, fbi:145, fbiAch:47, tgtFbi:247, gapFbi:-102, ppap:2.0},
+            {name:"KCP BANDAR JAYA", asset:48715, tgtAsset:74946, gapAsset:-26231, casaPct:66, actCasa:32165, gapCasa:2936, fdr:36.0, tgtFdr:14615, gapFdr:2701, fbi:154, fbiAch:50, tgtFbi:246, gapFbi:-92, ppap:0.0},
+            {name:"MEDAN BALAIKOTA", asset:247042, tgtAsset:257335, gapAsset:-10293, casaPct:58, actCasa:142838, gapCasa:-5387, fdr:22.0, tgtFdr:74113, gapFdr:-19284, fbi:765, fbiAch:60, tgtFbi:1020, gapFbi:-255, ppap:2.6},
+            {name:"KCP MUARA BUNGO", asset:43671, tgtAsset:70437, gapAsset:-26766, casaPct:71, actCasa:30808, gapCasa:4605, fdr:32.0, tgtFdr:13101, gapFdr:1037, fbi:160, fbiAch:52, tgtFbi:246, gapFbi:-86, ppap:0.0},
+            {name:"JAMBI", asset:95650, tgtAsset:127533, gapAsset:-31883, casaPct:76, actCasa:72374, gapCasa:14984, fdr:20.0, tgtFdr:28695, gapFdr:-9710, fbi:426, fbiAch:120, tgtFbi:355, gapFbi:71, ppap:9.6},
+            {name:"KCP ZA PAGAR ALAM", asset:70643, tgtAsset:82143, gapAsset:-11500, casaPct:60, actCasa:42135, gapCasa:-251, fdr:20.0, tgtFdr:21193, gapFdr:-6755, fbi:203, fbiAch:66, tgtFbi:246, gapFbi:-43, ppap:0.0},
+            {name:"BATAM", asset:116137, tgtAsset:133491, gapAsset:-17354, casaPct:74, actCasa:85506, gapCasa:15824, fdr:47.0, tgtFdr:34841, gapFdr:19434, fbi:598, fbiAch:168, tgtFbi:356, gapFbi:242, ppap:0.0},
+            {name:"PEKANBARU", asset:310148, tgtAsset:201395, gapAsset:108753, casaPct:56, actCasa:172395, gapCasa:-13694, fdr:33.0, tgtFdr:93045, gapFdr:10767, fbi:766, fbiAch:60, tgtFbi:1021, gapFbi:-255, ppap:8.4},
+            {name:"LAMPUNG", asset:307395, tgtAsset:227700, gapAsset:79695, casaPct:72, actCasa:220663, gapCasa:36226, fdr:26.0, tgtFdr:92218, gapFdr:-10842, fbi:598, fbiAch:49, tgtFbi:976, gapFbi:-378, ppap:100.0},
+            {name:"PANGKAL PINANG", asset:248238, tgtAsset:157113, gapAsset:91125, casaPct:60, actCasa:149019, gapCasa:76, fdr:6.0, tgtFdr:74471, gapFdr:-58605, fbi:684, fbiAch:102, tgtFbi:671, gapFbi:13, ppap:1.2},
+            {name:"KCP KOTABUMI", asset:60537, tgtAsset:74737, gapAsset:-14200, casaPct:70, actCasa:42209, gapCasa:5887, fdr:52.0, tgtFdr:18161, gapFdr:13310, fbi:299, fbiAch:97, tgtFbi:247, gapFbi:52, ppap:0.0},
+            {name:"KCP KAMPAR", asset:73744, tgtAsset:76025, gapAsset:-2281, casaPct:52, actCasa:38288, gapCasa:-5958, fdr:26.0, tgtFdr:22123, gapFdr:-2960, fbi:329, fbiAch:107, tgtFbi:307, gapFbi:22, ppap:0.3},
+            {name:"KCP METRO LAMPUNG", asset:88210, tgtAsset:92850, gapAsset:-4640, casaPct:73, actCasa:64006, gapCasa:11080, fdr:42.0, tgtFdr:26463, gapFdr:10764, fbi:294, fbiAch:83, tgtFbi:283, gapFbi:11, ppap:0.6},
+            {name:"PALEMBANG", asset:166391, tgtAsset:202916, gapAsset:-36525, casaPct:61, actCasa:102323, gapCasa:2489, fdr:30.0, tgtFdr:49917, gapFdr:293, fbi:697, fbiAch:54, tgtFbi:1033, gapFbi:-336, ppap:68.0},
+            {name:"KCP CURUP", asset:115701, tgtAsset:95621, gapAsset:20080, casaPct:66, actCasa:76889, gapCasa:7468, fdr:13.0, tgtFdr:34710, gapFdr:-19667, fbi:314, fbiAch:88, tgtFbi:285, gapFbi:29, ppap:0.1}
         ];
 
-        // --- CHART INSTANCES STORAGE ---
         let charts = {};
 
-        // --- INITIALIZATION ---
         document.addEventListener('DOMContentLoaded', () => {
             initFilter();
             updateDashboard('ALL');
@@ -269,154 +245,107 @@
 
         function initFilter() {
             const select = document.getElementById('branchFilter');
-            // Sort alphabetically for dropdown
             const sortedBranches = [...rawData].sort((a,b) => a.name.localeCompare(b.name));
-            
             sortedBranches.forEach(b => {
                 const opt = document.createElement('option');
                 opt.value = b.name;
                 opt.textContent = b.name;
                 select.appendChild(opt);
             });
-
-            select.addEventListener('change', (e) => {
-                updateDashboard(e.target.value);
-            });
+            select.addEventListener('change', (e) => updateDashboard(e.target.value));
         }
 
-        // --- CORE UPDATE LOGIC ---
         function updateDashboard(filterValue) {
             let dataToShow = [];
-            
             if (filterValue === 'ALL') {
-                // For Aggregate View: Show Top 10 by Asset for charts to avoid clutter
-                // But calculate totals for Cards
                 dataToShow = [...rawData].sort((a,b) => b.asset - a.asset).slice(0, 10);
-                updateCards(rawData); // Pass ALL data for aggregation
+                updateCards(rawData);
             } else {
-                // Single Branch View
                 dataToShow = rawData.filter(d => d.name === filterValue);
                 updateCards(dataToShow);
             }
-
             updateTable(dataToShow);
-            renderCharts(dataToShow, filterValue);
+            renderCharts(dataToShow);
         }
 
-        // --- CARDS LOGIC ---
         function updateCards(data) {
             const fmt = (n) => new Intl.NumberFormat('id-ID').format(n);
             
             // Aggregations
             const totalAsset = data.reduce((a,b) => a + b.asset, 0);
-            const totalTgtAsset = data.reduce((a,b) => a + b.tgtAsset, 0);
             const totalGapAsset = data.reduce((a,b) => a + b.gapAsset, 0);
             
-            const avgCASA = (data.reduce((a,b) => a + b.casa, 0) / data.length).toFixed(1);
-            // Weighted average would be better but simple avg is okay for dashboard overview
+            // Weighted Average CASA % = Sum(Actual CASA) / Sum(Funding/Asset)
+            const totalActCasa = data.reduce((a,b) => a + b.actCasa, 0);
+            const totalFunding = data.reduce((a,b) => a + b.asset, 0); // Assuming Funding ~ Asset for aggregate ratio proxy or use actual funding col if available
+            const weightedCASA = totalFunding > 0 ? ((totalActCasa / totalFunding) * 100).toFixed(1) : 0;
+            
+            const totalGapCasa = data.reduce((a,b) => a + b.gapCasa, 0);
             
             const avgFDR = (data.reduce((a,b) => a + b.fdr, 0) / data.length).toFixed(1);
-            const avgTgtFDR = "Varies"; // Since targets vary per branch
+            const totalGapFdr = data.reduce((a,b) => a + b.gapFdr, 0);
             
             const totalFBI = data.reduce((a,b) => a + b.fbi, 0);
             const totalTgtFBI = data.reduce((a,b) => a + b.tgtFbi, 0);
-            const totalGapFBI = data.reduce((a,b) => a + b.gapFbi, 0);
+            const achFBI = totalTgtFBI > 0 ? ((totalFBI / totalTgtFBI) * 100).toFixed(1) : 0;
 
             // Update DOM
             document.getElementById('sumAsset').innerText = fmt(totalAsset);
-            document.getElementById('targetAsset').innerText = fmt(totalTgtAsset);
             const gapAssetEl = document.getElementById('gapAsset');
             gapAssetEl.innerText = fmt(totalGapAsset);
             gapAssetEl.className = `font-bold ${totalGapAsset < 0 ? 'text-red-500' : 'text-green-600'}`;
 
-            document.getElementById('avgCASA').innerText = avgCASA + '%';
-            const gapCASAVal = (parseFloat(avgCASA) - 60).toFixed(1);
-            const gapCASAEl = document.getElementById('gapCASA');
-            gapCASAEl.innerText = (gapCASAVal > 0 ? '+' : '') + gapCASAVal + '%';
-            gapCASAEl.className = `font-bold ${gapCASAVal < 0 ? 'text-orange-500' : 'text-green-600'}`;
+            document.getElementById('avgCASA').innerText = weightedCASA + '%';
+            
+            // NEW CASA NOMINAL CARDS
+            document.getElementById('sumActualCASA').innerText = fmt(totalActCasa);
+            const gapCasaEl = document.getElementById('gapCASA');
+            gapCasaEl.innerText = fmt(totalGapCasa);
+            gapCasaEl.className = `font-bold ${totalGapCasa < 0 ? 'text-red-500' : 'text-green-600'}`;
 
             document.getElementById('avgFDR').innerText = avgFDR + '%';
-            document.getElementById('targetFDR').innerText = "Bervariasi";
-            document.getElementById('gapFDR').innerText = "-"; // Complex to aggregate gap FDR meaningfully without weights
+            const gapFdrEl = document.getElementById('gapFDR');
+            gapFdrEl.innerText = fmt(totalGapFdr);
+            gapFdrEl.className = `font-bold ${Math.abs(totalGapFdr) > 0 ? 'text-orange-500' : 'text-green-600'}`;
 
             document.getElementById('sumFBI').innerText = fmt(totalFBI);
-            document.getElementById('targetFBI').innerText = fmt(totalTgtFBI);
-            const gapFBIEl = document.getElementById('gapFBI');
-            gapFBIEl.innerText = fmt(totalGapFBI);
-            gapFBIEl.className = `font-bold ${totalGapFBI < 0 ? 'text-red-500' : 'text-green-600'}`;
-
-            // PPAP Logic
-            if (data.length === 1) {
-                const ppap = data[0].ppap;
-                document.getElementById('valPPAP').innerText = ppap + '%';
-                const statusEl = document.getElementById('statusPPAP');
-                if(ppap > 1) {
-                    statusEl.innerText = "WASPADA (>1%)";
-                    statusEl.className = "text-xs font-bold px-2 py-1 rounded bg-red-100 text-red-700";
-                } else {
-                    statusEl.innerText = "AMAN (<1%)";
-                    statusEl.className = "text-xs font-bold px-2 py-1 rounded bg-green-100 text-green-700";
-                }
-            } else {
-                const highRiskCount = data.filter(d => d.ppap > 1).length;
-                document.getElementById('valPPAP').innerText = highRiskCount + " Cabang";
-                const statusEl = document.getElementById('statusPPAP');
-                statusEl.innerText = `dari ${data.length} cabang bermasalah`;
-                statusEl.className = "text-xs font-bold px-2 py-1 rounded bg-gray-100 text-gray-600";
-            }
+            const achFBIEl = document.getElementById('achFBI');
+            achFBIEl.innerText = achFBI + '%';
+            achFBIEl.className = `font-bold ${achFBI < 80 ? 'text-orange-500' : 'text-green-600'}`;
         }
 
-        // --- TABLE LOGIC ---
         function updateTable(data) {
             const tbody = document.getElementById('tableBody');
             tbody.innerHTML = '';
             const fmt = (n) => new Intl.NumberFormat('id-ID').format(n);
 
             data.forEach(d => {
-                const gapAssetClass = d.gapAsset < 0 ? 'text-red-500' : 'text-green-600';
-                const gapFbiClass = d.gapFbi < 0 ? 'text-red-500' : 'text-green-600';
-                const ppapClass = d.ppap > 1 ? 'bg-red-100 text-red-700 font-bold' : 'bg-green-50 text-green-700';
-
                 const row = `
                     <tr class="hover:bg-blue-50 transition-colors border-b border-gray-50">
                         <td class="p-4 font-semibold sticky left-0 bg-white hover:bg-blue-50 text-slate-700">${d.name}</td>
                         <td class="p-4 text-right text-slate-600">${fmt(d.asset)}</td>
-                        <td class="p-4 text-right text-slate-400">${fmt(d.tgtAsset)}</td>
-                        <td class="p-4 text-right ${gapAssetClass} font-medium">${fmt(d.gapAsset)}</td>
-                        <td class="p-4 text-right ${d.casa < 60 ? 'text-orange-500 font-bold' : 'text-slate-600'}">${d.casa}%</td>
+                        <td class="p-4 text-right ${d.gapAsset < 0 ? 'text-red-500' : 'text-green-600'} font-medium">${fmt(d.gapAsset)}</td>
+                        <td class="p-4 text-right ${d.casaPct < 60 ? 'text-orange-500 font-bold' : 'text-slate-600'}">${d.casaPct}%</td>
+                        <td class="p-4 text-right text-teal-700 font-semibold">${fmt(d.actCasa)}</td>
+                        <td class="p-4 text-right ${d.gapCasa < 0 ? 'text-red-500' : 'text-green-600'} font-medium">${fmt(d.gapCasa)}</td>
                         <td class="p-4 text-right text-slate-600">${d.fdr}%</td>
                         <td class="p-4 text-right text-slate-600">${fmt(d.fbi)}</td>
-                        <td class="p-4 text-right text-slate-400">${fmt(d.tgtFbi)}</td>
-                        <td class="p-4 text-right ${gapFbiClass} font-medium">${fmt(d.gapFbi)}</td>
-                        <td class="p-4 text-center"><span class="${ppapClass} px-2 py-1 rounded text-xs">${d.ppap}%</span></td>
+                        <td class="p-4 text-right ${d.fbiAch < 80 ? 'text-orange-500' : 'text-green-600'}">${d.fbiAch}%</td>
+                        <td class="p-4 text-center"><span class="${d.ppap > 1 ? 'bg-red-100 text-red-700' : 'bg-green-50 text-green-700'} px-2 py-1 rounded text-xs font-bold">${d.ppap}%</span></td>
                     </tr>
                 `;
                 tbody.innerHTML += row;
             });
         }
 
-        // --- CHART RENDERING ---
-        function renderCharts(data, mode) {
+        function renderCharts(data) {
             const labels = data.map(d => d.name);
-            
-            // Common Options
             const commonOptions = {
                 responsive: true,
                 maintainAspectRatio: false,
                 interaction: { mode: 'index', intersect: false },
-                plugins: {
-                    legend: { position: 'top', labels: { usePointStyle: true, boxWidth: 8 } },
-                    tooltip: { 
-                        backgroundColor: 'rgba(15, 23, 42, 0.9)', 
-                        padding: 12, 
-                        titleFont: { size: 13 }, 
-                        bodyFont: { size: 12 } 
-                    }
-                },
-                scales: {
-                    x: { grid: { display: false }, ticks: { maxRotation: 45, minRotation: 45, font: {size: 10} } },
-                    y: { beginAtZero: true, grid: { color: '#f1f5f9' } }
-                }
+                plugins: { legend: { position: 'top', labels: { usePointStyle: true, boxWidth: 8 } } },
+                scales: { x: { grid: { display: false }, ticks: { maxRotation: 45, minRotation: 45, font: {size: 10} } } }
             };
 
             // 1. ASSET CHART
@@ -431,21 +360,52 @@
                         { label: 'GAP Asset', data: data.map(d => d.gapAsset), backgroundColor: data.map(d => d.gapAsset < 0 ? '#ef4444' : '#22c55e'), borderRadius: 4, barPercentage: 0.7 }
                     ]
                 },
-                options: { ...commonOptions, scales: { ...commonOptions.scales, y: { ...commonOptions.scales.y, ticks: { callback: v => (v/1000) + ' M' } } } }
+                options: { ...commonOptions, scales: { y: { beginAtZero: true, ticks: { callback: v => (v/1000) + ' M' } } } }
             });
 
-            // 2. CASA CHART
+            // 2. ENHANCED CASA CHART (Dual Axis)
             if(charts.casa) charts.casa.destroy();
             charts.casa = new Chart(document.getElementById('casaChart'), {
                 type: 'bar',
                 data: {
                     labels: labels,
                     datasets: [
-                        { label: 'Actual CASA %', data: data.map(d => d.casa), backgroundColor: '#10b981', borderRadius: 4 },
-                        { label: 'Target 60%', data: Array(data.length).fill(60), type: 'line', borderColor: '#dc2626', borderWidth: 2, pointRadius: 0, borderDash: [5,5], fill: false }
+                        { 
+                            label: 'Actual CASA %', 
+                            data: data.map(d => d.casaPct), 
+                            backgroundColor: '#10b981', 
+                            borderRadius: 4,
+                            yAxisID: 'y'
+                        },
+                        { 
+                            label: 'Target 60%', 
+                            data: Array(data.length).fill(60), 
+                            type: 'line', 
+                            borderColor: '#dc2626', 
+                            borderWidth: 2, 
+                            pointRadius: 0, 
+                            borderDash: [5,5], 
+                            yAxisID: 'y'
+                        },
+                        { 
+                            label: 'GAP CASA (Rp Juta)', 
+                            data: data.map(d => d.gapCasa), 
+                            backgroundColor: data.map(d => d.gapCasa < 0 ? 'rgba(239,68,68,0.3)' : 'rgba(34,197,94,0.3)'),
+                            borderColor: data.map(d => d.gapCasa < 0 ? '#ef4444' : '#22c55e'),
+                            borderWidth: 1,
+                            type: 'bar',
+                            yAxisID: 'y1'
+                        }
                     ]
                 },
-                options: { ...commonOptions, scales: { ...commonOptions.scales, y: { min: 0, max: 100 } } }
+                options: {
+                    ...commonOptions,
+                    scales: {
+                        y: { type: 'linear', display: true, position: 'left', min: 0, max: 100, title: { display: true, text: 'Ratio (%)' } },
+                        y1: { type: 'linear', display: true, position: 'right', grid: { drawOnChartArea: false }, title: { display: true, text: 'GAP Nominal (Rp Juta)' } },
+                        x: commonOptions.scales.x
+                    }
+                }
             });
 
             // 3. FDR CHART
@@ -455,7 +415,9 @@
                 data: {
                     labels: labels,
                     datasets: [
-                        { label: 'Actual FDR %', data: data.map(d => d.fdr), backgroundColor: '#8b5cf6', borderRadius: 4 }
+                        { label: 'Actual FDR %', data: data.map(d => d.fdr), backgroundColor: '#8b5cf6', borderRadius: 4, barPercentage: 0.7 },
+                        { label: 'Target FDR %', data: data.map(d => (d.tgtFdr / d.asset * 100).toFixed(1)), backgroundColor: '#cbd5e1', borderRadius: 4, barPercentage: 0.7 },
+                        { label: 'GAP FDR (Rp Juta)', data: data.map(d => d.gapFdr), backgroundColor: data.map(d => d.gapFdr < 0 ? '#ef4444' : '#22c55e'), borderRadius: 4, barPercentage: 0.7 }
                     ]
                 },
                 options: commonOptions
