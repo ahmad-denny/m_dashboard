@@ -1003,7 +1003,7 @@
             return new Intl.NumberFormat('id-ID',{minimumFractionDigits:1,maximumFractionDigits:1}).format(num/1000000000)+" M";
         }
         function formatChartValue(num, currentFileName) {
-            const isBillionFormat = ['financing.csv','funding.csv','coll.csv'].includes(currentFileName);
+            const isBillionFormat = ['finbook.csv','finos.csv','funding.csv','coll.csv'].includes(currentFileName);
             if (isBillionFormat) {
                 if (!num && num !== 0) return "0,0 M";
                 let val = num / 1000000000;
@@ -1108,7 +1108,7 @@
             if (prevPrevMonth) filteredData.forEach(row => { prevPrevMonthGrandTotal += (row[prevPrevMonth] || 0); });
 
             const currentFileName = csvFilesConfig[currentActiveFileIndex].file;
-            const isBillionFormat = ['financing.csv','funding.csv','coll.csv'].includes(currentFileName);
+            const isBillionFormat = ['finbook.csv','finos.csv','funding.csv','coll.csv'].includes(currentFileName);
             const isNPF = (currentFileName === 'coll.csv');
 
             const kpiFourthLabel = document.getElementById('kpi-fourth-label');
@@ -1741,7 +1741,7 @@
             const isDark = document.body.classList.contains('dark');
             const textColor = isDark ? '#94a3b8' : '#64748b';
             const isNpfTab = currentFileName === 'coll.csv';
-            const isGeneralTab = ['financing.csv','funding.csv','haji.csv','qris.csv','mdin.csv'].includes(currentFileName);
+            const isGeneralTab = ['finbook.csv','finos.csv','funding.csv','haji.csv','qris.csv','mdin.csv'].includes(currentFileName);
             const titleEl = document.getElementById('co-branch-title');
             const npfToggle = document.getElementById('npf-toggle-co');
             const genToggle = document.getElementById('general-toggle-co');
@@ -1848,7 +1848,7 @@
             const isDark = document.body.classList.contains('dark');
             const textColor = isDark ? '#94a3b8' : '#64748b';
             const isNpfTab = currentFileName === 'coll.csv';
-            const isGeneralTab = ['financing.csv','funding.csv','haji.csv','qris.csv','mdin.csv'].includes(currentFileName);
+            const isGeneralTab = ['finbook.csv','finos.csv','funding.csv','haji.csv','qris.csv','mdin.csv'].includes(currentFileName);
             const titleEl = document.getElementById('branch-title');
             const npfToggle = document.getElementById('npf-toggle-branch');
             const genToggle = document.getElementById('general-toggle-branch');
@@ -1956,7 +1956,7 @@
             const sortedOffices=Object.entries(officeMap).map(([name,vals])=>({name,...vals})).sort((a,b)=>b.total-a.total);
             const fragment=document.createDocumentFragment();
             const currentFileName=csvFilesConfig[currentActiveFileIndex].file;
-            const isBillionFormat=['financing.csv','funding.csv','coll.csv'].includes(currentFileName);
+            const isBillionFormat=['finbook.csv','finos.csv','funding.csv','coll.csv'].includes(currentFileName);
             sortedOffices.forEach((item)=>{
                 const tr=document.createElement('tr'); 
                 tr.className="bg-white dark:bg-dark-card border-b dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700/50 transition-colors text-xs md:text-base";
