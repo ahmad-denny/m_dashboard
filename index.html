@@ -1342,15 +1342,15 @@
                 if (m1 !== '-') updateYtdBadge('ytd-total', 'ytd-total-val', ytdM1, false); else document.getElementById('ytd-total').classList.add('hidden');
 
                 document.getElementById('kpi-segment1-label').innerText=`Akusisi (${m2})`; animateNumber(document.getElementById('kpi-segment1'),totalM2);
-                document.getElementById('kpi-segment1-pct').innerHTML=`<span class="text-slate-400 dark:text-slate-500 font-normal text-[8px]">Posisi 2 Bulan</span>`;
+                document.getElementById('kpi-segment1-pct').innerHTML=`<span class="text-slate-400 dark:text-slate-500 font-normal text-[8px]">Last 2 month</span>`;
                 if (m2 !== '-') updateYtdBadge('ytd-seg1', 'ytd-seg1-val', ytdM2, false); else document.getElementById('ytd-seg1').classList.add('hidden');
 
                 document.getElementById('kpi-segment2-label').innerText=`Akusisi (${m3})`; animateNumber(document.getElementById('kpi-segment2'),totalM3);
-                document.getElementById('kpi-segment2-pct').innerHTML=`<span class="text-slate-400 dark:text-slate-500 font-normal text-[8px]">Posisi 3 Bulan</span>`;
+                document.getElementById('kpi-segment2-pct').innerHTML=`<span class="text-slate-400 dark:text-slate-500 font-normal text-[8px]">Last 3 month</span>`;
                 if (m3 !== '-') updateYtdBadge('ytd-seg2', 'ytd-seg2-val', ytdM3, false); else document.getElementById('ytd-seg2').classList.add('hidden');
 
                 kpiFourthLabel.innerText=`Akusisi (${m4})`; kpiFourthValue.innerText=formatNumber(totalM4);
-                kpiFourthSublabel.className="text-slate-400 dark:text-slate-500 not-italic truncate"; kpiFourthSublabel.innerText="Posisi 4 bulan";
+                kpiFourthSublabel.className="text-slate-400 dark:text-slate-500 not-italic truncate"; kpiFourthSublabel.innerText="Last 4 month";
                 kpiFourthIcon.className="fa-solid fa-calendar-check";
                 if (m4 !== '-') updateYtdBadge('ytd-fourth', 'ytd-fourth-val', ytdM4, false); else document.getElementById('ytd-fourth').classList.add('hidden');
 
