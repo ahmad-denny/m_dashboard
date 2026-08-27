@@ -257,7 +257,7 @@
                 <div class="bg-white dark:bg-dark-card rounded-lg p-2 md:p-3 card-shadow border-l-4 border-indigo-500 min-w-0 transition-colors duration-300">
                     <div class="flex justify-between items-start gap-1">
                         <div class="min-w-0 flex-1">
-                            <p class="text-[9px] md:text-[10px] font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider truncate" id="kpi-total-label">Total Outstanding</p>
+                            <p class="text-[9px] md:text-[10px] font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider truncate" id="kpi-total-label">OUTSTANDING TOTAL</p>
                             <h3 class="text-sm md:text-lg font-bold text-slate-800 dark:text-white mt-0.5 truncate" id="kpi-total">0</h3>
                             <div class="flex items-center gap-1.5 min-h-[22px]">
                                 <div id="mom-total" class="flex items-center"></div>
@@ -1545,7 +1545,7 @@
             document.getElementById('ytd-fourth').classList.add('hidden');
         }
         else if (currentFileName === "funding.csv") {
-            document.getElementById('kpi-total-label').innerText = "Total Funding";
+            document.getElementById('kpi-total-label').innerText = "Funding Total";
             if(isBillionFormat){document.getElementById('kpi-total').innerText=formatToBillion(grandTotal);}else{animateNumber(document.getElementById('kpi-total'),grandTotal);}
             renderMoM('mom-total', grandTotal, grandTotalPrev, isBillionFormat, isNPF);
             
@@ -1601,7 +1601,7 @@
             document.getElementById('kpi-segment2-pct').innerHTML=`<span id="anim-sa-pct">0%</span> <span class="text-[8px] text-slate-400 dark:text-slate-500 font-normal">from Total</span>`;
             animateNumber(document.getElementById('anim-sa-pct'),saTotal/grandTotal*100,true);
             
-            kpiFourthLabel.innerText = "Total TD";
+            kpiFourthLabel.innerText = "TD (TIME DEPOSIT)";
             kpiFourthSublabel.className = "text-slate-400 dark:text-slate-500 not-italic truncate";
             if(isBillionFormat){ kpiFourthValue.innerText = formatToBillion(tdTotal); } else { animateNumber(kpiFourthValue, tdTotal); }
             renderMoM('mom-fourth', tdTotal, tdPrev, isBillionFormat, isNPF);
@@ -1647,7 +1647,7 @@
             renderMoM('mom-fourth', grandTotalPrev, prevPrevMonthGrandTotal, false, isNPF, prevPrevMonth);
         } 
         else if (currentFileName === "coll.csv") {
-            document.getElementById('kpi-total-label').innerText = "Total Outstanding";
+            document.getElementById('kpi-total-label').innerText = "OUTSTANDING TOTAL";
             if(isBillionFormat){document.getElementById('kpi-total').innerText=formatToBillion(grandTotal);}else{animateNumber(document.getElementById('kpi-total'),grandTotal);}
             renderMoM('mom-total', grandTotal, grandTotalPrev, isBillionFormat, isNPF);
             ['ytd-total','ytd-seg1','ytd-seg2','ytd-fourth'].forEach(id => document.getElementById(id).classList.add('hidden'));
@@ -1683,7 +1683,7 @@
             kpiFourthSublabel.innerText = "By Volume Month";
             kpiFourthIcon.className = "fa-solid fa-trophy";
             ['ytd-total','ytd-seg1','ytd-seg2','ytd-fourth'].forEach(id => document.getElementById(id).classList.add('hidden'));
-            document.getElementById('kpi-total-label').innerText = "Total Outstanding";
+            document.getElementById('kpi-total-label').innerText = "OUTSTANDING TOTAL";
             if(isBillionFormat){document.getElementById('kpi-total').innerText=formatToBillion(grandTotal);}else{animateNumber(document.getElementById('kpi-total'),grandTotal);}
             renderMoM('mom-total', grandTotal, grandTotalPrev, isBillionFormat, isNPF);
             
