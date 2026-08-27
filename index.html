@@ -1086,7 +1086,7 @@
 
                 // CASA/TD Logic for Funding
                 let isCA = (prod === 'CA' || prod === 'GIRO');
-                let isSA = (prod === 'SA' || prod === 'TABUNGAN');
+                let isSA = (prod === 'SA' || prod === 'Saving');
                 let isTD = (prod === 'TD' || prod === 'DEPO' || prod === 'DEPOSITO');
                 if (!isCA && !isSA && !isTD) {
                     if (grp === 'CASA') {
@@ -1266,7 +1266,7 @@
                 
                 // CASA/TD
                 let isCA = (prod === 'CA' || prod === 'GIRO');
-                let isSA = (prod === 'SA' || prod === 'TABUNGAN');
+                let isSA = (prod === 'SA' || prod === 'Saving');
                 let isTD = (prod === 'TD' || prod === 'DEPO' || prod === 'DEPOSITO');
                 if (!isCA && !isSA && !isTD) {
                     if (grp === 'CASA') {
@@ -1483,25 +1483,25 @@
             const t3 = aggCache.grandTotalMonth[m3]||0;
             const t4 = aggCache.grandTotalMonth[m4]||0;
 
-            document.getElementById('kpi-total-label').innerText=`Akusisi (${m1})`; animateNumber(document.getElementById('kpi-total'),t1);
+            document.getElementById('kpi-total-label').innerText=`Acquisition (${m1})`; animateNumber(document.getElementById('kpi-total'),t1);
             if (m1 !== '-') updateYtdBadge('ytd-total', 'ytd-total-val', calculateYTDFromCache(m1, m=>aggCache.grandTotalMonth[m]), false); else document.getElementById('ytd-total').classList.add('hidden');
             
-            document.getElementById('kpi-segment1-label').innerText=`Akusisi (${m2})`; animateNumber(document.getElementById('kpi-segment1'),t2);
+            document.getElementById('kpi-segment1-label').innerText=`Acquisition (${m2})`; animateNumber(document.getElementById('kpi-segment1'),t2);
             document.getElementById('kpi-segment1-pct').innerHTML=`<span class="text-slate-400 dark:text-slate-500 font-normal text-[8px]">Last 2 month</span>`;
             if (m2 !== '-') updateYtdBadge('ytd-seg1', 'ytd-seg1-val', calculateYTDFromCache(m2, m=>aggCache.grandTotalMonth[m]), false); else document.getElementById('ytd-seg1').classList.add('hidden');
             
-            document.getElementById('kpi-segment2-label').innerText=`Akusisi (${m3})`; animateNumber(document.getElementById('kpi-segment2'),t3);
+            document.getElementById('kpi-segment2-label').innerText=`Acquisition (${m3})`; animateNumber(document.getElementById('kpi-segment2'),t3);
             document.getElementById('kpi-segment2-pct').innerHTML=`<span class="text-slate-400 dark:text-slate-500 font-normal text-[8px]">Last 3 month</span>`;
             if (m3 !== '-') updateYtdBadge('ytd-seg2', 'ytd-seg2-val', calculateYTDFromCache(m3, m=>aggCache.grandTotalMonth[m]), false); else document.getElementById('ytd-seg2').classList.add('hidden');
             
-            kpiFourthLabel.innerText=`Akusisi (${m4})`; kpiFourthValue.innerText=formatNumber(t4);
+            kpiFourthLabel.innerText=`Acquisition (${m4})`; kpiFourthValue.innerText=formatNumber(t4);
             kpiFourthSublabel.className="text-slate-400 dark:text-slate-500 not-italic truncate"; kpiFourthSublabel.innerText="Last 4 month";
             kpiFourthIcon.className="fa-solid fa-calendar-check";
             if (m4 !== '-') updateYtdBadge('ytd-fourth', 'ytd-fourth-val', calculateYTDFromCache(m4, m=>aggCache.grandTotalMonth[m]), false); else document.getElementById('ytd-fourth').classList.add('hidden');
             ['mom-total','mom-seg1','mom-seg2','mom-fourth'].forEach(id => document.getElementById(id).innerHTML='');
         }
         else if (currentFileName === "finbook.csv" || currentFileName === "finos.csv") {
-            const label = currentFileName === "finbook.csv" ? "Total Booking" : "Total Portfolio";
+            const label = currentFileName === "finbook.csv" ? "Booking Total" : "Portfolio Total";
             document.getElementById('kpi-total-label').innerText = label;
             if(isBillionFormat){document.getElementById('kpi-total').innerText=formatToBillion(grandTotal);}else{animateNumber(document.getElementById('kpi-total'),grandTotal);}
             renderMoM('mom-total', grandTotal, grandTotalPrev, isBillionFormat, isNPF);
@@ -1595,7 +1595,7 @@
             document.getElementById('kpi-segment1-pct').innerHTML=`<span id="anim-ca-pct">0%</span> <span class="text-[8px] text-slate-400 dark:text-slate-500 font-normal">from Total</span>`;
             animateNumber(document.getElementById('anim-ca-pct'),caTotal/grandTotal*100,true);
             
-            document.getElementById('kpi-segment2-label').innerText = "SA (Tabungan)";
+            document.getElementById('kpi-segment2-label').innerText = "SA (Saving)";
             if(isBillionFormat){document.getElementById('kpi-segment2').innerText=formatToBillion(saTotal);}else{animateNumber(document.getElementById('kpi-segment2'),saTotal);}
             renderMoM('mom-seg2', saTotal, saPrev, isBillionFormat, isNPF);
             document.getElementById('kpi-segment2-pct').innerHTML=`<span id="anim-sa-pct">0%</span> <span class="text-[8px] text-slate-400 dark:text-slate-500 font-normal">from Total</span>`;
@@ -1608,7 +1608,7 @@
             kpiFourthSublabel.innerText = fourthSublabelText;
         } 
         else if (currentFileName === "haji.csv") {
-            document.getElementById('kpi-total-label').innerText = "Total Porsi";
+            document.getElementById('kpi-total-label').innerText = "Total Portion";
             animateNumber(document.getElementById('kpi-total'), grandTotal);
             renderMoM('mom-total', grandTotal, grandTotalPrev, false, isNPF);
             
