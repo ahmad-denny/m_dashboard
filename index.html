@@ -1384,7 +1384,7 @@
         return new Intl.NumberFormat('id-ID',{minimumFractionDigits:1,maximumFractionDigits:1}).format(num/1000000000)+" M";
     }
     function formatChartValue(num, currentFileName, decimals = null) {
-        const isBillionFormat = ['finbook.csv','finos.csv','funding.csv','coll.csv','sli.csv'].includes(currentFileName);
+        const isBillionFormat = ['finbook.csv','finos.csv','funding.csv','coll.csv'].includes(currentFileName);
         if (isBillionFormat) {
             if (!num && num !== 0) return "0,0 M";
             let val = num / 1000000000;
