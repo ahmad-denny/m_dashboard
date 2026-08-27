@@ -1895,7 +1895,7 @@
         const isDark = document.body.classList.contains('dark');
         const textColor = isDark ? '#94a3b8' : '#64748b';
         const isNpfTab = currentFileName === 'coll.csv';
-        const isGeneralTab = ['finbook.csv','finos.csv','funding.csv','haji.csv','qris.csv','mdin.csv'].includes(currentFileName);
+        const isGeneralTab = ['finbook.csv','finos.csv','funding.csv','haji.csv','qris.csv','mdin.csv','sli.csv'].includes(currentFileName);
         const titleEl = document.getElementById('co-branch-title');
         const viewToggle = document.getElementById('view-toggle-co');
         const npfToggle = document.getElementById('npf-toggle-co');
@@ -1976,7 +1976,7 @@
                 afterDatasetsDraw(chart){
                     const {ctx} = chart;
                     let labelsToDraw = [];
-                    const isGeneralTab = ['finbook.csv','finos.csv','funding.csv','haji.csv','qris.csv','mdin.csv'].includes(currentFileName);
+                    const isGeneralTab = ['finbook.csv','finos.csv','funding.csv','haji.csv','qris.csv','mdin.csv','sli.csv'].includes(currentFileName);
                     const isNpfTab = currentFileName === 'coll.csv';
                     const isTargetFile = ['finbook.csv','finos.csv','funding.csv','coll.csv'].includes(currentFileName);
                     const isBottomMode = isGeneralTab ? generalMode.co === 'bottom' : (isNpfTab ? npfMode.co === 'bottom' : false);
@@ -2024,7 +2024,7 @@
         const isDark = document.body.classList.contains('dark');
         const textColor = isDark ? '#94a3b8' : '#64748b';
         const isNpfTab = currentFileName === 'coll.csv';
-        const isGeneralTab = ['finbook.csv','finos.csv','funding.csv','haji.csv','qris.csv','mdin.csv'].includes(currentFileName);
+        const isGeneralTab = ['finbook.csv','finos.csv','funding.csv','haji.csv','qris.csv','mdin.csv','sli.csv'].includes(currentFileName);
         const titleEl = document.getElementById('branch-title');
         const viewToggle = document.getElementById('view-toggle-branch');
         const npfToggle = document.getElementById('npf-toggle-branch');
@@ -2105,7 +2105,7 @@
                 afterDatasetsDraw(chart){
                     const {ctx} = chart;
                     let labelsToDraw = [];
-                    const isGeneralTab = ['finbook.csv','finos.csv','funding.csv','haji.csv','qris.csv','mdin.csv'].includes(currentFileName);
+                    const isGeneralTab = ['finbook.csv','finos.csv','funding.csv','haji.csv','qris.csv','mdin.csv','sli.csv'].includes(currentFileName);
                     const isNpfTab = currentFileName === 'coll.csv';
                     const isTargetFile = ['finbook.csv','finos.csv','funding.csv','coll.csv'].includes(currentFileName);
                     const isBottomMode = isGeneralTab ? generalMode.branch === 'bottom' : (isNpfTab ? npfMode.branch === 'bottom' : false);
