@@ -519,7 +519,7 @@
     });
 
     // --- CONFIGURATION ---
-    const MANUAL_DATE_LATEST_MONTH = '26 Agustus 2026';
+    const MANUAL_DATE_LATEST_MONTH = '27 Agustus 2026';
     const DASHBOARD_PASSWORD = 'rbpm';
 
     // --- WEB WORKER FOR PARSING (OPTIMASI 1: NON-BLOCKING PARSING) ---
@@ -1545,7 +1545,7 @@
             renderMoM('mom-fourth', grandTotalPrev, prevPrevMonthGrandTotal, isBillionFormat, isNPF, prevPrevMonth);
             document.getElementById('ytd-fourth').classList.add('hidden');
         }
-        else if (currentFileName === "funding.csv" || currentFileName === "priority.csv") {
+        else if (currentFileName === "funding.csv") {
             document.getElementById('kpi-total-label').innerText = "Funding Total";
             if(isBillionFormat){document.getElementById('kpi-total').innerText=formatToBillion(grandTotal);}else{animateNumber(document.getElementById('kpi-total'),grandTotal);}
             renderMoM('mom-total', grandTotal, grandTotalPrev, isBillionFormat, isNPF);
@@ -1589,7 +1589,50 @@
             } else {
                 ['ytd-total','ytd-seg1','ytd-seg2','ytd-fourth'].forEach(id => document.getElementById(id).classList.add('hidden'));
             }
+        else if (currentFileName === "priority.csv") {
+            document.getElementById('kpi-total-label').innerText = "Priority Total";
+            if(isBillionFormat){document.getElementById('kpi-total').innerText=formatToBillion(grandTotal);}else{animateNumber(document.getElementById('kpi-total'),grandTotal);}
+            renderMoM('mom-total', grandTotal, grandTotalPrev, isBillionFormat, isNPF);
+            
+            const caTotal = aggCache.caSaTdTotals[lastMonth]?.ca || 0;
+            const saTotal = aggCache.caSaTdTotals[lastMonth]?.sa || 0;
+            const tdTotal = aggCache.caSaTdTotals[lastMonth]?.td || 0;
+            const caPrev = aggCache.caSaTdTotals[prevMonth]?.ca || 0;
+            const saPrev = aggCache.caSaTdTotals[prevMonth]?.sa || 0;
+            const tdPrev = aggCache.caSaTdTotals[prevMonth]?.td || 0;
 
+            let fourthSublabelText = `${(tdTotal/grandTotal*100).toFixed(1)}% from Total`;
+            
+            // YTD Funding Logic (Dec 2025 baseline)
+            const parts = lastMonth.split(/[-\s]+/);
+            let selectedYear = null;
+            for (let part of parts) { if (/^\d{2}$/.test(part) || /^\d{4}$/.test(part)) { selectedYear = part; break; } }
+            if (!selectedYear) selectedYear = new Date().getFullYear().toString().slice(-2);
+            
+            if (selectedYear === '26' || selectedYear === '2026') {
+                let dec2025Col = null;
+                for (let mCol of monthColumns) {
+                    const mLower = mCol.toLowerCase();
+                    if ((mLower.includes('25')) && (mLower.includes('des') || mLower.includes('dic') || mLower.includes('dec'))) { dec2025Col = mCol; break; }
+                }
+                if (dec2025Col) {
+                    const curGT = grandTotal;
+                    const decGT = aggCache.grandTotalMonth[dec2025Col] || 0;
+                    updateYtdBadge('ytd-total', 'ytd-total-val', curGT - decGT, isBillionFormat);
+                    
+                    const decCA = aggCache.caSaTdTotals[dec2025Col]?.ca || 0;
+                    const decSA = aggCache.caSaTdTotals[dec2025Col]?.sa || 0;
+                    const decTD = aggCache.caSaTdTotals[dec2025Col]?.td || 0;
+                    
+                    updateYtdBadge('ytd-seg1', 'ytd-seg1-val', caTotal - decCA, isBillionFormat);
+                    updateYtdBadge('ytd-seg2', 'ytd-seg2-val', saTotal - decSA, isBillionFormat);
+                    updateYtdBadge('ytd-fourth', 'ytd-fourth-val', tdTotal - decTD, isBillionFormat);
+                } else {
+                    ['ytd-total','ytd-seg1','ytd-seg2','ytd-fourth'].forEach(id => document.getElementById(id).classList.add('hidden'));
+                }
+            } else {
+                ['ytd-total','ytd-seg1','ytd-seg2','ytd-fourth'].forEach(id => document.getElementById(id).classList.add('hidden'));
+            }
             document.getElementById('kpi-segment1-label').innerText = "CA (Giro)";
             if(isBillionFormat){document.getElementById('kpi-segment1').innerText=formatToBillion(caTotal);}else{animateNumber(document.getElementById('kpi-segment1'),caTotal);}
             renderMoM('mom-seg1', caTotal, caPrev, isBillionFormat, isNPF);
