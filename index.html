@@ -1545,7 +1545,7 @@
             renderMoM('mom-fourth', grandTotalPrev, prevPrevMonthGrandTotal, isBillionFormat, isNPF, prevPrevMonth);
             document.getElementById('ytd-fourth').classList.add('hidden');
         }
-        else if (currentFileName === "funding.csv") {
+        else if (currentFileName === "funding.csv" || currentFileName === "priority.csv") {
             document.getElementById('kpi-total-label').innerText = "Funding Total";
             if(isBillionFormat){document.getElementById('kpi-total').innerText=formatToBillion(grandTotal);}else{animateNumber(document.getElementById('kpi-total'),grandTotal);}
             renderMoM('mom-total', grandTotal, grandTotalPrev, isBillionFormat, isNPF);
