@@ -519,7 +519,7 @@
     });
 
     // --- CONFIGURATION ---
-    const MANUAL_DATE_LATEST_MONTH = '27 Agustus 2026';
+    const MANUAL_DATE_LATEST_MONTH = '24 Agustus 2026';
     const DASHBOARD_PASSWORD = 'rbpm';
 
     // --- WEB WORKER FOR PARSING (OPTIMASI 1: NON-BLOCKING PARSING) ---
@@ -775,9 +775,9 @@
 
     // --- DATA HANDLING (OPTIMIZED) ---
     const csvFilesConfig = [
-        { name: "FinBook", file: "finbook.csv", icon: "fa-users" },
+        { name: "FinBook", file: "finbook.csv", icon: "fa-hand-holding-dollar" },
         { name: "FinOS", file: "finos.csv", icon: "fa-hand-holding-dollar" },
-        { name: "Funding", file: "funding.csv", icon: "fa-chart-line" },
+        { name: "Funding", file: "funding.csv", icon: "fa-vault" },
         { name: "Hajj", file: "haji.csv", icon: "fa-kaaba" },
         { name: "Qris", file: "qris.csv", icon: "fa-qrcode" },
         { name: "MDin", file: "mdin.csv", icon: "fa-mobile-alt" },
@@ -1384,7 +1384,7 @@
         return new Intl.NumberFormat('id-ID',{minimumFractionDigits:1,maximumFractionDigits:1}).format(num/1000000000)+" M";
     }
     function formatChartValue(num, currentFileName, decimals = null) {
-        const isBillionFormat = ['finbook.csv','finos.csv','funding.csv','coll.csv','priority.csv'].includes(currentFileName);
+        const isBillionFormat = ['finbook.csv','finos.csv','funding.csv','coll.csv'].includes(currentFileName);
         if (isBillionFormat) {
             if (!num && num !== 0) return "0,0 M";
             let val = num / 1000000000;
@@ -1437,7 +1437,7 @@
     // OPTIMASI 5: KPI menggunakan Cache
     function updateKPIs() {
         const currentFileName = csvFilesConfig[currentActiveFileIndex].file;
-        const isBillionFormat = ['finbook.csv','finos.csv','funding.csv','coll.csv','priority.csv'].includes(currentFileName);
+        const isBillionFormat = ['finbook.csv','finos.csv','funding.csv','coll.csv'].includes(currentFileName);
         const isNPF = (currentFileName === 'coll.csv');
         
         const grandTotal = aggCache.grandTotalMonth[lastMonth] || 0;
@@ -1588,7 +1588,25 @@
             } else {
                 ['ytd-total','ytd-seg1','ytd-seg2','ytd-fourth'].forEach(id => document.getElementById(id).classList.add('hidden'));
             }
-        }
+
+            document.getElementById('kpi-segment1-label').innerText = "CA (Giro)";
+            if(isBillionFormat){document.getElementById('kpi-segment1').innerText=formatToBillion(caTotal);}else{animateNumber(document.getElementById('kpi-segment1'),caTotal);}
+            renderMoM('mom-seg1', caTotal, caPrev, isBillionFormat, isNPF);
+            document.getElementById('kpi-segment1-pct').innerHTML=`<span id="anim-ca-pct">0%</span> <span class="text-[8px] text-slate-400 dark:text-slate-500 font-normal">from Total</span>`;
+            animateNumber(document.getElementById('anim-ca-pct'),caTotal/grandTotal*100,true);
+            
+            document.getElementById('kpi-segment2-label').innerText = "SA (Saving)";
+            if(isBillionFormat){document.getElementById('kpi-segment2').innerText=formatToBillion(saTotal);}else{animateNumber(document.getElementById('kpi-segment2'),saTotal);}
+            renderMoM('mom-seg2', saTotal, saPrev, isBillionFormat, isNPF);
+            document.getElementById('kpi-segment2-pct').innerHTML=`<span id="anim-sa-pct">0%</span> <span class="text-[8px] text-slate-400 dark:text-slate-500 font-normal">from Total</span>`;
+            animateNumber(document.getElementById('anim-sa-pct'),saTotal/grandTotal*100,true);
+            
+            kpiFourthLabel.innerText = "TD (TIME DEPOSIT)";
+            kpiFourthSublabel.className = "text-slate-400 dark:text-slate-500 not-italic truncate";
+            if(isBillionFormat){ kpiFourthValue.innerText = formatToBillion(tdTotal); } else { animateNumber(kpiFourthValue, tdTotal); }
+            renderMoM('mom-fourth', tdTotal, tdPrev, isBillionFormat, isNPF);
+            kpiFourthSublabel.innerText = fourthSublabelText;
+        } 
         else if (currentFileName === "haji.csv") {
             document.getElementById('kpi-total-label').innerText = "PORTION TOTAL";
             animateNumber(document.getElementById('kpi-total'), grandTotal);
@@ -1877,7 +1895,7 @@
         const isDark = document.body.classList.contains('dark');
         const textColor = isDark ? '#94a3b8' : '#64748b';
         const isNpfTab = currentFileName === 'coll.csv';
-        const isGeneralTab = ['finbook.csv','finos.csv','funding.csv','haji.csv','qris.csv','mdin.csv','sli.csv','priority.csv'].includes(currentFileName);
+        const isGeneralTab = ['finbook.csv','finos.csv','funding.csv','haji.csv','qris.csv','mdin.csv','sli.csv'].includes(currentFileName);
         const titleEl = document.getElementById('co-branch-title');
         const viewToggle = document.getElementById('view-toggle-co');
         const npfToggle = document.getElementById('npf-toggle-co');
@@ -1958,9 +1976,9 @@
                 afterDatasetsDraw(chart){
                     const {ctx} = chart;
                     let labelsToDraw = [];
-                    const isGeneralTab = ['finbook.csv','finos.csv','funding.csv','haji.csv','qris.csv','mdin.csv','sli.csv','priority.csv'].includes(currentFileName);
+                    const isGeneralTab = ['finbook.csv','finos.csv','funding.csv','haji.csv','qris.csv','mdin.csv','sli.csv'].includes(currentFileName);
                     const isNpfTab = currentFileName === 'coll.csv';
-                    const isTargetFile = ['finbook.csv','finos.csv','funding.csv','coll.csv','priority.csv'].includes(currentFileName);
+                    const isTargetFile = ['finbook.csv','finos.csv','funding.csv','coll.csv'].includes(currentFileName);
                     const isBottomMode = isGeneralTab ? generalMode.co === 'bottom' : (isNpfTab ? npfMode.co === 'bottom' : false);
                     const forceTwoDecimals = isBottomMode && isTargetFile;
                     const labelsCount=chart.data.labels.length;
@@ -2006,7 +2024,7 @@
         const isDark = document.body.classList.contains('dark');
         const textColor = isDark ? '#94a3b8' : '#64748b';
         const isNpfTab = currentFileName === 'coll.csv';
-        const isGeneralTab = ['finbook.csv','finos.csv','funding.csv','haji.csv','qris.csv','mdin.csv','sli.csv','priority.csv'].includes(currentFileName);
+        const isGeneralTab = ['finbook.csv','finos.csv','funding.csv','haji.csv','qris.csv','mdin.csv','sli.csv'].includes(currentFileName);
         const titleEl = document.getElementById('branch-title');
         const viewToggle = document.getElementById('view-toggle-branch');
         const npfToggle = document.getElementById('npf-toggle-branch');
@@ -2087,9 +2105,9 @@
                 afterDatasetsDraw(chart){
                     const {ctx} = chart;
                     let labelsToDraw = [];
-                    const isGeneralTab = ['finbook.csv','finos.csv','funding.csv','haji.csv','qris.csv','mdin.csv','sli.csv','priority.csv'].includes(currentFileName);
+                    const isGeneralTab = ['finbook.csv','finos.csv','funding.csv','haji.csv','qris.csv','mdin.csv','sli.csv'].includes(currentFileName);
                     const isNpfTab = currentFileName === 'coll.csv';
-                    const isTargetFile = ['finbook.csv','finos.csv','funding.csv','coll.csv','priority.csv'].includes(currentFileName);
+                    const isTargetFile = ['finbook.csv','finos.csv','funding.csv','coll.csv'].includes(currentFileName);
                     const isBottomMode = isGeneralTab ? generalMode.branch === 'bottom' : (isNpfTab ? npfMode.branch === 'bottom' : false);
                     const forceTwoDecimals = isBottomMode && isTargetFile;
                     const labelsCount=chart.data.labels.length;
@@ -2133,7 +2151,7 @@
     function updateTable(){
         const tbody=document.getElementById('data-table-body'); 
         const currentFileName=csvFilesConfig[currentActiveFileIndex].file;
-        const isBillionFormat=['finbook.csv','finos.csv','funding.csv','coll.csv','priority.csv'].includes(currentFileName);
+        const isBillionFormat=['finbook.csv','finos.csv','funding.csv','coll.csv'].includes(currentFileName);
         
         // Aggregate for table from filteredData (needed because table shows specific breakdown not fully cached by office-product combination in simple way)
         // However, we can optimize the loop
