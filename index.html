@@ -1589,6 +1589,7 @@
             } else {
                 ['ytd-total','ytd-seg1','ytd-seg2','ytd-fourth'].forEach(id => document.getElementById(id).classList.add('hidden'));
             }
+        }
         else if (currentFileName === "priority.csv") {
             document.getElementById('kpi-total-label').innerText = "Priority Total";
             if(isBillionFormat){document.getElementById('kpi-total').innerText=formatToBillion(grandTotal);}else{animateNumber(document.getElementById('kpi-total'),grandTotal);}
@@ -1650,7 +1651,7 @@
             if(isBillionFormat){ kpiFourthValue.innerText = formatToBillion(tdTotal); } else { animateNumber(kpiFourthValue, tdTotal); }
             renderMoM('mom-fourth', tdTotal, tdPrev, isBillionFormat, isNPF);
             kpiFourthSublabel.innerText = fourthSublabelText;
-        } 
+        }    
         else if (currentFileName === "haji.csv") {
             document.getElementById('kpi-total-label').innerText = "PORTION TOTAL";
             animateNumber(document.getElementById('kpi-total'), grandTotal);
