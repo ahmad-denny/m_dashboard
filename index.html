@@ -1365,8 +1365,8 @@ if (m4 !== '-') updateYtdBadge('ytd-fourth', 'ytd-fourth-val', calculateYTDFromC
 
 ['mom-total','mom-seg1','mom-seg2','mom-fourth'].forEach(id => document.getElementById(id).innerHTML='');
 }
-else if (currentFileName === "finbook.csv" || currentFileName === "finos.csv" || currentFileName === "sli.csv" ) {
-const label = currentFileName === "finbook.csv"? "Booking Total" : "Portfolio Total" : "Booking Total";
+else if (currentFileName === "finbook.csv" || currentFileName === "finos.csv") {
+const label = currentFileName === "finbook.csv"? "Booking Total" : "Portfolio Total";
 document.getElementById('kpi-total-label').innerText = label;
 if(isBillionFormat){document.getElementById('kpi-total').innerText=formatToBillion(grandTotal);}else{animateNumber(document.getElementById('kpi-total'),grandTotal);}
 renderMoM('mom-total', grandTotal, grandTotalPrev, isBillionFormat, isNPF);
