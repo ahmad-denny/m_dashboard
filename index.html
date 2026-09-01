@@ -2,43 +2,33 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Branch KPI Monitoring - Region Sumatera</title>
     
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <!-- Chart.js DataLabels Plugin -->
-    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0"></script>
     <!-- FontAwesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- HTML2Canvas Library -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 
     <style>
         body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f3f4f6; }
         .card { transition: all 0.3s ease; }
-        .card:hover { transform: translateY(-5px); box-shadow: 0 5px 10px rgba(0,0,0,0.1); }
+        .card:hover { transform: translateY(-15px); box-shadow: 0 5px 10px rgba(0,0,0,0.1); }
         
-        /* Responsive Chart Height */
         .chart-wrapper { position: relative; width: 100%; height: 300px; transition: height 0.3s ease; }
-        @media (max-width: 768px) {
-            .chart-wrapper { height: 250px; }
-            .chart-wrapper.compact { height: 180px; }
-        }
         .chart-wrapper.compact { height: 195px; }
 
-        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
         ::-webkit-scrollbar-track { background: #f1f1f1; }
         ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
         ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
 
-        .rank-btn { transition: all 0.2s; font-size: 0.7rem; padding: 2px 8px; }
+        .rank-btn { transition: all 0.2s; }
         .rank-btn.active { background-color: #1e293b; color: white; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
         .rank-btn:not(.active):hover { background-color: #e2e8f0; }
-        
-        .footer { text-align: center; padding: 10px; font-size: 0.7rem; color: #64748b; margin-top: 20px; }        
+        .footer { text-align: center; padding: 5px; font-size: 0.75rem; color: var(--text-muted); margin-top: -35px; }        
 
         /* Style untuk Login Modal */
         #loginOverlay {
@@ -53,72 +43,11 @@
             to { transform: translateY(0); opacity: 1; }
         }
 
-        body.logged-in #loginOverlay { display: none !important; }
-        body.logged-in #dashboardContent { display: block !important; }
-
-        /* Loading overlay for capture */
-        #captureLoading {
-            display: none;
-            position: fixed;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background: rgba(255,255,255,0.9);
-            z-index: 99999;
-            justify-content: center;
-            align-items: center;
-            flex-direction: column;
+        body.logged-in #loginOverlay {
+            display: none !important;
         }
-
-        /* --- PERBAIKAN KHUSUS MOBILE --- */
-        @media (max-width: 640px) {
-            /* Navbar jadi vertikal di HP */
-            .nav-container { 
-                flex-direction: column !important; 
-                align-items: stretch !important; 
-                gap: 12px; 
-            }
-            
-            /* Judul boleh turun baris, jangan dipotong */
-            .header-title { 
-                font-size: 0.95rem !important; 
-                line-height: 1.3; 
-                white-space: normal !important; 
-                overflow: visible !important;
-                text-overflow: clip !important;
-            }
-            
-            /* Subtitle juga boleh turun baris */
-            #headerSubtitle {
-                white-space: normal !important;
-                overflow: visible !important;
-                text-overflow: clip !important;
-            }
-
-            /* Controls wrapper jadi vertikal & full width */
-            .nav-controls { 
-                width: 100%; 
-                flex-direction: column; 
-                align-items: stretch;
-                gap: 8px;
-            }
-
-            /* Tab menu scrollable horizontal */
-            .tab-container { 
-                width: 100%; 
-                overflow-x: auto; 
-                white-space: nowrap; 
-                -webkit-overflow-scrolling: touch; 
-            }
-
-            /* Branch selector full width */
-            .branch-select { 
-                width: 100% !important; 
-            }
-            
-            /* Tombol capture full width di HP agar mudah ditekan */
-            .btn-capture-mobile {
-                width: 100%;
-                justify-content: center;
-            }
+        body.logged-in #dashboardContent {
+            display: block !important;
         }
     </style>
 </head>
@@ -160,295 +89,276 @@
     <!-- DASHBOARD CONTENT -->
     <div id="dashboardContent" class="hidden">
         <nav class="bg-slate-900 text-white shadow-lg sticky top-0 z-50">
-            <!-- PERUBAHAN: Flex wrap agar responsif -->
-            <div class="container mx-auto px-4 py-3 nav-container flex flex-col md:flex-row justify-between items-start md:items-center gap-3">
-                
-                <!-- Header Title Section -->
-                <div class="flex items-center space-x-3 w-full md:w-auto">
-                    <div class="bg-white p-1 rounded-lg shrink-0"><img src="img/BMI.png" alt="Logo" class="logo" width="30" height="30"></div>
-                    <div class="overflow-hidden flex-1">
-                        <!-- PERUBAHAN: Hapus truncate, ganti break-words -->
-                        <h1 class="header-title text-base md:text-lg font-bold tracking-wide break-words" id="headerTitle">CONTRIBUTION MARGIN [JULI 2026]</h1>
-                        <span id="headerSubtitle" class="text-xs md:text-sm font-bold text-slate-400 block break-words">REGION SUMATERA</span>
+            <div class="container mx-auto px-6 py-3 flex flex-col md:flex-row justify-between items-center gap-3">
+                <div class="flex items-center space-x-3">
+                    <div class="bg-white-600 p-2 rounded-lg"><img src="img/BMI.png" alt="Bank Muamalat Logo" class="logo" width="35" height="35"></div>
+                    <div>
+                        <h1 class="text-lg font-bold tracking-wide" id="headerTitle">CONTRIBUTION MARGIN [JUNI 2026]</h1>
+                        <span id="headerSubtitle" class="text-sm font-bold text-slate-400 px3 ">
+                        <p class="text-xs text-slate-400">Contribution Margin | PBT After HOCA • Asset • CASA Ratio • FDR • FBI • PPAP</p>
                     </div>
                 </div>            
                 
-                <!-- Controls Section -->
-                <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 w-full md:w-auto nav-controls">
-                    
-                    <!-- TAB MENU DATA -->
-                    <div id="tabContainer" class="tab-container flex bg-slate-800 rounded-lg p-1 border border-slate-700 overflow-x-auto w-full sm:w-auto">
-                        <!-- Tombol digenerate JS -->
+                <div class="flex items-center gap-3">
+                    <!-- TAB MENU DATA (DINAMIS) -->
+                    <div id="tabContainer" class="flex bg-slate-800 rounded-lg p-1 border border-slate-700 overflow-x-auto max-w-[300px] sm:max-w-none">
+                        <!-- Tombol akan digenerate oleh Javascript di sini -->
                     </div>
 
-                    <!-- BRANCH SELECTOR & CAPTURE BUTTON WRAPPER -->
-                    <div class="flex items-center gap-2 w-full sm:w-auto">
-                        <div class="flex items-center bg-slate-800 rounded-lg p-1 border border-slate-700 branch-select flex-grow sm:flex-grow-0">
-                            <label class="text-[10px] font-semibold text-slate-400 px-2 uppercase hidden lg:block">BRANCH:</label>
-                            <select id="branchFilter" class="bg-slate-900 text-white text-xs sm:text-sm rounded-md border-none focus:ring-2 focus:ring-blue-500 py-1.5 px-2 outline-none cursor-pointer w-full sm:w-auto">
-                                <option value="ALL"> REGION SUMATERA</option>
-                            </select>
-                        </div>
-
-                        <!-- CAPTURE BUTTON -->
-                        <button onclick="captureScreen()" class="bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg transition-colors shadow-md shrink-0 flex items-center justify-center h-9 sm:h-auto sm:px-3 sm:py-1.5 btn-capture-mobile" title="Capture Screen">
-                            <i class="fa-solid fa-camera text-sm"></i>
-                            <span class="hidden sm:inline text-xs font-semibold ml-1">Capture</span>
-                        </button>
+                    <!-- BRANCH SELECTOR -->
+                    <div class="flex items-center bg-slate-800 rounded-lg p-1 border border-slate-700">
+                        <label class="text-xs font-semibold text-slate-400 px-3 uppercase hidden sm:block">SELECT BRANCH:</label>
+                        <select id="branchFilter" class="bg-slate-900 text-white text-sm rounded-md border-none focus:ring-2 focus:ring-blue-500 py-1.5 px-3 outline-none cursor-pointer min-w-[180px]">
+                            <option value="ALL">📊 REGION SUMATERA</option>
+                        </select>
                     </div>
                 </div>
             </div>
         </nav>
 
-        <!-- Wrapper ID added for Capture Target -->
-        <div id="captureArea" class="bg-gray-50 min-h-screen pb-10">
-            <div class="container mx-auto px-4 md:px-6 py-6">
-                <!-- Summary Cards (KPI) -->
-                <div id="kpiSection" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4 mb-6">
-                    <!-- 1. PBT Card -->
-                    <div class="card bg-white p-4 rounded-xl shadow-sm border-t-4 border-l-2 border-blue-500 relative overflow-hidden">
-                        <div class="absolute top-3 right-3 text-xl" id="iconPBT"></div>
-                        <div class="flex justify-between items-start pr-8">
-                            <div>
-                                <p class="text-[10px] font-bold text-gray-400 uppercase tracking-wider">PBT After HOCA</p>
-                                <h3 class="text-lg font-extrabold mt-0.5 text-slate-800" id="sumPBT">-</h3>
-                            </div>
-                            <div class="p-1.5 bg-indigo-50 rounded-full text-indigo-600"><i class="fa-solid fa-coins text-sm"></i></div>
+        <div class="container mx-auto px-6 py-6">
+            <!-- Summary Cards -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4 mb-6">
+                <!-- 1. PBT Card -->
+                <div class="card bg-white p-3 rounded-xl shadow-sm border-t-8 border-l-2 border-blue-500 relative overflow-hidden">
+                    <div class="absolute top-3 right-3 text-xl" id="iconPBT"></div>
+                    <div class="flex justify-between items-start pr-8">
+                        <div>
+                            <p class="text-[10px] font-bold text-gray-400 uppercase tracking-wider">PBT After HOCA</p>
+                            <h3 class="text-lg font-extrabold mt-0.5 text-slate-800" id="sumPBT">-</h3>
                         </div>
-                        <div class="mt-2 pt-2 border-t border-gray-100 text-[10px]">
-                            <div class="flex justify-between mb-0.5"><span class="text-gray-500">Target:</span><span id="targetPBT" class="font-semibold">-</span></div>
-                            <div class="flex justify-between"><span class="text-gray-500">Gap PBT After HOCA:</span><span id="gapPBT" class="font-bold">-</span></div>
-                            <div id="countPbtPosNeg" class="mt-1.5 pt-1.5 border-t border-dashed border-gray-200 hidden">
-                                <div class="flex justify-between"><span class="text-green-600">🟢 Cabang Positif</span> <span id="cntPbtPos" class="font-bold">0</span></div>
-                                <div class="flex justify-between"><span class="text-red-500">🔴 Cabang Negatif</span> <span id="cntPbtNeg" class="font-bold">0</span></div>
-                            </div>
-                            <div id="countPBT" class="mt-1.5 pt-1.5 border-t border-dashed border-gray-200 hidden">
-                                <div class="flex justify-between"><span class="text-green-600">✅ Achieved</span> <span id="cntPbtOk" class="font-bold">0</span></div>
-                                <div class="flex justify-between"><span class="text-red-500">⚠️ Failed</span> <span id="cntPbtNo" class="font-bold">0</span></div>
-                            </div>
+                        <div class="p-1.5 bg-indigo-50 rounded-full text-indigo-600"><i class="fa-solid fa-coins text-sm"></i></div>
+                    </div>
+                    <div class="mt-2 pt-2 border-t border-gray-100 text-[10px]">
+                        <div class="flex justify-between mb-0.5"><span class="text-gray-500">Target:</span><span id="targetPBT" class="font-semibold">-</span></div>
+                        <div class="flex justify-between"><span class="text-gray-500">Gap PBT After HOCA:</span><span id="gapPBT" class="font-bold">-</span></div>
+                        <div id="countPbtPosNeg" class="mt-1.5 pt-1.5 border-t border-dashed border-gray-200 hidden">
+                            <div class="flex justify-between"><span class="text-green-600">🟢 Cabang Positif</span> <span id="cntPbtPos" class="font-bold">0</span></div>
+                            <div class="flex justify-between"><span class="text-red-500">🔴 Cabang Negatif</span> <span id="cntPbtNeg" class="font-bold">0</span></div>
+                        </div>
+                        <div id="countPBT" class="mt-1.5 pt-1.5 border-t border-dashed border-gray-200 hidden">
+                            <div class="flex justify-between"><span class="text-green-600">✅ Achieved</span> <span id="cntPbtOk" class="font-bold">0</span></div>
+                            <div class="flex justify-between"><span class="text-red-500">⚠️ Failed</span> <span id="cntPbtNo" class="font-bold">0</span></div>
                         </div>
                     </div>
+                </div>
 
-                    <!-- 2. Asset Card -->
-                    <div class="card bg-white p-4 rounded-xl shadow-sm border-t-4 border-l-2 border-emerald-500 relative overflow-hidden">
-                        <div class="absolute top-3 right-3 text-xl" id="iconAsset"></div>
-                        <div class="flex justify-between items-start pr-8">
-                            <div>
-                                <p class="text-[10px] font-bold text-gray-400 uppercase tracking-wider">Asset</p>
-                                <h3 class="text-lg font-extrabold mt-0.5 text-slate-800" id="sumAsset">-</h3>
-                            </div>
-                            <div class="p-1.5 bg-blue-50 rounded-full text-blue-600"><i class="fa-solid fa-building-columns text-sm"></i></div>
+                <!-- 2. Asset Card -->
+                <div class="card bg-white p-3 rounded-xl shadow-sm border-t-8 border-l-2 border-emerald-500 relative overflow-hidden">
+                    <div class="absolute top-3 right-3 text-xl" id="iconAsset"></div>
+                    <div class="flex justify-between items-start pr-8">
+                        <div>
+                            <p class="text-[10px] font-bold text-gray-400 uppercase tracking-wider">Asset</p>
+                            <h3 class="text-lg font-extrabold mt-0.5 text-slate-800" id="sumAsset">-</h3>
                         </div>
-                        <div class="mt-2 pt-2 border-t border-gray-100 text-[10px]">
-                            <div class="flex justify-between mb-0.5"><span class="text-gray-500">Target (OHC/NIM3%):</span><span id="targetAsset" class="font-semibold">-</span></div>
-                            <div class="flex justify-between"><span class="text-gray-500">Gap Asset:</span><span id="gapAsset" class="font-bold">-</span></div>
-                            <div id="countAsset" class="mt-1.5 pt-1.5 border-t border-dashed border-gray-200 hidden">
-                                <div class="flex justify-between"><span class="text-green-600">✅ Achieved</span> <span id="cntAssetOk" class="font-bold">0</span></div>
-                                <div class="flex justify-between"><span class="text-red-500">⚠️ Failed</span> <span id="cntAssetNo" class="font-bold">0</span></div>
-                            </div>
+                        <div class="p-1.5 bg-blue-50 rounded-full text-blue-600"><i class="fa-solid fa-building-columns text-sm"></i></div>
+                    </div>
+                    <div class="mt-2 pt-2 border-t border-gray-100 text-[10px]">
+                        <div class="flex justify-between mb-0.5"><span class="text-gray-500">Target (OHC/NIM3%):</span><span id="targetAsset" class="font-semibold">-</span></div>
+                        <div class="flex justify-between"><span class="text-gray-500">Gap Asset:</span><span id="gapAsset" class="font-bold">-</span></div>
+                        <div id="countAsset" class="mt-1.5 pt-1.5 border-t border-dashed border-gray-200 hidden">
+                            <div class="flex justify-between"><span class="text-green-600">✅ Achieved</span> <span id="cntAssetOk" class="font-bold">0</span></div>
+                            <div class="flex justify-between"><span class="text-red-500">⚠️ Failed</span> <span id="cntAssetNo" class="font-bold">0</span></div>
                         </div>
                     </div>
+                </div>
 
-                    <!-- 3. CASA Card -->
-                    <div class="card bg-white p-4 rounded-xl shadow-sm border-t-4 border-l-2 border-rose-500 relative overflow-hidden">
-                        <div class="absolute top-3 right-3 text-xl" id="iconCASA"></div>
-                        <div class="flex justify-between items-start pr-8">
-                            <div class="w-full">
-                                <div class="flex justify-between items-center">
-                                    <p class="text-[10px] font-bold text-gray-400 uppercase tracking-wider">CASA Ratio</p>
-                                    <span id="casaIndicator" class="text-xs"></span>
-                                </div>
-                                <h3 class="text-lg font-extrabold mt-0.5 text-slate-800" id="avgCASA">-</h3>
-                                <div class="mt-1 pt-1 border-t border-dashed border-gray-200 flex justify-between items-center">
-                                    <div>
-                                        <p class="text-[9px] font-bold text-gray-400 uppercase">Cost Of Fund (≤2.3%)</p>
-                                        <div class="flex items-baseline gap-1">
-                                            <span class="text-sm font-extrabold text-slate-700" id="avgCOF">-</span>
-                                            <span id="cofIndicator" class="text-xs"></span>
-                                        </div>
+                <!-- 3. CASA Card -->
+                <div class="card bg-white p-3 rounded-xl shadow-sm border-t-8 border-l-2 border-rose-500 relative overflow-hidden">
+                    <div class="absolute top-3 right-3 text-xl" id="iconCASA"></div>
+                    <div class="flex justify-between items-start pr-8">
+                        <div class="w-full">
+                            <div class="flex justify-between items-center">
+                                <p class="text-[10px] font-bold text-gray-400 uppercase tracking-wider">CASA Ratio</p>
+                                <span id="casaIndicator" class="text-xs"></span>
+                            </div>
+                            <h3 class="text-lg font-extrabold mt-0.5 text-slate-800" id="avgCASA">-</h3>
+                            <div class="mt-1 pt-1 border-t border-dashed border-gray-200 flex justify-between items-center">
+                                <div>
+                                    <p class="text-[9px] font-bold text-gray-400 uppercase">Cost Of Fund (≤2.3%)</p>
+                                    <div class="flex items-baseline gap-1">
+                                        <span class="text-sm font-extrabold text-slate-700" id="avgCOF">-</span>
+                                        <span id="cofIndicator" class="text-xs"></span>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                        <div class="mt-2 pt-2 border-t border-gray-100 text-[10px]">
-                            <div class="flex justify-between mb-0.5"><span class="text-gray-500">Actual CASA:</span><span id="actCasaAmt" class="font-semibold text-slate-700">-</span></div>
-                            <div class="flex justify-between"><span class="text-gray-500">Gap CASA:</span><span id="gapCasaAmt" class="font-bold">-</span></div>
-                            <div id="countCASA" class="mt-1.5 pt-1.5 border-t border-dashed border-gray-200 hidden">
-                                <div class="flex justify-between"><span class="text-green-600">✅ CASA ≥60%</span> <span id="cntCasaOk" class="font-bold">0</span></div>
-                                <div class="flex justify-between"><span class="text-red-500">⚠️ <60%</span> <span id="cntCasaNo" class="font-bold">0</span></div>
-                                <div class="flex justify-between mt-1"><span class="text-green-600">✅ COF ≤2.3%</span> <span id="cntCofOk" class="font-bold">0</span></div>
-                                <div class="flex justify-between"><span class="text-orange-500">⚠️ COF >2.3%</span> <span id="cntCofNo" class="font-bold">0</span></div>
-                            </div>
-                        </div>
                     </div>
-
-                    <!-- 4. FDR Card -->
-                    <div class="card bg-white p-4 rounded-xl shadow-sm border-t-4 border-l-2 border-amber-500 relative overflow-hidden">
-                        <div class="absolute top-3 right-3 text-xl" id="iconFDR"></div>
-                        <div class="flex justify-between items-start pr-8">
-                            <div>
-                                <p class="text-[10px] font-bold text-gray-400 uppercase tracking-wider">Financing to Deposit Ratio</p>
-                                <h3 class="text-lg font-extrabold mt-0.5 text-slate-800" id="avgFDR">-</h3>
-                            </div>
-                            <div class="p-1.5 bg-violet-50 rounded-full text-violet-600"><i class="fa-solid fa-money-bill-transfer text-sm"></i></div>
-                        </div>
-                        <div class="mt-2 pt-2 border-t border-gray-100 text-[10px]">
-                            <div class="flex justify-between mb-0.5"><span class="text-gray-500">Financing:</span><span id="actFinancing" class="font-semibold text-slate-700">-</span></div>
-                            <div class="flex justify-between"><span class="text-gray-500">Gap Financing:</span><span id="gapFinancing" class="font-bold">-</span></div>
-                            <div id="countFDR" class="mt-1.5 pt-1.5 border-t border-dashed border-gray-200 hidden">
-                                <div class="flex justify-between"><span class="text-green-600">✅ FDR ≥30%</span> <span id="cntFdrOk" class="font-bold">0</span></div>
-                                <div class="flex justify-between"><span class="text-orange-500">️ <30%</span> <span id="cntFdrNo" class="font-bold">0</span></div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- 5. FBI Card -->
-                    <div class="card bg-white p-4 rounded-xl shadow-sm border-t-4 border-l-2 border-violet-500 relative overflow-hidden">
-                        <div class="absolute top-3 right-3 text-xl" id="iconFBI"></div>
-                        <div class="flex justify-between items-start pr-8">
-                            <div>
-                                <p class="text-[10px] font-bold text-gray-400 uppercase tracking-wider">Fee Based Income</p>
-                                <h3 class="text-lg font-extrabold mt-0.5 text-slate-800" id="sumFBI">-</h3>
-                            </div>
-                            <div class="p-1.5 bg-amber-50 rounded-full text-amber-600"><i class="fa-solid fa-briefcase text-sm"></i></div>
-                        </div>
-                        <div class="mt-2 pt-2 border-t border-gray-100 text-[10px]">
-                            <div class="flex justify-between mb-0.5"><span class="text-gray-500">Target FBI 80%:</span><span id="targetFBI" class="font-semibold">-</span></div>
-                            <div class="flex justify-between"><span class="text-gray-500">Gap FBI:</span><span id="gapFBI" class="font-bold">-</span></div>
-                            <div id="countFBI" class="mt-1.5 pt-1.5 border-t border-dashed border-gray-200 hidden">
-                                <div class="flex justify-between"><span class="text-green-600">✅ Achieved</span> <span id="cntFbiOk" class="font-bold">0</span></div>
-                                <div class="flex justify-between"><span class="text-red-500">⚠️ Failed</span> <span id="cntFbiNo" class="font-bold">0</span></div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- 6. PPAP Card -->
-                    <div class="card bg-white p-4 rounded-xl shadow-sm border-t-4 border-l-2 border-fuchsia-500 relative overflow-hidden">
-                        <div class="absolute top-3 right-3 text-xl" id="iconPPAP"></div>
-                        <div class="flex justify-between items-start pr-8">
-                            <div>
-                                <p class="text-[10px] font-bold text-gray-400 uppercase tracking-wider">PPAP / YTD > 1%</p>
-                                <h3 class="text-lg font-extrabold mt-0.5 text-slate-800" id="valPPAP">-</h3>
-                            </div>
-                            <div class="p-1.5 bg-rose-50 rounded-full text-rose-600"><i class="fa-solid fa-triangle-exclamation text-sm"></i></div>
-                        </div>
-                        <div class="mt-2 pt-2 border-t border-gray-100">
-                            <span id="statusPPAP" class="text-[10px] font-bold px-2 py-0.5 rounded bg-gray-100 text-gray-500 block text-center">-</span>
-                            <div id="countPPAP" class="mt-1.5 pt-1.5 border-t border-dashed border-gray-200 text-[10px] hidden">
-                                <div class="flex justify-between"><span class="text-green-600">✅ Secured (<1%)</span> <span id="cntPpapOk" class="font-bold">0</span></div>
-                                <div class="flex justify-between"><span class="text-red-500">️ Alert (>1%)</span> <span id="cntPpapNo" class="font-bold">0</span></div>
-                            </div>
+                    <div class="mt-2 pt-2 border-t border-gray-100 text-[10px]">
+                        <div class="flex justify-between mb-0.5"><span class="text-gray-500">Actual CASA:</span><span id="actCasaAmt" class="font-semibold text-slate-700">-</span></div>
+                        <div class="flex justify-between"><span class="text-gray-500">Gap CASA:</span><span id="gapCasaAmt" class="font-bold">-</span></div>
+                        <div id="countCASA" class="mt-1.5 pt-1.5 border-t border-dashed border-gray-200 hidden">
+                            <div class="flex justify-between"><span class="text-green-600">✅ CASA ≥60%</span> <span id="cntCasaOk" class="font-bold">0</span></div>
+                            <div class="flex justify-between"><span class="text-red-500">⚠️ <60%</span> <span id="cntCasaNo" class="font-bold">0</span></div>
+                            <div class="flex justify-between mt-1"><span class="text-green-600">✅ COF ≤2.3%</span> <span id="cntCofOk" class="font-bold">0</span></div>
+                            <div class="flex justify-between"><span class="text-orange-500">⚠️ COF >2.3%</span> <span id="cntCofNo" class="font-bold">0</span></div>
                         </div>
                     </div>
                 </div>
 
-                <!-- Charts Grid -->
-                <div id="chartsGrid" class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6 transition-all duration-300">
-                    <!-- PBT -->
-                    <div class="bg-white p-4 rounded-xl shadow-sm border border-gray-100 flex flex-col">
-                        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-2 gap-1">
-                            <h3 class="text-sm font-bold text-slate-700">Profit Before Tax After HOCA</h3>
-                            <div id="ctrl-pbt" class="hidden bg-gray-100 rounded-lg p-0.5 flex text-[10px] font-medium">
-                                <button onclick="setChartRank('pbt', 'TOP')" class="rank-btn rounded text-slate-600">Top 10</button>
-                                <button onclick="setChartRank('pbt', 'BOTTOM')" class="rank-btn rounded text-slate-600">Bottom 10</button>
-                                <button onclick="setChartRank('pbt', 'ALL')" class="rank-btn active rounded text-slate-600">All</button>
-                            </div>
+                <!-- 4. FDR Card -->
+                <div class="card bg-white p-3 rounded-xl shadow-sm border-t-8 border-l-2 border-amber-500 relative overflow-hidden">
+                    <div class="absolute top-3 right-3 text-xl" id="iconFDR"></div>
+                    <div class="flex justify-between items-start pr-8">
+                        <div>
+                            <p class="text-[10px] font-bold text-gray-400 uppercase tracking-wider">Financing to Deposit Ratio</p>
+                            <h3 class="text-lg font-extrabold mt-0.5 text-slate-800" id="avgFDR">-</h3>
                         </div>
-                        <div class="chart-wrapper" id="wrap-pbt"><canvas id="pbtChart"></canvas></div>
+                        <div class="p-1.5 bg-violet-50 rounded-full text-violet-600"><i class="fa-solid fa-money-bill-transfer text-sm"></i></div>
                     </div>
-
-                    <!-- Asset -->
-                    <div class="bg-white p-4 rounded-xl shadow-sm border border-gray-100 flex flex-col">
-                        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-2 gap-1">
-                            <h3 class="text-sm font-bold text-slate-700">Asset Performance</h3>
-                            <div id="ctrl-asset" class="hidden bg-gray-100 rounded-lg p-0.5 flex text-[10px] font-medium">
-                                <button onclick="setChartRank('asset', 'TOP')" class="rank-btn rounded text-slate-600">Top 10</button>
-                                <button onclick="setChartRank('asset', 'BOTTOM')" class="rank-btn rounded text-slate-600">Bottom 10</button>
-                                <button onclick="setChartRank('asset', 'ALL')" class="rank-btn active rounded text-slate-600">All</button>
-                            </div>
+                    <div class="mt-2 pt-2 border-t border-gray-100 text-[10px]">
+                        <div class="flex justify-between mb-0.5"><span class="text-gray-500">Financing:</span><span id="actFinancing" class="font-semibold text-slate-700">-</span></div>
+                        <div class="flex justify-between"><span class="text-gray-500">Gap Financing:</span><span id="gapFinancing" class="font-bold">-</span></div>
+                        <div id="countFDR" class="mt-1.5 pt-1.5 border-t border-dashed border-gray-200 hidden">
+                            <div class="flex justify-between"><span class="text-green-600">✅ FDR ≥30%</span> <span id="cntFdrOk" class="font-bold">0</span></div>
+                            <div class="flex justify-between"><span class="text-orange-500">️ <30%</span> <span id="cntFdrNo" class="font-bold">0</span></div>
                         </div>
-                        <div class="chart-wrapper" id="wrap-asset"><canvas id="assetChart"></canvas></div>
-                    </div>
-                    
-                    <!-- CASA -->
-                    <div class="bg-white p-4 rounded-xl shadow-sm border border-gray-100 flex flex-col">
-                        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-2 gap-1">
-                            <h3 class="text-sm font-bold text-slate-700">CASA Analysis</h3>
-                            <div id="ctrl-casa" class="hidden bg-gray-100 rounded-lg p-0.5 flex text-[10px] font-medium">
-                                <button onclick="setChartRank('casa', 'TOP')" class="rank-btn rounded text-slate-600">Top 10</button>
-                                <button onclick="setChartRank('casa', 'BOTTOM')" class="rank-btn rounded text-slate-600">Bottom 10</button>
-                                <button onclick="setChartRank('casa', 'ALL')" class="rank-btn active rounded text-slate-600">All</button>
-                            </div>
-                        </div>
-                        <div class="chart-wrapper" id="wrap-casa"><canvas id="casaChart"></canvas></div>
-                    </div>
-
-                    <!-- FDR -->
-                    <div class="bg-white p-4 rounded-xl shadow-sm border border-gray-100 flex flex-col">
-                        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-2 gap-1">
-                            <h3 class="text-sm font-bold text-slate-700">Financing & FDR Ratio</h3>
-                            <div id="ctrl-fdr" class="hidden bg-gray-100 rounded-lg p-0.5 flex text-[10px] font-medium">
-                                <button onclick="setChartRank('fdr', 'TOP')" class="rank-btn rounded text-slate-600">Top 10</button>
-                                <button onclick="setChartRank('fdr', 'BOTTOM')" class="rank-btn rounded text-slate-600">Bottom 10</button>
-                                <button onclick="setChartRank('fdr', 'ALL')" class="rank-btn active rounded text-slate-600">All</button>
-                            </div>
-                        </div>
-                        <div class="chart-wrapper" id="wrap-fdr"><canvas id="fdrChart"></canvas></div>
-                    </div>
-
-                    <!-- FBI -->
-                    <div class="bg-white p-4 rounded-xl shadow-sm border border-gray-100 flex flex-col">
-                        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-2 gap-1">
-                            <h3 class="text-sm font-bold text-slate-700">Fee Based Income</h3>
-                            <div id="ctrl-fbi" class="hidden bg-gray-100 rounded-lg p-0.5 flex text-[10px] font-medium">
-                                <button onclick="setChartRank('fbi', 'TOP')" class="rank-btn rounded text-slate-600">Top 10</button>
-                                <button onclick="setChartRank('fbi', 'BOTTOM')" class="rank-btn rounded text-slate-600">Bottom 10</button>
-                                <button onclick="setChartRank('fbi', 'ALL')" class="rank-btn active rounded text-slate-600">All</button>
-                            </div>
-                        </div>
-                        <div class="chart-wrapper" id="wrap-fbi"><canvas id="fbiChart"></canvas></div>
                     </div>
                 </div>
 
-                <!-- Detailed Data Table -->
-                <div id="tableSection" class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden mb-10">
-                    <div class="p-4 border-b border-gray-100 flex justify-between items-center bg-gray-50">
-                        <h3 class="text-base font-bold text-slate-700">Detailed Data Breakdown</h3>
+                <!-- 5. FBI Card -->
+                <div class="card bg-white p-3 rounded-xl shadow-sm border-t-8 border-l-2 border-violet-500 relative overflow-hidden">
+                    <div class="absolute top-3 right-3 text-xl" id="iconFBI"></div>
+                    <div class="flex justify-between items-start pr-8">
+                        <div>
+                            <p class="text-[10px] font-bold text-gray-400 uppercase tracking-wider">Fee Based Income</p>
+                            <h3 class="text-lg font-extrabold mt-0.5 text-slate-800" id="sumFBI">-</h3>
+                        </div>
+                        <div class="p-1.5 bg-amber-50 rounded-full text-amber-600"><i class="fa-solid fa-briefcase text-sm"></i></div>
                     </div>
-                    <div class="overflow-x-auto max-h-[400px]">
-                        <table class="w-full text-left border-collapse">
-                            <thead class="bg-white sticky top-0 z-10 shadow-sm">
-                                <tr class="text-gray-500 text-xs uppercase tracking-wider border-b border-gray-200">
-                                    <th class="p-3 font-bold sticky left-0 bg-white z-20">Branch Name</th>
-                                    <th class="p-3 font-bold text-right">PBT Act</th>
-                                    <th class="p-3 font-bold text-right text-red-500">Gap PBT</th>
-                                    <th class="p-3 font-bold text-right">Asset Act</th>
-                                    <th class="p-3 font-bold text-right">Gap Asset</th>
-                                    <th class="p-3 font-bold text-right">CASA %</th>
-                                    <th class="p-3 font-bold text-right">Act CASA</th>
-                                    <th class="p-3 font-bold text-right">Gap CASA</th>
-                                    <th class="p-3 font-bold text-right">COF %</th>
-                                    <th class="p-3 font-bold text-right">FDR %</th>
-                                    <th class="p-3 font-bold text-right">Act Financing</th>
-                                    <th class="p-3 font-bold text-right">Gap Financing</th>
-                                    <th class="p-3 font-bold text-right">FBI Act</th>
-                                    <th class="p-3 font-bold text-right">Gap FBI</th>
-                                    <th class="p-3 font-bold text-center">PPAP/YTD</th>
-                                </tr>
-                            </thead>
-                            <tbody id="tableBody" class="text-xs divide-y divide-gray-100"></tbody>
-                        </table>
+                    <div class="mt-2 pt-2 border-t border-gray-100 text-[10px]">
+                        <div class="flex justify-between mb-0.5"><span class="text-gray-500">Target FBI 80%:</span><span id="targetFBI" class="font-semibold">-</span></div>
+                        <div class="flex justify-between"><span class="text-gray-500">Gap FBI:</span><span id="gapFBI" class="font-bold">-</span></div>
+                        <div id="countFBI" class="mt-1.5 pt-1.5 border-t border-dashed border-gray-200 hidden">
+                            <div class="flex justify-between"><span class="text-green-600">✅ Achieved</span> <span id="cntFbiOk" class="font-bold">0</span></div>
+                            <div class="flex justify-between"><span class="text-red-500">⚠️ Failed</span> <span id="cntFbiNo" class="font-bold">0</span></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 6. PPAP Card -->
+                <div class="card bg-white p-3 rounded-xl shadow-sm border-t-8 border-l-2 border-fuchsia-500 relative overflow-hidden">
+                    <div class="absolute top-3 right-3 text-xl" id="iconPPAP"></div>
+                    <div class="flex justify-between items-start pr-8">
+                        <div>
+                            <p class="text-[10px] font-bold text-gray-400 uppercase tracking-wider">PPAP / YTD > 1%</p>
+                            <h3 class="text-lg font-extrabold mt-0.5 text-slate-800" id="valPPAP">-</h3>
+                        </div>
+                        <div class="p-1.5 bg-rose-50 rounded-full text-rose-600"><i class="fa-solid fa-triangle-exclamation text-sm"></i></div>
+                    </div>
+                    <div class="mt-2 pt-2 border-t border-gray-100">
+                         <span id="statusPPAP" class="text-[10px] font-bold px-2 py-0.5 rounded bg-gray-100 text-gray-500 block text-center">-</span>
+                         <div id="countPPAP" class="mt-1.5 pt-1.5 border-t border-dashed border-gray-200 text-[10px] hidden">
+                            <div class="flex justify-between"><span class="text-green-600">✅ Secured (<1%)</span> <span id="cntPpapOk" class="font-bold">0</span></div>
+                            <div class="flex justify-between"><span class="text-red-500">⚠️ Alert (>1%)</span> <span id="cntPpapNo" class="font-bold">0</span></div>
+                        </div>
                     </div>
                 </div>
             </div>
-            <div class="footer">Typing, Create, Update, Repeat | Optimized for Mobile & Web | Theme: Light/Dark | RBPM - Region Sumatera</div>
-        </div>
-    </div>
 
-    <!-- Capture Loading Indicator -->
-    <div id="captureLoading">
-        <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-emerald-600 mb-2"></div>
-        <span class="text-emerald-800 font-semibold">Generating Image...</span>
+            <!-- Charts Grid -->
+            <div id="chartsGrid" class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6 transition-all duration-300">
+                <!-- PBT -->
+                <div class="bg-white p-4 rounded-xl shadow-sm border border-gray-100 flex flex-col">
+                    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-2 gap-1">
+                        <h3 class="text-sm font-bold text-slate-700">Profit Before Tax After HOCA</h3>
+                        <div id="ctrl-pbt" class="hidden bg-gray-100 rounded-lg p-0.5 flex text-[10px] font-medium">
+                            <button onclick="setChartRank('pbt', 'TOP')" class="rank-btn px-2 py-0.5 rounded text-slate-600">Top 10</button>
+                            <button onclick="setChartRank('pbt', 'BOTTOM')" class="rank-btn px-2 py-0.5 rounded text-slate-600">Bottom 10</button>
+                            <button onclick="setChartRank('pbt', 'ALL')" class="rank-btn active px-2 py-0.5 rounded text-slate-600">All</button>
+                        </div>
+                    </div>
+                    <div class="chart-wrapper" id="wrap-pbt"><canvas id="pbtChart"></canvas></div>
+                </div>
+
+                <!-- Asset -->
+                <div class="bg-white p-4 rounded-xl shadow-sm border border-gray-100 flex flex-col">
+                    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-2 gap-1">
+                        <h3 class="text-sm font-bold text-slate-700">Asset Performance</h3>
+                        <div id="ctrl-asset" class="hidden bg-gray-100 rounded-lg p-0.5 flex text-[10px] font-medium">
+                            <button onclick="setChartRank('asset', 'TOP')" class="rank-btn px-2 py-0.5 rounded text-slate-600">Top 10</button>
+                            <button onclick="setChartRank('asset', 'BOTTOM')" class="rank-btn px-2 py-0.5 rounded text-slate-600">Bottom 10</button>
+                            <button onclick="setChartRank('asset', 'ALL')" class="rank-btn active px-2 py-0.5 rounded text-slate-600">All</button>
+                        </div>
+                    </div>
+                    <div class="chart-wrapper" id="wrap-asset"><canvas id="assetChart"></canvas></div>
+                </div>
+                
+                <!-- CASA -->
+                <div class="bg-white p-4 rounded-xl shadow-sm border border-gray-100 flex flex-col">
+                    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-2 gap-1">
+                        <h3 class="text-sm font-bold text-slate-700">CASA Analysis</h3>
+                        <div id="ctrl-casa" class="hidden bg-gray-100 rounded-lg p-0.5 flex text-[10px] font-medium">
+                            <button onclick="setChartRank('casa', 'TOP')" class="rank-btn px-2 py-0.5 rounded text-slate-600">Top 10</button>
+                            <button onclick="setChartRank('casa', 'BOTTOM')" class="rank-btn px-2 py-0.5 rounded text-slate-600">Bottom 10</button>
+                            <button onclick="setChartRank('casa', 'ALL')" class="rank-btn active px-2 py-0.5 rounded text-slate-600">All</button>
+                        </div>
+                    </div>
+                    <div class="chart-wrapper" id="wrap-casa"><canvas id="casaChart"></canvas></div>
+                </div>
+
+                <!-- FDR -->
+                <div class="bg-white p-4 rounded-xl shadow-sm border border-gray-100 flex flex-col">
+                    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-2 gap-1">
+                        <h3 class="text-sm font-bold text-slate-700">Financing & FDR Ratio</h3>
+                        <div id="ctrl-fdr" class="hidden bg-gray-100 rounded-lg p-0.5 flex text-[10px] font-medium">
+                            <button onclick="setChartRank('fdr', 'TOP')" class="rank-btn px-2 py-0.5 rounded text-slate-600">Top 10</button>
+                            <button onclick="setChartRank('fdr', 'BOTTOM')" class="rank-btn px-2 py-0.5 rounded text-slate-600">Bottom 10</button>
+                            <button onclick="setChartRank('fdr', 'ALL')" class="rank-btn active px-2 py-0.5 rounded text-slate-600">All</button>
+                        </div>
+                    </div>
+                    <div class="chart-wrapper" id="wrap-fdr"><canvas id="fdrChart"></canvas></div>
+                </div>
+
+                <!-- FBI -->
+                <div class="bg-white p-4 rounded-xl shadow-sm border border-gray-100 flex flex-col">
+                    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-2 gap-1">
+                        <h3 class="text-sm font-bold text-slate-700">Fee Based Income</h3>
+                        <div id="ctrl-fbi" class="hidden bg-gray-100 rounded-lg p-0.5 flex text-[10px] font-medium">
+                            <button onclick="setChartRank('fbi', 'TOP')" class="rank-btn px-2 py-0.5 rounded text-slate-600">Top 10</button>
+                            <button onclick="setChartRank('fbi', 'BOTTOM')" class="rank-btn px-2 py-0.5 rounded text-slate-600">Bottom 10</button>
+                            <button onclick="setChartRank('fbi', 'ALL')" class="rank-btn active px-2 py-0.5 rounded text-slate-600">All</button>
+                        </div>
+                    </div>
+                    <div class="chart-wrapper" id="wrap-fbi"><canvas id="fbiChart"></canvas></div>
+                </div>
+            </div>
+
+            <!-- Detailed Data Table -->
+            <div id="tableSection" class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden mb-10">
+                <div class="p-4 border-b border-gray-100 flex justify-between items-center bg-gray-50">
+                    <h3 class="text-base font-bold text-slate-700">Detailed Data Breakdown</h3>
+                </div>
+                <div class="overflow-x-auto max-h-[400px]">
+                    <table class="w-full text-left border-collapse">
+                        <thead class="bg-white sticky top-0 z-10 shadow-sm">
+                            <tr class="text-gray-500 text-xs uppercase tracking-wider border-b border-gray-200">
+                                <th class="p-3 font-bold sticky left-0 bg-white z-20">Branch Name</th>
+                                <th class="p-3 font-bold text-right">PBT Act</th>
+                                <!--
+                                <th class="p-3 font-bold text-right">PBT Tgt</th>
+                                -->
+                                <th class="p-3 font-bold text-right text-red-500">Gap PBT</th>
+                                <th class="p-3 font-bold text-right">Asset Act</th>
+                                <th class="p-3 font-bold text-right">Gap Asset</th>
+                                <th class="p-3 font-bold text-right">CASA %</th>
+                                <th class="p-3 font-bold text-right">Act CASA</th>
+                                <th class="p-3 font-bold text-right">Gap CASA</th>
+                                <th class="p-3 font-bold text-right">COF %</th>
+                                <th class="p-3 font-bold text-right">FDR %</th>
+                                <th class="p-3 font-bold text-right">Act Financing</th>
+                                <th class="p-3 font-bold text-right">Gap Financing</th>
+                                <th class="p-3 font-bold text-right">FBI Act</th>
+                                <th class="p-3 font-bold text-right">Gap FBI</th>
+                                <th class="p-3 font-bold text-center">PPAP/YTD</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tableBody" class="text-xs divide-y divide-gray-100"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="footer">Typing, Create, Update, Repeat | Optimized for Mobile & Web | Theme: Light/Dark | RBPM - Region Sumatera</div>
     </div>
 
     <script>
@@ -459,13 +369,16 @@
         let chartRanks = { pbt: 'ALL', asset: 'ALL', casa: 'ALL', fdr: 'ALL', fbi: 'ALL' };
         
         // KONFIGURASI DATA JSON DI SINI
+        // ID harus unik, File harus sesuai nama file json Anda
         const jsonFiles = [            
             { id: 'juni', label: 'Juni', file: 'juni26.json'},
             { id: 'juli', label: 'Juli', file: 'juli26.json' }
         ];
 
+        // Set default period ke ID pertama atau spesifik (misal 'juni')
         let currentPeriodId = 'juli'; 
 
+        // Helper untuk membersihkan string format dari JSON ke angka murni (number)
         function parseVal(val) {
             if (typeof val === 'number') return val;
             if (!val) return 0;
@@ -474,17 +387,21 @@
             return isNaN(parsed) ? 0 : parsed;
         }
 
+        // Load data dari JSON secara asinkron berdasarkan periode
         async function loadData(keepBranch = null) {
             try {
+                // Cari konfigurasi file berdasarkan ID yang aktif
                 const config = jsonFiles.find(f => f.id === currentPeriodId);
                 if (!config) throw new Error("Konfigurasi periode tidak ditemukan");
 
                 const filename = config.file;
+                
                 const response = await fetch(filename);
                 if (!response.ok) throw new Error(`File ${filename} not upload yet`);
                 
                 const json = await response.json();
                 
+                // Sanitasi data
                 rawData = json.map(d => ({
                     name: d.name ? d.name.trim() : '',
                     pbt: parseVal(d.pbt),
@@ -506,13 +423,19 @@
                     ppap: parseVal(d.ppap)
                 }));
 
+                // Inisialisasi Filter Dropdown
                 initFilter();
 
+                // LOGIKA PEMILIHAN CABANG SAAT GANTI BULAN
                 let targetBranch = 'ALL';
                 if (keepBranch && keepBranch !== 'ALL') {
                     const exists = rawData.some(d => d.name === keepBranch);
-                    if (exists) targetBranch = keepBranch;
-                    else targetBranch = 'ALL'; 
+                    if (exists) {
+                        targetBranch = keepBranch;
+                    } else {
+                        console.warn(`Cabang ${keepBranch} tidak ditemukan di data ${currentPeriodId}`);
+                        targetBranch = 'ALL'; 
+                    }
                 }
 
                 document.getElementById('branchFilter').value = targetBranch;
@@ -521,10 +444,22 @@
 
             } catch (err) {
                 console.error("Error loading JSON:", err);
+                
+                // --- ERROR HANDLING ---
+                // 1. Tampilkan pesan error
                 alert(err.message);
+
+                // 2. Jika bukan Juni, fallback ke Juni
                 if (currentPeriodId !== 'juni') {
+                    console.warn("Fallback ke data Juni karena error...");
+                    
+                    // Ubah state
                     currentPeriodId = 'juni';
+                    
+                    // Update tampilan tombol tab
                     renderTabs();
+                    
+                    // Panggil ulang loadData
                     loadData(keepBranch);
                 }
             }
@@ -535,8 +470,8 @@
                 document.body.classList.add('logged-in');
                 document.getElementById('dashboardContent').classList.remove('hidden');
                 document.body.classList.remove('overflow-hidden');
-                renderTabs();
-                loadData();
+                renderTabs(); // Render tabs dulu
+                loadData();   // Lalu load data
             } else {
                 document.getElementById('loginOverlay').classList.remove('hidden');
             }
@@ -581,34 +516,50 @@
         styleSheet.innerText = `@keyframes shake { 0%, 100% { transform: translateX(0); } 20%, 60% { transform: translateX(-5px); } 40%, 80% { transform: translateX(5px); } }`;
         document.head.appendChild(styleSheet);
 
+        // --- FUNGSI RENDER TABS DINAMIS ---
         function renderTabs() {
             const container = document.getElementById('tabContainer');
-            container.innerHTML = '';
+            container.innerHTML = ''; // Bersihkan container
+
             jsonFiles.forEach(item => {
                 const btn = document.createElement('button');
+                // Tentukan kelas CSS berdasarkan apakah item ini yang aktif
                 const isActive = item.id === currentPeriodId;
+                
                 btn.className = isActive 
                     ? "px-3 py-1.5 rounded text-xs font-semibold transition-all bg-blue-600 text-white shadow-sm whitespace-nowrap"
                     : "px-3 py-1.5 rounded text-xs font-semibold transition-all text-slate-400 hover:text-white hover:bg-slate-700 whitespace-nowrap";
+                
                 btn.innerText = item.label.toUpperCase() + " 2026";
                 btn.onclick = () => switchData(item.id);
+                
                 container.appendChild(btn);
             });
         }
 
         function switchData(newPeriodId) {
             if (currentPeriodId === newPeriodId) return;
+            
             const currentSelectedBranch = document.getElementById('branchFilter').value;
             currentPeriodId = newPeriodId;
+            
+            // Render ulang tabs untuk memperbarui warna tombol aktif
             renderTabs();
+            
+            // Reset Rank Chart
             Object.keys(chartRanks).forEach(k => chartRanks[k] = 'ALL');
+            
+            // Load Data Baru
             loadData(currentSelectedBranch);
         }
+        // ------------------------------------------
 
         function initFilter() {
             const select = document.getElementById('branchFilter');
             const currentVal = select.value; 
+            
             select.innerHTML = '<option value="ALL">📊 REGION SUMATERA</option>';
+            
             const sortedBranches = [...rawData].sort((a,b) => a.name.localeCompare(b.name));
             sortedBranches.forEach(b => {
                 const opt = document.createElement('option');
@@ -616,12 +567,15 @@
                 opt.textContent = b.name;
                 select.appendChild(opt);
             });
+
             const newSelect = select.cloneNode(true);
             select.parentNode.replaceChild(newSelect, select);
+            
             newSelect.addEventListener('change', (e) => {
                 Object.keys(chartRanks).forEach(k => chartRanks[k] = 'ALL');
                 updateDashboard(e.target.value);
             });
+            
             if(currentVal) newSelect.value = currentVal;
         }
 
@@ -683,7 +637,7 @@
                     updateRankButtons(key);
                 });
             } else {
-                chartsGrid.className = "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-3 mb-6 transition-all duration-300";
+                chartsGrid.className = "grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3 mb-6 transition-all duration-300";
                 wrappers.forEach(w => w.classList.add('compact'));
             }
 
@@ -855,6 +809,9 @@
                     <tr class="hover:bg-blue-50 transition-colors border-b border-gray-50">
                         <td class="p-3 font-medium sticky left-0 bg-white hover:bg-blue-50 text-slate-700">${d.name}</td>
                         <td class="p-3 text-right ${d.pbt < 0 ? 'text-red-500 font-medium' : 'text-green-600 font-bold'}">${fmt(d.pbt)}</td>
+                        <!--
+                        <td class="p-3 text-right text-slate-400">${fmt(d.tgtPbt)}</td>
+                        -->
                         <td class="p-3 text-right ${d.pbt - d.tgtPbt < 0 ? 'text-red-500' : 'text-green-600'} font-medium">${fmt(d.pbt - d.tgtPbt)}</td>
                         <td class="p-3 text-right text-slate-700 font-medium">${fmt(d.asset)}</td>
                         <td class="p-3 text-right ${d.gapAsset < 0 ? 'text-red-500 font-medium' : 'text-green-600 font-bold'}">${fmt(d.gapAsset)}</td>
@@ -873,6 +830,85 @@
                 tbody.innerHTML += row;
             });
         }
+
+        const smartLabelsPlugin = {
+            id: 'smartLabels',
+            afterDatasetsDraw(chart) {
+                const { ctx } = chart;
+                const isSingle = currentMode !== 'ALL';
+                const dataCount = chart.data.labels.length;
+                const isAggregateFiltered = (currentMode === 'ALL' && dataCount <= 10);
+                const isCompactAggregate = (currentMode === 'ALL' && dataCount > 10);
+                if (isCompactAggregate) return; 
+
+                ctx.save();
+                ctx.font = isSingle ? 'bold 11px sans-serif' : (isAggregateFiltered ? 'bold 9px sans-serif' : 'bold 8px sans-serif');
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+
+                chart.data.datasets.forEach((dataset, i) => {
+                    const meta = chart.getDatasetMeta(i);
+                    if (!meta.hidden) {
+                        meta.data.forEach((element, index) => {
+                            const value = dataset.data[index];
+                            if (value !== null && value !== undefined) {
+                                let label = value;
+                                let displayValue = value;
+
+                                if ((isSingle || isAggregateFiltered) && dataset.label && dataset.label.toUpperCase().includes('GAP')) {
+                                    displayValue = Math.abs(value);
+                                }
+
+                                if (typeof displayValue === 'number') {
+                                    if (isSingle) {
+                                        label = new Intl.NumberFormat('id-ID').format(displayValue);
+                                    } else if (isAggregateFiltered) {
+                                        if (Math.abs(displayValue) >= 1000) {
+                                            const val = displayValue / 1000;
+                                            label = (val % 1 === 0 ? val : val.toFixed(1)) + 'K';
+                                        } else {
+                                            label = new Intl.NumberFormat('id-ID').format(displayValue);
+                                        }
+                                    } else {
+                                        if (Math.abs(displayValue) >= 1000) {
+                                            label = new Intl.NumberFormat('id-ID', { notation: "compact", compactDisplay: "short", maximumFractionDigits: 1 }).format(displayValue);
+                                        } else {
+                                            label = new Intl.NumberFormat('id-ID').format(displayValue);
+                                        }
+                                    }
+                                    if (dataset.label && (dataset.label.includes('%') || dataset.yAxisID === 'y1')) {
+                                        label = displayValue + '%';
+                                    }
+                                }
+
+                                let xPos = element.x;
+                                let yPos = element.y;
+                                if (dataset.type === 'line') yPos = element.y - 10;
+                                else {
+                                    const yTop = element.y;
+                                    const yBottom = element.base;
+                                    yPos = (yTop + yBottom) / 2;
+                                }
+
+                                if (isSingle || isAggregateFiltered) {
+                                    ctx.lineJoin = 'round';
+                                    ctx.lineWidth = 3;
+                                    ctx.strokeStyle = '#FFFFFF';
+                                    ctx.strokeText(label, xPos, yPos);
+                                    ctx.fillStyle = '#000000';
+                                    ctx.fillText(label, xPos, yPos);
+                                } else {
+                                    ctx.fillStyle = dataset.backgroundColor instanceof Array ? dataset.backgroundColor[index] : dataset.backgroundColor;
+                                    if (dataset.type === 'line') ctx.fillStyle = dataset.borderColor;
+                                    ctx.fillText(label, xPos, yPos);
+                                }
+                            }
+                        });
+                    }
+                });
+                ctx.restore();
+            }
+        };
 
         function renderAllCharts(fullData) {
             ['pbt', 'asset', 'casa', 'fdr', 'fbi'].forEach(id => renderSingleChart(id, fullData));
@@ -899,52 +935,30 @@
                 return value;
             };
 
-            const formatLabel = (value, context) => {
-                let displayValue = value;
-                const isGap = context.dataset.label && context.dataset.label.toUpperCase().includes('GAP');
-                if ((isSingle || (currentMode === 'ALL' && context.chart.data.labels.length <= 10)) && isGap) {
-                    displayValue = Math.abs(value);
-                }
-                if (typeof displayValue === 'number') {
-                    if (isSingle) return new Intl.NumberFormat('id-ID').format(displayValue);
-                    if (currentMode === 'ALL' && context.chart.data.labels.length <= 10) {
-                        if (Math.abs(displayValue) >= 1000) {
-                            const val = displayValue / 1000;
-                            return (val % 1 === 0 ? val : val.toFixed(1)) + 'K';
-                        } else return new Intl.NumberFormat('id-ID').format(displayValue);
-                    } else {
-                        if (Math.abs(displayValue) >= 1000) return new Intl.NumberFormat('id-ID', { notation: "compact", compactDisplay: "short", maximumFractionDigits: 1 }).format(displayValue);
-                        else return new Intl.NumberFormat('id-ID').format(displayValue);
-                    }
-                }
-                return value;
-            };
-
             const commonOptions = {
                 responsive: true,
                 maintainAspectRatio: false,
-                devicePixelRatio: window.devicePixelRatio || 1, 
-                animation: { duration: 0 }, 
-                layout: { padding: { top: isSingle ? 15 : 25 } },
+                animation: { duration: 400 },
+                layout: { padding: { top: isSingle ? 10 : 20 } },
                 plugins: {
                     legend: { 
                         display: true, position: 'top', 
-                        labels: { usePointStyle: true, boxWidth: 6, boxHeight: 6, font: {size: 9}, generateLabels: (chart) => {
-                            const original = Chart.defaults.plugins.legend.labels.generateLabels(chart);
-                            return original.filter(label => !label.hidden).map(label => {
-                                const dataset = chart.data.datasets[label.datasetIndex];
-                                if (dataset) { label.fillStyle = getLegendColor(dataset); label.strokeStyle = getLegendColor(dataset); }
-                                return label;
-                            });
-                        }} 
+                        labels: { 
+                            usePointStyle: true, boxWidth: 6, boxHeight: 6, font: {size: 8}, 
+                            generateLabels: (chart) => {
+                                const original = Chart.defaults.plugins.legend.labels.generateLabels(chart);
+                                return original.filter(label => !label.hidden).map(label => {
+                                    const dataset = chart.data.datasets[label.datasetIndex];
+                                    if (dataset) {
+                                        label.fillStyle = getLegendColor(dataset);
+                                        label.strokeStyle = getLegendColor(dataset);
+                                    }
+                                    return label;
+                                });
+                            }
+                        } 
                     },
-                    tooltip: { backgroundColor: 'rgba(15, 23, 42, 0.9)', titleFont: {size: 10}, bodyFont: {size: 10} },
-                    datalabels: {
-                        anchor: 'center', align: 'center', color: '#000',
-                        font: { weight: 'bold', size: isSingle ? 11 : 9 },
-                        formatter: formatLabel,
-                        textStrokeColor: '#fff', textStrokeWidth: 2
-                    }
+                    tooltip: { backgroundColor: 'rgba(15, 23, 42, 0.9)', titleFont: {size: 10}, bodyFont: {size: 10} }
                 },
                 scales: {
                     x: { display: !isSingle, grid: { display: false }, ticks: { maxRotation: labelRotation, minRotation: labelRotation, font: {size: 8}, autoSkip: false } },
@@ -960,7 +974,7 @@
                     { label: 'Target', data: data.map(d => d.tgtPbt), backgroundColor: '#94a3b8', borderRadius: 4, hidden: isAggregateAll },
                     { label: 'GAP', data: data.map(d => d.pbt - d.tgtPbt), backgroundColor: data.map(d => (d.pbt - d.tgtPbt) < 0 ? '#ef4444' : '#22c55e'), borderRadius: 4 }
                 ];
-                charts.pbt = new Chart(document.getElementById('pbtChart'), { type: 'bar', data: { labels, datasets }, options: commonOptions, plugins: [ChartDataLabels] });
+                charts.pbt = new Chart(document.getElementById('pbtChart'), { type: 'bar', data: { labels, datasets }, options: commonOptions, plugins: [smartLabelsPlugin] });
             } 
             else if (chartId === 'asset') {
                 const datasets = [
@@ -968,38 +982,50 @@
                     { label: 'Target', data: data.map(d => d.tgtAsset), backgroundColor: '#94a3b8', borderRadius: 4, hidden: isAggregateAll },
                     { label: 'GAP', data: data.map(d => d.gapAsset), backgroundColor: data.map(d => d.gapAsset < 0 ? '#ef4444' : '#22c55e'), borderRadius: 4 }
                 ];
-                charts.asset = new Chart(document.getElementById('assetChart'), { type: 'bar', data: { labels, datasets }, options: commonOptions, plugins: [ChartDataLabels] });
+                charts.asset = new Chart(document.getElementById('assetChart'), { type: 'bar', data: { labels, datasets }, options: commonOptions, plugins: [smartLabelsPlugin] });
             } 
             else if (chartId === 'casa') {
                 charts.casa = new Chart(document.getElementById('casaChart'), {
                     type: 'bar',
-                    data: { labels, datasets: [
-                        { label: 'Actual', data: data.map(d => d.actCasa), backgroundColor: '#10b981', borderRadius: 4, yAxisID: 'y' },
-                        { label: 'GAP', data: data.map(d => d.gapCasa), backgroundColor: data.map(d => d.gapCasa < 0 ? '#ef4444' : '#22c55e'), borderRadius: 4, yAxisID: 'y' },
-                        { label: 'Ratio %', data: data.map(d => d.casaPct), type: 'line', borderColor: '#3b82f6', borderWidth: 2, yAxisID: 'y1', tension: 0.3 }
-                    ]},
-                    options: { ...commonOptions, scales: {
-                        x: commonOptions.scales.x,
-                        y: { type: 'linear', position: 'left', ticks: { font: {size: 8}, callback: formatYAxis } },
-                        y1: { type: 'linear', display: !isSingle, position: 'right', min: 0, max: 100, grid: { drawOnChartArea: false }, ticks: {font:{size: 8}} }
-                    }},
-                    plugins: [ChartDataLabels]
+                    data: {
+                        labels,
+                        datasets: [
+                            { label: 'Actual', data: data.map(d => d.actCasa), backgroundColor: '#10b981', borderRadius: 4, yAxisID: 'y' },
+                            { label: 'GAP', data: data.map(d => d.gapCasa), backgroundColor: data.map(d => d.gapCasa < 0 ? '#ef4444' : '#22c55e'), borderRadius: 4, yAxisID: 'y' },
+                            { label: 'Ratio %', data: data.map(d => d.casaPct), type: 'line', borderColor: '#3b82f6', borderWidth: 2, yAxisID: 'y1', tension: 0.3 }
+                        ]
+                    },
+                    options: {
+                        ...commonOptions,
+                        scales: {
+                            x: commonOptions.scales.x,
+                            y: { type: 'linear', position: 'left', ticks: { font: {size: 8}, callback: formatYAxis } },
+                            y1: { type: 'linear', display: !isSingle, position: 'right', min: 0, max: 100, grid: { drawOnChartArea: false }, ticks: {font:{size: 8}} }
+                        }
+                    },
+                    plugins: [smartLabelsPlugin]
                 });
             } 
             else if (chartId === 'fdr') {
                 charts.fdr = new Chart(document.getElementById('fdrChart'), {
                     type: 'bar',
-                    data: { labels, datasets: [
-                        { label: 'Financing', data: data.map(d => d.actFinancing), backgroundColor: '#7c3aed', borderRadius: 4, yAxisID: 'y' },
-                        { label: 'FDR %', data: data.map(d => d.fdrPct), type: 'line', borderColor: '#f59e0b', backgroundColor: '#f59e0b', borderWidth: 2, pointRadius: isSingle ? 4 : 2, pointBackgroundColor: '#fff', yAxisID: 'y1', tension: 0.3 },
-                        { label: 'GAP Fin', data: data.map(d => d.gapFinancing), backgroundColor: data.map(d => d.gapFinancing < 0 ? '#ef4444' : '#22c55e'), borderRadius: 4, yAxisID: 'y' }
-                    ]},
-                    options: { ...commonOptions, scales: {
-                        x: commonOptions.scales.x,
-                        y: { type: 'linear', position: 'left', title: { display: false }, ticks: { font: {size: 8}, callback: formatYAxis } },
-                        y1: { type: 'linear', position: 'right', min: 0, max: 100, title: { display: false }, grid: { drawOnChartArea: false }, ticks: { callback: v => v + '%', font:{size: 8} } }
-                    }},
-                    plugins: [ChartDataLabels]
+                    data: {
+                        labels,
+                        datasets: [
+                            { label: 'Financing', data: data.map(d => d.actFinancing), backgroundColor: '#7c3aed', borderRadius: 4, yAxisID: 'y' },
+                            { label: 'FDR %', data: data.map(d => d.fdrPct), type: 'line', borderColor: '#f59e0b', backgroundColor: '#f59e0b', borderWidth: 2, pointRadius: isSingle ? 4 : 2, pointBackgroundColor: '#fff', yAxisID: 'y1', tension: 0.3 },
+                            { label: 'GAP Fin', data: data.map(d => d.gapFinancing), backgroundColor: data.map(d => d.gapFinancing < 0 ? '#ef4444' : '#22c55e'), borderRadius: 4, yAxisID: 'y' }
+                        ]
+                    },
+                    options: {
+                        ...commonOptions,
+                        scales: {
+                            x: commonOptions.scales.x,
+                            y: { type: 'linear', position: 'left', title: { display: false }, ticks: { font: {size: 8}, callback: formatYAxis } },
+                            y1: { type: 'linear', position: 'right', min: 0, max: 100, title: { display: false }, grid: { drawOnChartArea: false }, ticks: { callback: v => v + '%', font:{size: 8} } }
+                        }
+                    },
+                    plugins: [smartLabelsPlugin]
                 });
             } 
             else if (chartId === 'fbi') {
@@ -1008,12 +1034,13 @@
                     { label: 'Target', data: data.map(d => d.tgtFbi), backgroundColor: '#cbd5e1', borderRadius: 4, hidden: isAggregateAll },
                     { label: 'GAP', data: data.map(d => d.gapFbi), backgroundColor: data.map(d => d.gapFbi < 0 ? '#ef4444' : '#22c55e'), borderRadius: 4 }
                 ];
-                charts.fbi = new Chart(document.getElementById('fbiChart'), { type: 'bar', data: { labels, datasets }, options: commonOptions, plugins: [ChartDataLabels] });
+                charts.fbi = new Chart(document.getElementById('fbiChart'), { type: 'bar', data: { labels, datasets }, options: commonOptions, plugins: [smartLabelsPlugin] });
             }
         }
 
         function updateHeaderTitle() {
             const titleEl = document.getElementById('headerTitle');
+            // Cari label berdasarkan ID periode saat ini
             const config = jsonFiles.find(f => f.id === currentPeriodId);
             const monthName = config ? config.label.toUpperCase() : 'DATA';
             titleEl.innerText = `CONTRIBUTION MARGIN [${monthName} 2026]`;
@@ -1024,60 +1051,6 @@
             const subtitleEl = document.getElementById('headerSubtitle');
             if (brVal=='ALL') subtitleEl.innerText = "REGION SUMATERA";
             else subtitleEl.innerText = brVal;
-        }
-
-        // ================= CAPTURE FUNCTION =================
-        function captureScreen() {
-            const element = document.getElementById('captureArea');
-            const loading = document.getElementById('captureLoading');
-            const chartsGrid = document.getElementById('chartsGrid');
-            const tableSection = document.getElementById('tableSection');
-            
-            loading.style.display = 'flex';
-            window.scrollTo(0, 0);
-
-            const isRegion = currentMode === 'ALL';
-            if (isRegion) {
-                chartsGrid.style.display = 'none';
-                tableSection.style.display = 'none';
-            }
-
-            setTimeout(() => {
-                const pixelRatio = window.devicePixelRatio || 1;
-                html2canvas(element, {
-                    scale: pixelRatio * 2, 
-                    useCORS: true, 
-                    allowTaint: true,
-                    backgroundColor: '#f3f4f6', 
-                    logging: false,
-                    imageSmoothingEnabled: false, 
-                    width: element.scrollWidth,
-                    height: element.scrollHeight,
-                    windowWidth: element.scrollWidth,
-                    windowHeight: element.scrollHeight
-                }).then(canvas => {
-                    if (isRegion) {
-                        chartsGrid.style.display = ''; 
-                        tableSection.style.display = '';
-                    }
-                    const link = document.createElement('a');
-                    const dateStr = new Date().toISOString().slice(0,10);
-                    const branch = document.getElementById('branchFilter').value;
-                    const suffix = isRegion ? 'KPI_Summary' : 'Full_Dashboard';
-                    link.download = `KPI_${branch}_${suffix}_${dateStr}.png`;
-                    link.href = canvas.toDataURL('image/png', 1.0); 
-                    link.click();
-                    loading.style.display = 'none';
-                }).catch(err => {
-                    console.error('Capture failed:', err);
-                    if (isRegion) {
-                        chartsGrid.style.display = '';
-                        tableSection.style.display = '';
-                    }
-                    alert('Gagal mengambil screenshot.');
-                    loading.style.display = 'none';
-                });
-            }, 100);
         }
     </script>
 </body>
