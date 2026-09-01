@@ -2,37 +2,43 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Branch KPI Monitoring - Region Sumatera</title>
     
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <!-- Chart.js DataLabels Plugin (Untuk Label Tajam) -->
+    <!-- Chart.js DataLabels Plugin -->
     <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0"></script>
     <!-- FontAwesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- HTML2Canvas Library for Screenshot -->
+    <!-- HTML2Canvas Library -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 
     <style>
         body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f3f4f6; }
         .card { transition: all 0.3s ease; }
-        .card:hover { transform: translateY(-15px); box-shadow: 0 5px 10px rgba(0,0,0,0.1); }
+        .card:hover { transform: translateY(-5px); box-shadow: 0 5px 10px rgba(0,0,0,0.1); }
         
+        /* Responsive Chart Height */
         .chart-wrapper { position: relative; width: 100%; height: 300px; transition: height 0.3s ease; }
+        @media (max-width: 768px) {
+            .chart-wrapper { height: 250px; }
+            .chart-wrapper.compact { height: 180px; }
+        }
         .chart-wrapper.compact { height: 195px; }
 
-        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
         ::-webkit-scrollbar-track { background: #f1f1f1; }
         ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
         ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
 
-        .rank-btn { transition: all 0.2s; }
+        .rank-btn { transition: all 0.2s; font-size: 0.7rem; padding: 2px 8px; }
         .rank-btn.active { background-color: #1e293b; color: white; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
         .rank-btn:not(.active):hover { background-color: #e2e8f0; }
-        .footer { text-align: center; padding: 5px; font-size: 0.75rem; color: var(--text-muted); margin-top: -35px; }        
+        
+        .footer { text-align: center; padding: 10px; font-size: 0.7rem; color: #64748b; margin-top: 20px; }        
 
         /* Style untuk Login Modal */
         #loginOverlay {
@@ -47,12 +53,8 @@
             to { transform: translateY(0); opacity: 1; }
         }
 
-        body.logged-in #loginOverlay {
-            display: none !important;
-        }
-        body.logged-in #dashboardContent {
-            display: block !important;
-        }
+        body.logged-in #loginOverlay { display: none !important; }
+        body.logged-in #dashboardContent { display: block !important; }
 
         /* Loading overlay for capture */
         #captureLoading {
@@ -64,6 +66,15 @@
             justify-content: center;
             align-items: center;
             flex-direction: column;
+        }
+
+        /* Mobile Specific Fixes */
+        @media (max-width: 640px) {
+            .nav-container { flex-direction: column; align-items: flex-start !important; gap: 10px; }
+            .nav-controls { width: 100%; justify-content: space-between; }
+            .header-title { font-size: 1rem !important; line-height: 1.3; }
+            .tab-container { width: 100%; overflow-x: auto; white-space: nowrap; -webkit-overflow-scrolling: touch; }
+            .branch-select { width: 100% !important; min-width: auto !important; }
         }
     </style>
 </head>
@@ -105,46 +116,51 @@
     <!-- DASHBOARD CONTENT -->
     <div id="dashboardContent" class="hidden">
         <nav class="bg-slate-900 text-white shadow-lg sticky top-0 z-50">
-            <div class="container mx-auto px-6 py-3 flex flex-col md:flex-row justify-between items-center gap-3">
-                <div class="flex items-center space-x-3">
-                    <div class="bg-white-600 p-2 rounded-lg"><img src="img/BMI.png" alt="Bank Muamalat Logo" class="logo" width="35" height="35"></div>
-                    <div>
-                        <h1 class="text-lg font-bold tracking-wide" id="headerTitle">CONTRIBUTION MARGIN [JUNI 2026]</h1>
-                        <span id="headerSubtitle" class="text-sm font-bold text-slate-400 px3 ">
-                        <p class="text-xs text-slate-400">Contribution Margin | PBT After HOCA • Asset • CASA Ratio • FDR • FBI • PPAP</p>
+            <div class="container mx-auto px-4 py-3 nav-container flex flex-col md:flex-row justify-between items-center gap-3">
+                
+                <!-- Header Title Section -->
+                <div class="flex items-center space-x-3 w-full md:w-auto">
+                    <div class="bg-white p-1 rounded-lg shrink-0"><img src="img/BMI.png" alt="Logo" class="logo" width="30" height="30"></div>
+                    <div class="overflow-hidden">
+                        <h1 class="header-title text-base md:text-lg font-bold tracking-wide truncate" id="headerTitle">CONTRIBUTION MARGIN [JULI 2026]</h1>
+                        <span id="headerSubtitle" class="text-xs md:text-sm font-bold text-slate-400 block truncate">REGION SUMATERA</span>
                     </div>
                 </div>            
                 
-                <div class="flex items-center gap-3">
-                    <!-- TAB MENU DATA (DINAMIS) -->
-                    <div id="tabContainer" class="flex bg-slate-800 rounded-lg p-1 border border-slate-700 overflow-x-auto max-w-[300px] sm:max-w-none">
-                        <!-- Tombol akan digenerate oleh Javascript di sini -->
+                <!-- Controls Section (Tabs, Branch, Capture) -->
+                <div class="flex flex-col sm:flex-row items-center gap-2 w-full md:w-auto nav-controls">
+                    
+                    <!-- TAB MENU DATA -->
+                    <div id="tabContainer" class="tab-container flex bg-slate-800 rounded-lg p-1 border border-slate-700 overflow-x-auto w-full sm:w-auto mb-2 sm:mb-0">
+                        <!-- Tombol digenerate JS -->
                     </div>
 
-                    <!-- BRANCH SELECTOR -->
-                    <div class="flex items-center bg-slate-800 rounded-lg p-1 border border-slate-700">
-                        <label class="text-xs font-semibold text-slate-400 px-3 uppercase hidden sm:block">SELECT BRANCH:</label>
-                        <select id="branchFilter" class="bg-slate-900 text-white text-sm rounded-md border-none focus:ring-2 focus:ring-blue-500 py-1.5 px-3 outline-none cursor-pointer min-w-[180px]">
-                            <option value="ALL">📊 REGION SUMATERA</option>
-                        </select>
-                    </div>
+                    <!-- BRANCH SELECTOR & CAPTURE BUTTON WRAPPER -->
+                    <div class="flex items-center gap-2 w-full sm:w-auto">
+                        <div class="flex items-center bg-slate-800 rounded-lg p-1 border border-slate-700 branch-select flex-grow sm:flex-grow-0">
+                            <label class="text-[10px] font-semibold text-slate-400 px-2 uppercase hidden lg:block">BRANCH:</label>
+                            <select id="branchFilter" class="bg-slate-900 text-white text-xs sm:text-sm rounded-md border-none focus:ring-2 focus:ring-blue-500 py-1.5 px-2 outline-none cursor-pointer w-full sm:w-auto">
+                                <option value="ALL">📊 REGION SUMATERA</option>
+                            </select>
+                        </div>
 
-                    <!-- CAPTURE BUTTON -->
-                    <button onclick="captureScreen()" class="bg-emerald-600 hover:bg-emerald-700 text-white p-2 rounded-lg transition-colors shadow-md group relative" title="Download Dashboard as Image">
-                        <i class="fa-solid fa-camera text-sm"></i>
-                        <span class="absolute top-full mt-1 left-1/2 transform -translate-x-1/2 bg-black text-white text-[10px] px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none">Capture Screen</span>
-                    </button>
+                        <!-- CAPTURE BUTTON (Mobile Friendly) -->
+                        <button onclick="captureScreen()" class="bg-emerald-600 hover:bg-emerald-700 text-white p-2 rounded-lg transition-colors shadow-md shrink-0 flex items-center justify-center w-10 h-10 sm:w-auto sm:h-auto sm:px-3 sm:py-1.5" title="Capture Screen">
+                            <i class="fa-solid fa-camera text-sm"></i>
+                            <span class="hidden sm:inline text-xs font-semibold ml-1">Capture</span>
+                        </button>
+                    </div>
                 </div>
             </div>
         </nav>
 
         <!-- Wrapper ID added for Capture Target -->
         <div id="captureArea" class="bg-gray-50 min-h-screen pb-10">
-            <div class="container mx-auto px-6 py-6">
+            <div class="container mx-auto px-4 md:px-6 py-6">
                 <!-- Summary Cards (KPI) -->
-                <div id="kpiSection" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4 mb-6">
+                <div id="kpiSection" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4 mb-6">
                     <!-- 1. PBT Card -->
-                    <div class="card bg-white p-3 rounded-xl shadow-sm border-t-8 border-l-2 border-blue-500 relative overflow-hidden">
+                    <div class="card bg-white p-4 rounded-xl shadow-sm border-t-4 border-l-2 border-blue-500 relative overflow-hidden">
                         <div class="absolute top-3 right-3 text-xl" id="iconPBT"></div>
                         <div class="flex justify-between items-start pr-8">
                             <div>
@@ -157,8 +173,8 @@
                             <div class="flex justify-between mb-0.5"><span class="text-gray-500">Target:</span><span id="targetPBT" class="font-semibold">-</span></div>
                             <div class="flex justify-between"><span class="text-gray-500">Gap PBT After HOCA:</span><span id="gapPBT" class="font-bold">-</span></div>
                             <div id="countPbtPosNeg" class="mt-1.5 pt-1.5 border-t border-dashed border-gray-200 hidden">
-                                <div class="flex justify-between"><span class="text-green-600"> Cabang Positif</span> <span id="cntPbtPos" class="font-bold">0</span></div>
-                                <div class="flex justify-between"><span class="text-red-500"> Cabang Negatif</span> <span id="cntPbtNeg" class="font-bold">0</span></div>
+                                <div class="flex justify-between"><span class="text-green-600">🟢 Cabang Positif</span> <span id="cntPbtPos" class="font-bold">0</span></div>
+                                <div class="flex justify-between"><span class="text-red-500">🔴 Cabang Negatif</span> <span id="cntPbtNeg" class="font-bold">0</span></div>
                             </div>
                             <div id="countPBT" class="mt-1.5 pt-1.5 border-t border-dashed border-gray-200 hidden">
                                 <div class="flex justify-between"><span class="text-green-600">✅ Achieved</span> <span id="cntPbtOk" class="font-bold">0</span></div>
@@ -168,7 +184,7 @@
                     </div>
 
                     <!-- 2. Asset Card -->
-                    <div class="card bg-white p-3 rounded-xl shadow-sm border-t-8 border-l-2 border-emerald-500 relative overflow-hidden">
+                    <div class="card bg-white p-4 rounded-xl shadow-sm border-t-4 border-l-2 border-emerald-500 relative overflow-hidden">
                         <div class="absolute top-3 right-3 text-xl" id="iconAsset"></div>
                         <div class="flex justify-between items-start pr-8">
                             <div>
@@ -188,7 +204,7 @@
                     </div>
 
                     <!-- 3. CASA Card -->
-                    <div class="card bg-white p-3 rounded-xl shadow-sm border-t-8 border-l-2 border-rose-500 relative overflow-hidden">
+                    <div class="card bg-white p-4 rounded-xl shadow-sm border-t-4 border-l-2 border-rose-500 relative overflow-hidden">
                         <div class="absolute top-3 right-3 text-xl" id="iconCASA"></div>
                         <div class="flex justify-between items-start pr-8">
                             <div class="w-full">
@@ -221,7 +237,7 @@
                     </div>
 
                     <!-- 4. FDR Card -->
-                    <div class="card bg-white p-3 rounded-xl shadow-sm border-t-8 border-l-2 border-amber-500 relative overflow-hidden">
+                    <div class="card bg-white p-4 rounded-xl shadow-sm border-t-4 border-l-2 border-amber-500 relative overflow-hidden">
                         <div class="absolute top-3 right-3 text-xl" id="iconFDR"></div>
                         <div class="flex justify-between items-start pr-8">
                             <div>
@@ -241,7 +257,7 @@
                     </div>
 
                     <!-- 5. FBI Card -->
-                    <div class="card bg-white p-3 rounded-xl shadow-sm border-t-8 border-l-2 border-violet-500 relative overflow-hidden">
+                    <div class="card bg-white p-4 rounded-xl shadow-sm border-t-4 border-l-2 border-violet-500 relative overflow-hidden">
                         <div class="absolute top-3 right-3 text-xl" id="iconFBI"></div>
                         <div class="flex justify-between items-start pr-8">
                             <div>
@@ -261,7 +277,7 @@
                     </div>
 
                     <!-- 6. PPAP Card -->
-                    <div class="card bg-white p-3 rounded-xl shadow-sm border-t-8 border-l-2 border-fuchsia-500 relative overflow-hidden">
+                    <div class="card bg-white p-4 rounded-xl shadow-sm border-t-4 border-l-2 border-fuchsia-500 relative overflow-hidden">
                         <div class="absolute top-3 right-3 text-xl" id="iconPPAP"></div>
                         <div class="flex justify-between items-start pr-8">
                             <div>
@@ -287,9 +303,9 @@
                         <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-2 gap-1">
                             <h3 class="text-sm font-bold text-slate-700">Profit Before Tax After HOCA</h3>
                             <div id="ctrl-pbt" class="hidden bg-gray-100 rounded-lg p-0.5 flex text-[10px] font-medium">
-                                <button onclick="setChartRank('pbt', 'TOP')" class="rank-btn px-2 py-0.5 rounded text-slate-600">Top 10</button>
-                                <button onclick="setChartRank('pbt', 'BOTTOM')" class="rank-btn px-2 py-0.5 rounded text-slate-600">Bottom 10</button>
-                                <button onclick="setChartRank('pbt', 'ALL')" class="rank-btn active px-2 py-0.5 rounded text-slate-600">All</button>
+                                <button onclick="setChartRank('pbt', 'TOP')" class="rank-btn rounded text-slate-600">Top 10</button>
+                                <button onclick="setChartRank('pbt', 'BOTTOM')" class="rank-btn rounded text-slate-600">Bottom 10</button>
+                                <button onclick="setChartRank('pbt', 'ALL')" class="rank-btn active rounded text-slate-600">All</button>
                             </div>
                         </div>
                         <div class="chart-wrapper" id="wrap-pbt"><canvas id="pbtChart"></canvas></div>
@@ -300,9 +316,9 @@
                         <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-2 gap-1">
                             <h3 class="text-sm font-bold text-slate-700">Asset Performance</h3>
                             <div id="ctrl-asset" class="hidden bg-gray-100 rounded-lg p-0.5 flex text-[10px] font-medium">
-                                <button onclick="setChartRank('asset', 'TOP')" class="rank-btn px-2 py-0.5 rounded text-slate-600">Top 10</button>
-                                <button onclick="setChartRank('asset', 'BOTTOM')" class="rank-btn px-2 py-0.5 rounded text-slate-600">Bottom 10</button>
-                                <button onclick="setChartRank('asset', 'ALL')" class="rank-btn active px-2 py-0.5 rounded text-slate-600">All</button>
+                                <button onclick="setChartRank('asset', 'TOP')" class="rank-btn rounded text-slate-600">Top 10</button>
+                                <button onclick="setChartRank('asset', 'BOTTOM')" class="rank-btn rounded text-slate-600">Bottom 10</button>
+                                <button onclick="setChartRank('asset', 'ALL')" class="rank-btn active rounded text-slate-600">All</button>
                             </div>
                         </div>
                         <div class="chart-wrapper" id="wrap-asset"><canvas id="assetChart"></canvas></div>
@@ -313,9 +329,9 @@
                         <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-2 gap-1">
                             <h3 class="text-sm font-bold text-slate-700">CASA Analysis</h3>
                             <div id="ctrl-casa" class="hidden bg-gray-100 rounded-lg p-0.5 flex text-[10px] font-medium">
-                                <button onclick="setChartRank('casa', 'TOP')" class="rank-btn px-2 py-0.5 rounded text-slate-600">Top 10</button>
-                                <button onclick="setChartRank('casa', 'BOTTOM')" class="rank-btn px-2 py-0.5 rounded text-slate-600">Bottom 10</button>
-                                <button onclick="setChartRank('casa', 'ALL')" class="rank-btn active px-2 py-0.5 rounded text-slate-600">All</button>
+                                <button onclick="setChartRank('casa', 'TOP')" class="rank-btn rounded text-slate-600">Top 10</button>
+                                <button onclick="setChartRank('casa', 'BOTTOM')" class="rank-btn rounded text-slate-600">Bottom 10</button>
+                                <button onclick="setChartRank('casa', 'ALL')" class="rank-btn active rounded text-slate-600">All</button>
                             </div>
                         </div>
                         <div class="chart-wrapper" id="wrap-casa"><canvas id="casaChart"></canvas></div>
@@ -326,9 +342,9 @@
                         <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-2 gap-1">
                             <h3 class="text-sm font-bold text-slate-700">Financing & FDR Ratio</h3>
                             <div id="ctrl-fdr" class="hidden bg-gray-100 rounded-lg p-0.5 flex text-[10px] font-medium">
-                                <button onclick="setChartRank('fdr', 'TOP')" class="rank-btn px-2 py-0.5 rounded text-slate-600">Top 10</button>
-                                <button onclick="setChartRank('fdr', 'BOTTOM')" class="rank-btn px-2 py-0.5 rounded text-slate-600">Bottom 10</button>
-                                <button onclick="setChartRank('fdr', 'ALL')" class="rank-btn active px-2 py-0.5 rounded text-slate-600">All</button>
+                                <button onclick="setChartRank('fdr', 'TOP')" class="rank-btn rounded text-slate-600">Top 10</button>
+                                <button onclick="setChartRank('fdr', 'BOTTOM')" class="rank-btn rounded text-slate-600">Bottom 10</button>
+                                <button onclick="setChartRank('fdr', 'ALL')" class="rank-btn active rounded text-slate-600">All</button>
                             </div>
                         </div>
                         <div class="chart-wrapper" id="wrap-fdr"><canvas id="fdrChart"></canvas></div>
@@ -339,9 +355,9 @@
                         <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-2 gap-1">
                             <h3 class="text-sm font-bold text-slate-700">Fee Based Income</h3>
                             <div id="ctrl-fbi" class="hidden bg-gray-100 rounded-lg p-0.5 flex text-[10px] font-medium">
-                                <button onclick="setChartRank('fbi', 'TOP')" class="rank-btn px-2 py-0.5 rounded text-slate-600">Top 10</button>
-                                <button onclick="setChartRank('fbi', 'BOTTOM')" class="rank-btn px-2 py-0.5 rounded text-slate-600">Bottom 10</button>
-                                <button onclick="setChartRank('fbi', 'ALL')" class="rank-btn active px-2 py-0.5 rounded text-slate-600">All</button>
+                                <button onclick="setChartRank('fbi', 'TOP')" class="rank-btn rounded text-slate-600">Top 10</button>
+                                <button onclick="setChartRank('fbi', 'BOTTOM')" class="rank-btn rounded text-slate-600">Bottom 10</button>
+                                <button onclick="setChartRank('fbi', 'ALL')" class="rank-btn active rounded text-slate-600">All</button>
                             </div>
                         </div>
                         <div class="chart-wrapper" id="wrap-fbi"><canvas id="fbiChart"></canvas></div>
@@ -359,9 +375,6 @@
                                 <tr class="text-gray-500 text-xs uppercase tracking-wider border-b border-gray-200">
                                     <th class="p-3 font-bold sticky left-0 bg-white z-20">Branch Name</th>
                                     <th class="p-3 font-bold text-right">PBT Act</th>
-                                    <!--
-                                    <th class="p-3 font-bold text-right">PBT Tgt</th>
-                                    -->
                                     <th class="p-3 font-bold text-right text-red-500">Gap PBT</th>
                                     <th class="p-3 font-bold text-right">Asset Act</th>
                                     <th class="p-3 font-bold text-right">Gap Asset</th>
@@ -400,16 +413,13 @@
         let chartRanks = { pbt: 'ALL', asset: 'ALL', casa: 'ALL', fdr: 'ALL', fbi: 'ALL' };
         
         // KONFIGURASI DATA JSON DI SINI
-        // ID harus unik, File harus sesuai nama file json Anda
         const jsonFiles = [            
             { id: 'juni', label: 'Juni', file: 'juni26.json'},
             { id: 'juli', label: 'Juli', file: 'juli26.json' }
         ];
 
-        // Set default period ke ID pertama atau spesifik (misal 'juni')
         let currentPeriodId = 'juli'; 
 
-        // Helper untuk membersihkan string format dari JSON ke angka murni (number)
         function parseVal(val) {
             if (typeof val === 'number') return val;
             if (!val) return 0;
@@ -418,21 +428,17 @@
             return isNaN(parsed) ? 0 : parsed;
         }
 
-        // Load data dari JSON secara asinkron berdasarkan periode
         async function loadData(keepBranch = null) {
             try {
-                // Cari konfigurasi file berdasarkan ID yang aktif
                 const config = jsonFiles.find(f => f.id === currentPeriodId);
                 if (!config) throw new Error("Konfigurasi periode tidak ditemukan");
 
                 const filename = config.file;
-                
                 const response = await fetch(filename);
                 if (!response.ok) throw new Error(`File ${filename} not upload yet`);
                 
                 const json = await response.json();
                 
-                // Sanitasi data
                 rawData = json.map(d => ({
                     name: d.name ? d.name.trim() : '',
                     pbt: parseVal(d.pbt),
@@ -454,19 +460,13 @@
                     ppap: parseVal(d.ppap)
                 }));
 
-                // Inisialisasi Filter Dropdown
                 initFilter();
 
-                // LOGIKA PEMILIHAN CABANG SAAT GANTI BULAN
                 let targetBranch = 'ALL';
                 if (keepBranch && keepBranch !== 'ALL') {
                     const exists = rawData.some(d => d.name === keepBranch);
-                    if (exists) {
-                        targetBranch = keepBranch;
-                    } else {
-                        console.warn(`Cabang ${keepBranch} tidak ditemukan di data ${currentPeriodId}`);
-                        targetBranch = 'ALL'; 
-                    }
+                    if (exists) targetBranch = keepBranch;
+                    else targetBranch = 'ALL'; 
                 }
 
                 document.getElementById('branchFilter').value = targetBranch;
@@ -475,22 +475,10 @@
 
             } catch (err) {
                 console.error("Error loading JSON:", err);
-                
-                // --- ERROR HANDLING ---
-                // 1. Tampilkan pesan error
                 alert(err.message);
-
-                // 2. Jika bukan Juni, fallback ke Juni
                 if (currentPeriodId !== 'juni') {
-                    console.warn("Fallback ke data Juni karena error...");
-                    
-                    // Ubah state
                     currentPeriodId = 'juni';
-                    
-                    // Update tampilan tombol tab
                     renderTabs();
-                    
-                    // Panggil ulang loadData
                     loadData(keepBranch);
                 }
             }
@@ -501,8 +489,8 @@
                 document.body.classList.add('logged-in');
                 document.getElementById('dashboardContent').classList.remove('hidden');
                 document.body.classList.remove('overflow-hidden');
-                renderTabs(); // Render tabs dulu
-                loadData();   // Lalu load data
+                renderTabs();
+                loadData();
             } else {
                 document.getElementById('loginOverlay').classList.remove('hidden');
             }
@@ -547,50 +535,34 @@
         styleSheet.innerText = `@keyframes shake { 0%, 100% { transform: translateX(0); } 20%, 60% { transform: translateX(-5px); } 40%, 80% { transform: translateX(5px); } }`;
         document.head.appendChild(styleSheet);
 
-        // --- FUNGSI RENDER TABS DINAMIS ---
         function renderTabs() {
             const container = document.getElementById('tabContainer');
-            container.innerHTML = ''; // Bersihkan container
-
+            container.innerHTML = '';
             jsonFiles.forEach(item => {
                 const btn = document.createElement('button');
-                // Tentukan kelas CSS berdasarkan apakah item ini yang aktif
                 const isActive = item.id === currentPeriodId;
-                
                 btn.className = isActive 
                     ? "px-3 py-1.5 rounded text-xs font-semibold transition-all bg-blue-600 text-white shadow-sm whitespace-nowrap"
                     : "px-3 py-1.5 rounded text-xs font-semibold transition-all text-slate-400 hover:text-white hover:bg-slate-700 whitespace-nowrap";
-                
                 btn.innerText = item.label.toUpperCase() + " 2026";
                 btn.onclick = () => switchData(item.id);
-                
                 container.appendChild(btn);
             });
         }
 
         function switchData(newPeriodId) {
             if (currentPeriodId === newPeriodId) return;
-            
             const currentSelectedBranch = document.getElementById('branchFilter').value;
             currentPeriodId = newPeriodId;
-            
-            // Render ulang tabs untuk memperbarui warna tombol aktif
             renderTabs();
-            
-            // Reset Rank Chart
             Object.keys(chartRanks).forEach(k => chartRanks[k] = 'ALL');
-            
-            // Load Data Baru
             loadData(currentSelectedBranch);
         }
-        // ------------------------------------------
 
         function initFilter() {
             const select = document.getElementById('branchFilter');
             const currentVal = select.value; 
-            
-            select.innerHTML = '<option value="ALL"> REGION SUMATERA</option>';
-            
+            select.innerHTML = '<option value="ALL">📊 REGION SUMATERA</option>';
             const sortedBranches = [...rawData].sort((a,b) => a.name.localeCompare(b.name));
             sortedBranches.forEach(b => {
                 const opt = document.createElement('option');
@@ -598,15 +570,12 @@
                 opt.textContent = b.name;
                 select.appendChild(opt);
             });
-
             const newSelect = select.cloneNode(true);
             select.parentNode.replaceChild(newSelect, select);
-            
             newSelect.addEventListener('change', (e) => {
                 Object.keys(chartRanks).forEach(k => chartRanks[k] = 'ALL');
                 updateDashboard(e.target.value);
             });
-            
             if(currentVal) newSelect.value = currentVal;
         }
 
@@ -668,7 +637,7 @@
                     updateRankButtons(key);
                 });
             } else {
-                chartsGrid.className = "grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3 mb-6 transition-all duration-300";
+                chartsGrid.className = "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-3 mb-6 transition-all duration-300";
                 wrappers.forEach(w => w.classList.add('compact'));
             }
 
@@ -840,9 +809,6 @@
                     <tr class="hover:bg-blue-50 transition-colors border-b border-gray-50">
                         <td class="p-3 font-medium sticky left-0 bg-white hover:bg-blue-50 text-slate-700">${d.name}</td>
                         <td class="p-3 text-right ${d.pbt < 0 ? 'text-red-500 font-medium' : 'text-green-600 font-bold'}">${fmt(d.pbt)}</td>
-                        <!--
-                        <td class="p-3 text-right text-slate-400">${fmt(d.tgtPbt)}</td>
-                        -->
                         <td class="p-3 text-right ${d.pbt - d.tgtPbt < 0 ? 'text-red-500' : 'text-green-600'} font-medium">${fmt(d.pbt - d.tgtPbt)}</td>
                         <td class="p-3 text-right text-slate-700 font-medium">${fmt(d.asset)}</td>
                         <td class="p-3 text-right ${d.gapAsset < 0 ? 'text-red-500 font-medium' : 'text-green-600 font-bold'}">${fmt(d.gapAsset)}</td>
@@ -887,33 +853,22 @@
                 return value;
             };
 
-            // Formatter untuk Datalabels Plugin
             const formatLabel = (value, context) => {
                 let displayValue = value;
                 const isGap = context.dataset.label && context.dataset.label.toUpperCase().includes('GAP');
-                
-                // Logic khusus untuk GAP (absolutkan jika single/filtered)
                 if ((isSingle || (currentMode === 'ALL' && context.chart.data.labels.length <= 10)) && isGap) {
                     displayValue = Math.abs(value);
                 }
-
                 if (typeof displayValue === 'number') {
-                    if (isSingle) {
-                        return new Intl.NumberFormat('id-ID').format(displayValue);
-                    } else if (currentMode === 'ALL' && context.chart.data.labels.length <= 10) {
+                    if (isSingle) return new Intl.NumberFormat('id-ID').format(displayValue);
+                    if (currentMode === 'ALL' && context.chart.data.labels.length <= 10) {
                         if (Math.abs(displayValue) >= 1000) {
                             const val = displayValue / 1000;
                             return (val % 1 === 0 ? val : val.toFixed(1)) + 'K';
-                        } else {
-                            return new Intl.NumberFormat('id-ID').format(displayValue);
-                        }
+                        } else return new Intl.NumberFormat('id-ID').format(displayValue);
                     } else {
-                        // Aggregate All (Banyak data)
-                        if (Math.abs(displayValue) >= 1000) {
-                            return new Intl.NumberFormat('id-ID', { notation: "compact", compactDisplay: "short", maximumFractionDigits: 1 }).format(displayValue);
-                        } else {
-                            return new Intl.NumberFormat('id-ID').format(displayValue);
-                        }
+                        if (Math.abs(displayValue) >= 1000) return new Intl.NumberFormat('id-ID', { notation: "compact", compactDisplay: "short", maximumFractionDigits: 1 }).format(displayValue);
+                        else return new Intl.NumberFormat('id-ID').format(displayValue);
                     }
                 }
                 return value;
@@ -922,42 +877,27 @@
             const commonOptions = {
                 responsive: true,
                 maintainAspectRatio: false,
-                // FIX BLUR: Paksa Chart.js menggunakan resolusi fisik layar
                 devicePixelRatio: window.devicePixelRatio || 1, 
-                
-                // Matikan animasi agar capture stabil
                 animation: { duration: 0 }, 
-                
                 layout: { padding: { top: isSingle ? 15 : 25 } },
                 plugins: {
                     legend: { 
                         display: true, position: 'top', 
-                        labels: { 
-                            usePointStyle: true, boxWidth: 6, boxHeight: 6, font: {size: 9}, 
-                            generateLabels: (chart) => {
-                                const original = Chart.defaults.plugins.legend.labels.generateLabels(chart);
-                                return original.filter(label => !label.hidden).map(label => {
-                                    const dataset = chart.data.datasets[label.datasetIndex];
-                                    if (dataset) {
-                                        label.fillStyle = getLegendColor(dataset);
-                                        label.strokeStyle = getLegendColor(dataset);
-                                    }
-                                    return label;
-                                });
-                            }
-                        } 
+                        labels: { usePointStyle: true, boxWidth: 6, boxHeight: 6, font: {size: 9}, generateLabels: (chart) => {
+                            const original = Chart.defaults.plugins.legend.labels.generateLabels(chart);
+                            return original.filter(label => !label.hidden).map(label => {
+                                const dataset = chart.data.datasets[label.datasetIndex];
+                                if (dataset) { label.fillStyle = getLegendColor(dataset); label.strokeStyle = getLegendColor(dataset); }
+                                return label;
+                            });
+                        }} 
                     },
                     tooltip: { backgroundColor: 'rgba(15, 23, 42, 0.9)', titleFont: {size: 10}, bodyFont: {size: 10} },
-                    // Gunakan plugin datalabels resmi
                     datalabels: {
-                        anchor: 'center',
-                        align: 'center',
-                        color: '#000',
+                        anchor: 'center', align: 'center', color: '#000',
                         font: { weight: 'bold', size: isSingle ? 11 : 9 },
                         formatter: formatLabel,
-                        // Outline putih agar teks terbaca jelas di atas warna gelap
-                        textStrokeColor: '#fff',
-                        textStrokeWidth: 2
+                        textStrokeColor: '#fff', textStrokeWidth: 2
                     }
                 },
                 scales: {
@@ -974,12 +914,7 @@
                     { label: 'Target', data: data.map(d => d.tgtPbt), backgroundColor: '#94a3b8', borderRadius: 4, hidden: isAggregateAll },
                     { label: 'GAP', data: data.map(d => d.pbt - d.tgtPbt), backgroundColor: data.map(d => (d.pbt - d.tgtPbt) < 0 ? '#ef4444' : '#22c55e'), borderRadius: 4 }
                 ];
-                charts.pbt = new Chart(document.getElementById('pbtChart'), { 
-                    type: 'bar', 
-                    data: { labels, datasets }, 
-                    options: commonOptions, 
-                    plugins: [ChartDataLabels] 
-                });
+                charts.pbt = new Chart(document.getElementById('pbtChart'), { type: 'bar', data: { labels, datasets }, options: commonOptions, plugins: [ChartDataLabels] });
             } 
             else if (chartId === 'asset') {
                 const datasets = [
@@ -987,54 +922,37 @@
                     { label: 'Target', data: data.map(d => d.tgtAsset), backgroundColor: '#94a3b8', borderRadius: 4, hidden: isAggregateAll },
                     { label: 'GAP', data: data.map(d => d.gapAsset), backgroundColor: data.map(d => d.gapAsset < 0 ? '#ef4444' : '#22c55e'), borderRadius: 4 }
                 ];
-                charts.asset = new Chart(document.getElementById('assetChart'), { 
-                    type: 'bar', 
-                    data: { labels, datasets }, 
-                    options: commonOptions, 
-                    plugins: [ChartDataLabels] 
-                });
+                charts.asset = new Chart(document.getElementById('assetChart'), { type: 'bar', data: { labels, datasets }, options: commonOptions, plugins: [ChartDataLabels] });
             } 
             else if (chartId === 'casa') {
                 charts.casa = new Chart(document.getElementById('casaChart'), {
                     type: 'bar',
-                    data: {
-                        labels,
-                        datasets: [
-                            { label: 'Actual', data: data.map(d => d.actCasa), backgroundColor: '#10b981', borderRadius: 4, yAxisID: 'y' },
-                            { label: 'GAP', data: data.map(d => d.gapCasa), backgroundColor: data.map(d => d.gapCasa < 0 ? '#ef4444' : '#22c55e'), borderRadius: 4, yAxisID: 'y' },
-                            { label: 'Ratio %', data: data.map(d => d.casaPct), type: 'line', borderColor: '#3b82f6', borderWidth: 2, yAxisID: 'y1', tension: 0.3 }
-                        ]
-                    },
-                    options: {
-                        ...commonOptions,
-                        scales: {
-                            x: commonOptions.scales.x,
-                            y: { type: 'linear', position: 'left', ticks: { font: {size: 8}, callback: formatYAxis } },
-                            y1: { type: 'linear', display: !isSingle, position: 'right', min: 0, max: 100, grid: { drawOnChartArea: false }, ticks: {font:{size: 8}} }
-                        }
-                    },
+                    data: { labels, datasets: [
+                        { label: 'Actual', data: data.map(d => d.actCasa), backgroundColor: '#10b981', borderRadius: 4, yAxisID: 'y' },
+                        { label: 'GAP', data: data.map(d => d.gapCasa), backgroundColor: data.map(d => d.gapCasa < 0 ? '#ef4444' : '#22c55e'), borderRadius: 4, yAxisID: 'y' },
+                        { label: 'Ratio %', data: data.map(d => d.casaPct), type: 'line', borderColor: '#3b82f6', borderWidth: 2, yAxisID: 'y1', tension: 0.3 }
+                    ]},
+                    options: { ...commonOptions, scales: {
+                        x: commonOptions.scales.x,
+                        y: { type: 'linear', position: 'left', ticks: { font: {size: 8}, callback: formatYAxis } },
+                        y1: { type: 'linear', display: !isSingle, position: 'right', min: 0, max: 100, grid: { drawOnChartArea: false }, ticks: {font:{size: 8}} }
+                    }},
                     plugins: [ChartDataLabels]
                 });
             } 
             else if (chartId === 'fdr') {
                 charts.fdr = new Chart(document.getElementById('fdrChart'), {
                     type: 'bar',
-                    data: {
-                        labels,
-                        datasets: [
-                            { label: 'Financing', data: data.map(d => d.actFinancing), backgroundColor: '#7c3aed', borderRadius: 4, yAxisID: 'y' },
-                            { label: 'FDR %', data: data.map(d => d.fdrPct), type: 'line', borderColor: '#f59e0b', backgroundColor: '#f59e0b', borderWidth: 2, pointRadius: isSingle ? 4 : 2, pointBackgroundColor: '#fff', yAxisID: 'y1', tension: 0.3 },
-                            { label: 'GAP Fin', data: data.map(d => d.gapFinancing), backgroundColor: data.map(d => d.gapFinancing < 0 ? '#ef4444' : '#22c55e'), borderRadius: 4, yAxisID: 'y' }
-                        ]
-                    },
-                    options: {
-                        ...commonOptions,
-                        scales: {
-                            x: commonOptions.scales.x,
-                            y: { type: 'linear', position: 'left', title: { display: false }, ticks: { font: {size: 8}, callback: formatYAxis } },
-                            y1: { type: 'linear', position: 'right', min: 0, max: 100, title: { display: false }, grid: { drawOnChartArea: false }, ticks: { callback: v => v + '%', font:{size: 8} } }
-                        }
-                    },
+                    data: { labels, datasets: [
+                        { label: 'Financing', data: data.map(d => d.actFinancing), backgroundColor: '#7c3aed', borderRadius: 4, yAxisID: 'y' },
+                        { label: 'FDR %', data: data.map(d => d.fdrPct), type: 'line', borderColor: '#f59e0b', backgroundColor: '#f59e0b', borderWidth: 2, pointRadius: isSingle ? 4 : 2, pointBackgroundColor: '#fff', yAxisID: 'y1', tension: 0.3 },
+                        { label: 'GAP Fin', data: data.map(d => d.gapFinancing), backgroundColor: data.map(d => d.gapFinancing < 0 ? '#ef4444' : '#22c55e'), borderRadius: 4, yAxisID: 'y' }
+                    ]},
+                    options: { ...commonOptions, scales: {
+                        x: commonOptions.scales.x,
+                        y: { type: 'linear', position: 'left', title: { display: false }, ticks: { font: {size: 8}, callback: formatYAxis } },
+                        y1: { type: 'linear', position: 'right', min: 0, max: 100, title: { display: false }, grid: { drawOnChartArea: false }, ticks: { callback: v => v + '%', font:{size: 8} } }
+                    }},
                     plugins: [ChartDataLabels]
                 });
             } 
@@ -1044,18 +962,12 @@
                     { label: 'Target', data: data.map(d => d.tgtFbi), backgroundColor: '#cbd5e1', borderRadius: 4, hidden: isAggregateAll },
                     { label: 'GAP', data: data.map(d => d.gapFbi), backgroundColor: data.map(d => d.gapFbi < 0 ? '#ef4444' : '#22c55e'), borderRadius: 4 }
                 ];
-                charts.fbi = new Chart(document.getElementById('fbiChart'), { 
-                    type: 'bar', 
-                    data: { labels, datasets }, 
-                    options: commonOptions, 
-                    plugins: [ChartDataLabels] 
-                });
+                charts.fbi = new Chart(document.getElementById('fbiChart'), { type: 'bar', data: { labels, datasets }, options: commonOptions, plugins: [ChartDataLabels] });
             }
         }
 
         function updateHeaderTitle() {
             const titleEl = document.getElementById('headerTitle');
-            // Cari label berdasarkan ID periode saat ini
             const config = jsonFiles.find(f => f.id === currentPeriodId);
             const monthName = config ? config.label.toUpperCase() : 'DATA';
             titleEl.innerText = `CONTRIBUTION MARGIN [${monthName} 2026]`;
@@ -1075,57 +987,40 @@
             const chartsGrid = document.getElementById('chartsGrid');
             const tableSection = document.getElementById('tableSection');
             
-            // Show loading
             loading.style.display = 'flex';
-
-            // Scroll to top
             window.scrollTo(0, 0);
 
-            // Logic: Region (ALL) only captures KPI, Single Branch captures All
             const isRegion = currentMode === 'ALL';
-            
-            // Temporarily hide charts and table if it's Region view
             if (isRegion) {
                 chartsGrid.style.display = 'none';
                 tableSection.style.display = 'none';
             }
 
-            // Beri jeda sebentar agar DOM stabil setelah hide/show elemen
             setTimeout(() => {
                 const pixelRatio = window.devicePixelRatio || 1;
-
                 html2canvas(element, {
-                    // Scale tinggi untuk ketajaman maksimal
                     scale: pixelRatio * 2, 
                     useCORS: true, 
                     allowTaint: true,
                     backgroundColor: '#f3f4f6', 
                     logging: false,
-                    // CRITICAL: Mencegah browser melakukan anti-aliasing yang membuat blur
                     imageSmoothingEnabled: false, 
                     width: element.scrollWidth,
                     height: element.scrollHeight,
                     windowWidth: element.scrollWidth,
                     windowHeight: element.scrollHeight
                 }).then(canvas => {
-                    // Restore visibility
                     if (isRegion) {
                         chartsGrid.style.display = ''; 
                         tableSection.style.display = '';
                     }
-
-                    // Create download link
                     const link = document.createElement('a');
                     const dateStr = new Date().toISOString().slice(0,10);
                     const branch = document.getElementById('branchFilter').value;
-                    
                     const suffix = isRegion ? 'KPI_Summary' : 'Full_Dashboard';
-                    link.download = `KPI_Dashboard_${branch}_${suffix}_${dateStr}.png`;
-                    
-                    // Konversi ke PNG dengan kualitas maksimal
+                    link.download = `KPI_${branch}_${suffix}_${dateStr}.png`;
                     link.href = canvas.toDataURL('image/png', 1.0); 
                     link.click();
-                    
                     loading.style.display = 'none';
                 }).catch(err => {
                     console.error('Capture failed:', err);
@@ -1136,7 +1031,7 @@
                     alert('Gagal mengambil screenshot.');
                     loading.style.display = 'none';
                 });
-            }, 100); // Delay 100ms untuk memastikan render selesai
+            }, 100);
         }
     </script>
 </body>
