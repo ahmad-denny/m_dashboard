@@ -343,7 +343,7 @@
         </div>
 
         <!-- CONTENT AREA -->
-        <div class="p-3 md:p-6 space-y-3 md:space-y-6">
+        <div class="p-3 md:p-6 space-y-3 md:space-y-6" id="dashboard-content">
             <div id="charts-wrapper" class="space-y-3 md:space-y-6 mb-4 md:mb-6">
                 <!-- ROW 1: TREND CHART & COMPOSITION CHART (1 BARIS) -->
                 <div class="grid grid-cols-1 lg:grid-cols-3 gap-3 md:gap-6">
@@ -451,6 +451,7 @@
                 </div>
             </div>
             
+            <div id="table-position-placeholder"></div>
             <div class="bg-white dark:bg-dark-card rounded-xl p-3 md:p-5 card-shadow mt-4 md:mt-6 transition-colors duration-300" id="table-card-container">
                 <div class="flex justify-between items-center mb-2">
                     <h3 class="font-semibold text-xs md:text-sm text-slate-700 dark:text-slate-200" id="table-title">Detailed Breakdown</h3>
@@ -840,7 +841,8 @@
         function switchCSVTab(index) {
             if (index === currentActiveFileIndex) return;
             isComparisonMode = false; 
-            comparisonData = [];      
+            comparisonData = [];
+            restoreTableOriginalPosition();
             
             const currentFilters = {};
             filterColumns.forEach(col => {
@@ -1223,7 +1225,8 @@
         // OPTIMASI 4: Re-aggregate only when filters change
         function applyFilters() {
             isComparisonMode = false; 
-            comparisonData = [];      
+            comparisonData = [];
+            restoreTableOriginalPosition();
             
             const activeFilters = {};
             filterColumns.forEach(col => { const val = document.getElementById(`filter-${col}`).value; if (val !== "ALL") activeFilters[col] = val; });
@@ -1387,6 +1390,7 @@
             // --- PERBAIKAN UTAMA: RESET STATE COMPARISON ---
             isComparisonMode = false;
             comparisonData = [];
+            restoreTableOriginalPosition();
             // -----------------------------------------------
 
             filterColumns.forEach(col => { 
@@ -2396,7 +2400,28 @@
                 select.appendChild(opt);
             });
         }
-
+        
+        function moveTableUnderKPI() {
+            const contentArea = document.getElementById('dashboard-content');
+            const tableCard = document.getElementById('table-card-container');
+            if (contentArea && tableCard) {
+                // Pindahkan jadi child pertama di dalam content area = tepat di bawah KPI (sticky)
+                contentArea.insertBefore(tableCard, contentArea.firstElementChild);
+                tableCard.classList.remove('mt-4', 'md:mt-6');
+                tableCard.classList.add('mb-4', 'md:mb-6');
+            }
+        }
+        
+        function restoreTableOriginalPosition() {
+            const placeholder = document.getElementById('table-position-placeholder');
+            const tableCard = document.getElementById('table-card-container');
+            if (placeholder && tableCard) {
+                placeholder.parentNode.insertBefore(tableCard, placeholder.nextSibling);
+                tableCard.classList.remove('mb-4', 'md:mb-6');
+                tableCard.classList.add('mt-4', 'md:mt-6');
+            }
+        }
+        
         function displayComparisonTable() {
             const selectedItem = document.getElementById('export-item-select').value;
             const month1 = document.getElementById('export-month-1').value;
@@ -2469,6 +2494,7 @@
 
             // Aktifkan Mode Comparison
             isComparisonMode = true;
+            moveTableUnderKPI();
             
             // Simpan info untuk re-render header saat sorting
             window.lastExportItemName = selectedItem;
