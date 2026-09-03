@@ -2234,16 +2234,21 @@
             const isBillionFormat = ['finbook.csv', 'finos.csv', 'funding.csv', 'priority.csv', 'coll.csv', 'sli.csv'].includes(currentFileName);
 
             // --- LOGIKA MODE COMPARISON ---
-            if (isComparisonMode && comparisonData.length > 0) {
-                let htmlBuffer = '';
-                comparisonData.forEach((item) => {
+                if (isComparisonMode && comparisonData.length > 0) {
+                    const isNpfTab = currentFileName === 'coll.csv';
+                    // NPF: naik = buruk (merah), turun = bagus (hijau) — kebalikan dari tab lain
+                    const positiveClass = isNpfTab ? 'text-red-600 dark:text-red-400' : 'text-emerald-600 dark:text-emerald-400';
+                    const negativeClass = isNpfTab ? 'text-emerald-600 dark:text-emerald-400' : 'text-red-600 dark:text-red-400';
+
+                    let htmlBuffer = '';
+                    comparisonData.forEach((item) => {
                     let m1Display = isBillionFormat ? formatToBillion(item.m1) : formatNumber(item.m1);
                     let m2Display = isBillionFormat ? formatToBillion(item.m2) : formatNumber(item.m2);
                     let gapDisplay = isBillionFormat ? formatToBillion(item.gap) : formatNumber(item.gap);
                     
-                    let gapClass = item.gap >= 0 ? 'text-emerald-600 dark:text-emerald-400' : 'text-red-600 dark:text-red-400';
+                    let gapClass = item.gap >= 0 ? positiveClass : negativeClass;
                     let growthDisplay = item.growth.toFixed(1) + '%';
-                    let growthClass = item.growth >= 0 ? 'text-emerald-600 dark:text-emerald-400' : 'text-red-600 dark:text-red-400';
+                    let growthClass = item.growth >= 0 ? positiveClass : negativeClass;
 
                     htmlBuffer += `<tr class="bg-white dark:bg-dark-card border-b dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700/50 transition-colors text-xs md:text-base">
                         <td class="px-3 py-3 font-medium sticky-column"><span class="text-slate-700 dark:text-slate-200 font-semibold text-xs md:text-sm">${item.branch}</span></td>
