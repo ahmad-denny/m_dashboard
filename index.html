@@ -1448,9 +1448,9 @@
         function formatChartValue(num, currentFileName, decimals = null) {
             const isBillionFormat = ['finbook.csv', 'finos.csv', 'funding.csv', 'priority.csv', 'coll.csv', 'sli.csv'].includes(currentFileName);
             if (isBillionFormat) {
-                if (!num && num !== 0) return "0,00 M";
+                if (!num && num !== 0) return "0,0 M";
                 let val = num / 1000000000;
-                let precision = decimals !== null ? decimals : 2;
+                let precision = decimals !== null ? decimals : 1;
                 let str = val.toFixed(precision).replace('.', ',');
                 let parts = str.split(',');
                 parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ".");
@@ -2068,7 +2068,7 @@
                                         if (viewMode.co === 'percent') {
                                             if (val > 0.5) { txt = Math.round(val) + '%'; if (val < 15) isSmallSegment = true; }
                                         } else {
-                                            if (val > 0) txt = formatChartValue(val, currentFileName, forceTwoDecimals ? 2 : null);
+                                            if (val > 0) txt = formatChartValue(val, currentFileName, forceTwoDecimals ? 1 : null);
                                         }
                                         if (txt !== "") {
                                             const w = Math.abs(el.x - el.base);
@@ -2200,7 +2200,7 @@
                                         if (viewMode.branch === 'percent') {
                                             if (val > 0.5) { txt = Math.round(val) + '%'; if (val < 15) isSmallSegment = true; }
                                         } else {
-                                            if (val > 0) txt = formatChartValue(val, currentFileName, forceTwoDecimals ? 2 : null);
+                                            if (val > 0) txt = formatChartValue(val, currentFileName, forceTwoDecimals ? 1 : null);
                                         }
                                         if (txt !== "") {
                                             const w = Math.abs(el.x - el.base);
@@ -2242,7 +2242,7 @@
                     let gapDisplay = isBillionFormat ? formatToBillion(item.gap) : formatNumber(item.gap);
                     
                     let gapClass = item.gap >= 0 ? 'text-emerald-600 dark:text-emerald-400' : 'text-red-600 dark:text-red-400';
-                    let growthDisplay = item.growth.toFixed(2) + '%';
+                    let growthDisplay = item.growth.toFixed(1) + '%';
                     let growthClass = item.growth >= 0 ? 'text-emerald-600 dark:text-emerald-400' : 'text-red-600 dark:text-red-400';
 
                     htmlBuffer += `<tr class="bg-white dark:bg-dark-card border-b dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700/50 transition-colors text-xs md:text-base">
