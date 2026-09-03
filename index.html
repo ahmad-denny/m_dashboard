@@ -632,8 +632,9 @@
         let compViewMode = 'value';
         let customTimeline = { start: null, end: null };
         let isComparisonMode = false; 
-        let comparisonData = [];      
-        
+        let comparisonData = [];
+        let comparisonSortState = { column: 'm1', direction: 'desc' }; // default sort by Month 1, descending
+
         // --- OPTIMIZED LEGEND CONFIG ---
         function getOutlineColor(hex, opacity = 0.2) {
             if (!hex || !hex.startsWith('#')) return `rgba(0,0,0,${opacity})`;
@@ -2250,7 +2251,7 @@
                     let growthDisplay = item.growth.toFixed(1) + '%';
                     let growthClass = item.growth >= 0 ? positiveClass : negativeClass;
 
-                    htmlBuffer += `<tr class="bg-white dark:bg-dark-card border-b dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700/50 transition-colors text-xs md:text-base">
+                    htmlBuffer += `<tr class="bg-white dark:bg-dark-card border-b dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-700/50 transition-colors text-xs md:text-base">
                         <td class="px-3 py-3 font-medium sticky-column"><span class="text-slate-700 dark:text-slate-200 font-semibold text-xs md:text-sm">${item.branch}</span></td>
                         <td class="px-2 py-3 text-center font-mono text-xs md:text-sm max-w-[100px] truncate text-indigo-600 dark:text-indigo-400 font-semibold">${m1Display}</td>
                         <td class="px-2 py-3 text-center font-mono text-xs md:text-sm max-w-[100px] truncate text-emerald-600 dark:text-emerald-400 font-semibold">${m2Display}</td>
@@ -2297,7 +2298,7 @@
                 if (isBillionFormat) totalDisplay = formatToBillion(totalDisplay);
                 else totalDisplay = formatNumber(totalDisplay);
                 
-                htmlBuffer += `<tr class="bg-white dark:bg-dark-card border-b dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700/50 transition-colors text-xs md:text-base">
+                htmlBuffer += `<tr class="bg-white dark:bg-dark-card border-b dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-700/50 transition-colors text-xs md:text-base">
                     <td class="px-3 py-3 font-medium sticky-column"><span class="text-slate-700 dark:text-slate-200 font-semibold text-xs md:text-sm">${item.name}</span></td>
                     ${productCellsHtml}
                     <td class="px-3 py-3 text-center font-mono font-bold text-slate-800 dark:text-white text-xs md:text-sm">${totalDisplay}</td>
@@ -2361,7 +2362,7 @@
             const btnGrp = document.getElementById('filter-type-grp');
             // Styling active button
             const activeClass = "flex-1 py-2 text-xs font-medium rounded border border-indigo-500 bg-indigo-50 text-indigo-700 dark:bg-indigo-900/30 dark:text-indigo-300 dark:border-indigo-500 transition-all";
-            const inactiveClass = "flex-1 py-2 text-xs font-medium rounded border border-slate-200 text-slate-600 hover:bg-slate-50 dark:border-slate-600 dark:text-slate-400 dark:hover:bg-slate-700 transition-all";
+            const inactiveClass = "flex-1 py-2 text-xs font-medium rounded border border-slate-200 text-slate-600 hover:bg-slate-100 dark:border-slate-600 dark:text-slate-400 dark:hover:bg-slate-700 transition-all";
             
             if (type === 'PRODUCT') {
                 btnProd.className = activeClass;
@@ -2469,9 +2470,18 @@
             // Aktifkan Mode Comparison
             isComparisonMode = true;
             
+            // Simpan info untuk re-render header saat sorting
+            window.lastExportItemName = selectedItem;
+            window.lastExportMonth1 = month1;
+            window.lastExportMonth2 = month2;
+            
+            // Apply sort default (Month 1, descending) — sudah urut dari proses awal,
+            // tapi reset state agar konsisten setiap buka comparison baru
+            comparisonSortState = { column: 'm1', direction: 'desc' };
+            
             // Update Header Tabel secara Dinamis
             updateComparisonHeader(selectedItem, month1, month2);
-            
+
             // Render Tabel
             updateTable();
             
@@ -2487,23 +2497,62 @@
             }, 100);
         }
 
+        window.sortComparisonTable = function(column) {
+            if (comparisonSortState.column === column) {
+                // Kolom sama, balik arah
+                comparisonSortState.direction = comparisonSortState.direction === 'asc' ? 'desc' : 'asc';
+            } else {
+                // Kolom baru, default descending (kecuali branch = ascending/alfabet)
+                comparisonSortState.column = column;
+                comparisonSortState.direction = column === 'branch' ? 'asc' : 'desc';
+            }
+            
+            comparisonData.sort((a, b) => {
+                let valA = a[column];
+                let valB = b[column];
+                
+                if (column === 'branch') {
+                    valA = valA.toLowerCase();
+                    valB = valB.toLowerCase();
+                    return comparisonSortState.direction === 'asc' 
+                        ? valA.localeCompare(valB) 
+                        : valB.localeCompare(valA);
+                } else {
+                    return comparisonSortState.direction === 'asc' ? valA - valB : valB - valA;
+                }
+            });
+            
+            updateComparisonHeader(window.lastExportItemName, window.lastExportMonth1, window.lastExportMonth2);
+            updateTable();
+        }        
+
+        function getSortIcon(column) {
+            if (comparisonSortState.column !== column) {
+                return '<i class="fa-solid fa-sort text-slate-300 dark:text-slate-600 ml-1"></i>';
+            }
+            return comparisonSortState.direction === 'asc'
+                ? '<i class="fa-solid fa-sort-up text-indigo-500 ml-1"></i>'
+                : '<i class="fa-solid fa-sort-down text-indigo-500 ml-1"></i>';
+        }
+
         function updateComparisonHeader(itemName, m1, m2) {
             const headerRow = document.getElementById('dynamic-table-header-row');
             const displayName = itemName === "Sme" ? "SME" : itemName.replace(/_/g, ' ');
+            const sortableTh = "cursor-pointer select-none hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors";
             
-            let headerHtml = `<th scope="col" class="px-2 py-2 text-[9px] md:text-xs font-bold bg-slate-50 dark:bg-slate-800 sticky-column text-left truncate">Branch</th>`;
+            let headerHtml = `<th scope="col" onclick="sortComparisonTable('branch')" class="px-2 py-2 text-[9px] md:text-xs font-bold bg-slate-50 dark:bg-slate-800 sticky-column text-left truncate ${sortableTh}">Branch${getSortIcon('branch')}</th>`;
             
             // Kolom M1
-            headerHtml += `<th scope="col" class="px-2 py-2 text-[9px] md:text-xs text-center font-bold whitespace-normal break-words max-w-[100px] text-indigo-600 dark:text-indigo-400">${m1}</th>`;
+            headerHtml += `<th scope="col" onclick="sortComparisonTable('m1')" class="px-2 py-2 text-[9px] md:text-xs text-center font-bold whitespace-normal break-words max-w-[100px] text-indigo-600 dark:text-indigo-400 ${sortableTh}">${m1}${getSortIcon('m1')}</th>`;
             
             // Kolom M2
-            headerHtml += `<th scope="col" class="px-2 py-2 text-[9px] md:text-xs text-center font-bold whitespace-normal break-words max-w-[100px] text-emerald-600 dark:text-emerald-400">${m2}</th>`;
+            headerHtml += `<th scope="col" onclick="sortComparisonTable('m2')" class="px-2 py-2 text-[9px] md:text-xs text-center font-bold whitespace-normal break-words max-w-[100px] text-emerald-600 dark:text-emerald-400 ${sortableTh}">${m2}${getSortIcon('m2')}</th>`;
             
             // Kolom Gap
-            headerHtml += `<th scope="col" class="px-2 py-2 text-[9px] md:text-xs text-center font-bold whitespace-normal break-words max-w-[100px] text-slate-600 dark:text-slate-300">Gap<br><span class="text-[8px] text-slate-400">${m1} vs ${m2}</span></th>`;
+            headerHtml += `<th scope="col" onclick="sortComparisonTable('gap')" class="px-2 py-2 text-[9px] md:text-xs text-center font-bold whitespace-normal break-words max-w-[100px] text-slate-600 dark:text-slate-300 ${sortableTh}">Gap${getSortIcon('gap')}<br><span class="text-[8px] text-slate-400 font-normal">${m1} vs ${m2}</span></th>`;
             
             // Kolom Growth %
-            headerHtml += `<th scope="col" class="px-2 py-2 text-[9px] md:text-xs text-center font-bold whitespace-normal break-words max-w-[100px] text-blue-600 dark:text-blue-400">Growth %</th>`;
+            headerHtml += `<th scope="col" onclick="sortComparisonTable('growth')" class="px-2 py-2 text-[9px] md:text-xs text-center font-bold whitespace-normal break-words max-w-[100px] text-blue-600 dark:text-blue-400 ${sortableTh}">Growth %${getSortIcon('growth')}</th>`;
             
             headerRow.innerHTML = headerHtml;
             
