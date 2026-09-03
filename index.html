@@ -2514,11 +2514,19 @@
             // Tutup Modal
             closeExportModal();
 
-            // AUTO SCROLL KE TABEL
+            // AUTO SCROLL KE TABEL (dengan kompensasi tinggi sticky header + KPI)
             setTimeout(() => {
                 const tableContainer = document.getElementById('table-card-container');
-                if (tableContainer) {
-                    tableContainer.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                const mainContent = document.getElementById('main-content');
+                const mainHeader = document.getElementById('main-header');
+                const kpiContainer = document.getElementById('kpi-container');
+                
+                if (tableContainer && mainContent) {
+                    const stickyOffset = (mainHeader ? mainHeader.offsetHeight : 0) + (kpiContainer ? kpiContainer.offsetHeight : 0);
+                    const extraGap = 12; // jarak tambahan biar tidak terlalu mepet
+                    const targetTop = tableContainer.offsetTop - stickyOffset - extraGap;
+                    
+                    mainContent.scrollTo({ top: targetTop, behavior: 'smooth' });
                 }
             }, 100);
         }
